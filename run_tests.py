@@ -17,6 +17,7 @@ from hat_rag.src.hierarchical_tree import HierarchicalAbstractTree
 from hat_rag.src.retriever import HierarchicalRetriever
 from hat_rag.src.generator import HATGenerator
 from hat_rag.src.evaluator import RAGEvaluator
+from hat_rag.src.multi_approach import MultiApproachEngine
 
 class TestHATRAG(unittest.TestCase):
 
@@ -65,17 +66,22 @@ class TestHATRAG(unittest.TestCase):
         self.assertIn("answer", resp)
         self.assertGreater(len(resp["citations"]), 0)
 
-    def test_evaluator(self):
+    def test_multi_approach_engine(self):
         processor = DocumentProcessor(chunk_size=10, chunk_overlap=2)
-        docs = {"doc1": "Test document one.", "doc2": "Test document two."}
+        docs = {"doc1": "Document text for testing multi-approach search engine."}
         chunks = processor.process_documents(docs)
         tree = HierarchicalAbstractTree(max_levels=2, clusters_per_level=2)
         tree.build_tree(chunks)
         
-        evaluator = RAGEvaluator(tree)
-        res = evaluator.evaluate_query("test query")
-        self.assertIn("comparison", res)
-        self.assertIn("speedup_factor", res["comparison"])
+        multi_engine = MultiApproachEngine(tree)
+        res = multi_engine.compare_all("test query")
+        self.assertEqual(len(res["approaches"]), 4)
+        self.assertIn("Approach 1", res["approaches"][0]["stats"]["approach"])
+        self.assertIn("Approach 2", res["approaches"][1]["stats"]["approach"])
+        self.assertIn("Approach 3", res["approaches"][2]["stats"]["approach"])
+        self.assertIn("Approach 4", res["approaches"][3]["stats"]["approach"])
+
+
 
 if __name__ == "__main__":
     unittest.main()

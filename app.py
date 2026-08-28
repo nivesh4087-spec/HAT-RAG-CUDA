@@ -2,10 +2,12 @@
 HAT-RAG Production Enterprise Web Dashboard
 Hierarchical Abstract Tree for Cross-Document Retrieval-Augmented Generation
 Accelerated via NVIDIA CUDA GPU Computing
+Supports 4 Architectural Approaches & 29 Research Papers Repository
 """
 
 import sys
 import os
+import json
 from pathlib import Path
 
 # Add project root to sys.path
@@ -18,16 +20,16 @@ except ImportError:
     HAS_STREAMLIT = False
 
 if HAS_STREAMLIT:
-    import json
     from hat_rag.src.cuda_utils import check_cuda_availability, benchmark_cuda_vs_cpu
     from hat_rag.src.document_processor import DocumentProcessor
     from hat_rag.src.hierarchical_tree import HierarchicalAbstractTree
     from hat_rag.src.retriever import HierarchicalRetriever
     from hat_rag.src.generator import HATGenerator
     from hat_rag.src.evaluator import RAGEvaluator
+    from hat_rag.src.multi_approach import MultiApproachEngine
 
     st.set_page_config(
-        page_title="HAT-RAG | CUDA Accelerated AI Platform",
+        page_title="HAT-RAG | 4 Approaches & 29 Research Papers Platform",
         page_icon="⚡",
         layout="wide",
         initial_sidebar_state="expanded"
@@ -40,8 +42,14 @@ if HAS_STREAMLIT:
             "cooling_spec.txt": "Ceiling fans function by creating a wind chill factor. High speed rotation produces downward airflow, reducing temperature in halls by up to 4 degrees Celsius.",
             "maintenance_manual.txt": "Tool wear in stamping fan blades causes motor alignment errors. Daily torque inspections prevent excessive vibration, bearing wear, and thermal failure.",
             "energy_guide.txt": "Brushless DC motor (BLDC) ceiling fans consume up to 65% less power compared to standard induction motors with smart microcontroller adaptive speed control."
+        }
+        chunks = processor.process_documents(docs)
+        tree = HierarchicalAbstractTree(max_levels=2, clusters_per_level=2)
+        tree.build_tree(chunks)
+        return tree, docs
+
     def main():
-        st.title("⚡ HAT-RAG: Hierarchical Abstract Tree Engine")
+        st.title("⚡ HAT-RAG: 4 Approaches & 29 Research Papers Platform")
         st.caption("Cross-Document Retrieval-Augmented Generation Accelerated with NVIDIA CUDA GPU Computing")
         st.divider()
 
@@ -51,10 +59,12 @@ if HAS_STREAMLIT:
         st.sidebar.text(f"Device: {gpu_info['device_name']}")
         st.sidebar.text(f"CUDA Available: {gpu_info['cuda_available']}")
 
-        tab1, tab2, tab3, tab4 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
             "📊 Executive Overview",
             "📁 Ingest & Tree Builder",
             "🔍 RAG Search Engine",
+            "🔀 4 Architectural Approaches",
+            "📚 29 Research Papers",
             "📈 Baseline Benchmark"
         ])
 
@@ -93,13 +103,47 @@ if HAS_STREAMLIT:
                     st.caption(citation["snippet"])
 
         with tab4:
+            st.subheader("🔀 Comparison of 4 RAG Architectural Approaches")
+            multi_query = st.text_input("Benchmark Query Across 4 Approaches:", "How to prevent motor failure and reduce power consumption?")
+            if st.button("Compare All 4 Approaches", type="primary"):
+                multi = MultiApproachEngine(tree)
+                res = multi.compare_all(multi_query)
+                
+                cols = st.columns(4)
+                for i, app in enumerate(res["approaches"]):
+                    with cols[i]:
+                        st.markdown(f"### {app['stats']['approach']}")
+                        st.metric("Latency (ms)", app["stats"]["execution_time_ms"])
+                        st.metric("Nodes Evaluated", app["stats"]["nodes_evaluated"])
+                        st.caption(f"Complexity: `{app['stats']['complexity']}`")
+                        st.markdown("**Top Result Snippet:**")
+                        if app["results_snippets"]:
+                            st.write(app["results_snippets"][0])
+
+        with tab5:
+            st.subheader("📚 29 Curated Research Papers Repository")
+            st.caption("Seminal research papers covering Tree-RAG, Graph-RAG, RAPTOR, and CUDA Acceleration.")
+            papers_path = Path(__file__).resolve().parent / "papers" / "papers_index.json"
+            if papers_path.exists():
+                with open(papers_path, "r", encoding="utf-8") as f:
+                    papers = json.load(f)
+                st.dataframe(
+                    [{"Title": p["title"], "Category": p["topic"], "ArXiv ID": p["id"], "URL": p["pdf_url"]} for p in papers],
+                    use_container_width=True
+                )
+            else:
+                st.info("Papers index not generated. Run `python download_papers.py` to generate index.")
+
+        with tab6:
             st.subheader("HAT-RAG vs Standard Flat RAG Benchmark")
             if st.button("Run Speed Benchmark"):
                 evaluator = RAGEvaluator(tree)
                 res = evaluator.evaluate_query("How to prevent motor alignment errors?")
-                
-                b1, b2, b3 = st.columns(3)
-                b1.metric("HAT Traversal Time", f"{res['hat_rag']['execution_time_ms']} ms")
+                st.json(res)
+
+    if __name__ == "__main__":
+        main()
+
                 b2.metric("Flat Search Time", f"{res['flat_rag']['execution_time_ms']} ms")
                 b3.metric("Node Reduction", f"{res['comparison']['node_eval_reduction_percent']}% Saved")
 

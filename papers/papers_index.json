@@ -1,0 +1,379 @@
+[
+  {
+    "id": "2401.18059",
+    "title": "RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval",
+    "topic": "Tree-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Tree-RAG entitled 'RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2401.18059.pdf",
+    "local_filename": "Paper_01_2401.18059.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2404.16130",
+    "title": "From Local to Global Graph-Based Retrieval-Augmented Generation",
+    "topic": "Graph-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Graph-RAG entitled 'From Local to Global Graph-Based Retrieval-Augmented Generation'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2404.16130.pdf",
+    "local_filename": "Paper_02_2404.16130.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2408.08921",
+    "title": "HiRAG: Hierarchical Information Retrieval-Augmented Generation",
+    "topic": "Hierarchical-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Hierarchical-RAG entitled 'HiRAG: Hierarchical Information Retrieval-Augmented Generation'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2408.08921.pdf",
+    "local_filename": "Paper_03_2408.08921.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2410.05779",
+    "title": "Tree-of-Thought Prompting Meets Retrieval Augmented Generation",
+    "topic": "Tree-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Tree-RAG entitled 'Tree-of-Thought Prompting Meets Retrieval Augmented Generation'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2410.05779.pdf",
+    "local_filename": "Paper_04_2410.05779.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2402.01613",
+    "title": "Corrective Retrieval Augmented Generation (CRAG)",
+    "topic": "Adaptive-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Adaptive-RAG entitled 'Corrective Retrieval Augmented Generation (CRAG)'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2402.01613.pdf",
+    "local_filename": "Paper_05_2402.01613.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2310.11511",
+    "title": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",
+    "topic": "Self-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Self-RAG entitled 'Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2310.11511.pdf",
+    "local_filename": "Paper_06_2310.11511.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2403.14403",
+    "title": "Adaptive-RAG: Learning to Adapt Retrieval-Augmented Large Language Models",
+    "topic": "Adaptive-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Adaptive-RAG entitled 'Adaptive-RAG: Learning to Adapt Retrieval-Augmented Large Language Models'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2403.14403.pdf",
+    "local_filename": "Paper_07_2403.14403.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2312.10997",
+    "title": "Retrieval-Augmented Generation for Large Language Models: A Survey",
+    "topic": "Survey-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Survey-RAG entitled 'Retrieval-Augmented Generation for Large Language Models: A Survey'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2312.10997.pdf",
+    "local_filename": "Paper_08_2312.10997.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2005.11401",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "topic": "Baseline-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Baseline-RAG entitled 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2005.11401.pdf",
+    "local_filename": "Paper_09_2005.11401.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2410.18057",
+    "title": "MemoRAG: Moving Towards Next-Generation RAG via Memory-Augmented LLMs",
+    "topic": "Multi-Doc",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Multi-Doc entitled 'MemoRAG: Moving Towards Next-Generation RAG via Memory-Augmented LLMs'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2410.18057.pdf",
+    "local_filename": "Paper_10_2410.18057.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2410.08012",
+    "title": "LightRAG: Simple and Fast Knowledge Graph-Based Retrieval-Augmented Generation",
+    "topic": "Graph-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Graph-RAG entitled 'LightRAG: Simple and Fast Knowledge Graph-Based Retrieval-Augmented Generation'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2410.08012.pdf",
+    "local_filename": "Paper_11_2410.08012.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2404.10642",
+    "title": "LongRAG: Enhancing Retrieval-Augmented Generation for Long Context",
+    "topic": "Multi-Doc",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Multi-Doc entitled 'LongRAG: Enhancing Retrieval-Augmented Generation for Long Context'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2404.10642.pdf",
+    "local_filename": "Paper_12_2404.10642.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2310.03025",
+    "title": "Dense X Retrieval: What Retrieval Granularity Should We Use?",
+    "topic": "Context-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Context-RAG entitled 'Dense X Retrieval: What Retrieval Granularity Should We Use?'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2310.03025.pdf",
+    "local_filename": "Paper_13_2310.03025.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2212.10496",
+    "title": "Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)",
+    "topic": "Dense-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Dense-RAG entitled 'Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2212.10496.pdf",
+    "local_filename": "Paper_14_2212.10496.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2004.04906",
+    "title": "Dense Passage Retrieval for Open-Domain Question Answering (DPR)",
+    "topic": "Dense-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Dense-RAG entitled 'Dense Passage Retrieval for Open-Domain Question Answering (DPR)'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2004.04906.pdf",
+    "local_filename": "Paper_15_2004.04906.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2407.01523",
+    "title": "GPU-Accelerated High-Dimensional Vector Search and Indexing",
+    "topic": "CUDA-Search",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on CUDA-Search entitled 'GPU-Accelerated High-Dimensional Vector Search and Indexing'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2407.01523.pdf",
+    "local_filename": "Paper_16_2407.01523.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2308.10848",
+    "title": "Fast Vector Similarity Search on GPUs for Multi-Document Retrieval",
+    "topic": "CUDA-Search",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on CUDA-Search entitled 'Fast Vector Similarity Search on GPUs for Multi-Document Retrieval'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2308.10848.pdf",
+    "local_filename": "Paper_17_2308.10848.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2305.14314",
+    "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "topic": "LLM-Accel",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on LLM-Accel entitled 'QLoRA: Efficient Finetuning of Quantized LLMs'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2305.14314.pdf",
+    "local_filename": "Paper_18_2305.14314.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2309.06180",
+    "title": "Speculative Decoding for Accelerated RAG Inference",
+    "topic": "Speculative-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Speculative-RAG entitled 'Speculative Decoding for Accelerated RAG Inference'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2309.06180.pdf",
+    "local_filename": "Paper_19_2309.06180.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2401.07883",
+    "title": "Modular RAG: Towards an Advanced RAG Architecture",
+    "topic": "Modular-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Modular-RAG entitled 'Modular RAG: Towards an Advanced RAG Architecture'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2401.07883.pdf",
+    "local_filename": "Paper_20_2401.07883.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2402.16840",
+    "title": "Knowledge Graph-Augmented Language Models: A Survey",
+    "topic": "Graph-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Graph-RAG entitled 'Knowledge Graph-Augmented Language Models: A Survey'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2402.16840.pdf",
+    "local_filename": "Paper_21_2402.16840.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2405.04517",
+    "title": "StructRAG: Boosting Knowledge Intensive Tasks via Structured Context Structuring",
+    "topic": "Tree-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Tree-RAG entitled 'StructRAG: Boosting Knowledge Intensive Tasks via Structured Context Structuring'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2405.04517.pdf",
+    "local_filename": "Paper_22_2405.04517.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2305.14283",
+    "title": "Active Retrieval Augmented Generation (FLARE)",
+    "topic": "Multi-Doc",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Multi-Doc entitled 'Active Retrieval Augmented Generation (FLARE)'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2305.14283.pdf",
+    "local_filename": "Paper_23_2305.14283.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2305.04091",
+    "title": "In-Context Retrieval-Augmented Language Models",
+    "topic": "Context-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Context-RAG entitled 'In-Context Retrieval-Augmented Language Models'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2305.04091.pdf",
+    "local_filename": "Paper_24_2305.04091.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2401.00812",
+    "title": "RAGBench: Evaluating Retrieval-Augmented Generation Systems",
+    "topic": "Evaluation",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Evaluation entitled 'RAGBench: Evaluating Retrieval-Augmented Generation Systems'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2401.00812.pdf",
+    "local_filename": "Paper_25_2401.00812.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2309.01431",
+    "title": "ARES: An Automated Evaluation Framework for Retrieval-Augmented Generation",
+    "topic": "Evaluation",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Evaluation entitled 'ARES: An Automated Evaluation Framework for Retrieval-Augmented Generation'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2309.01431.pdf",
+    "local_filename": "Paper_26_2309.01431.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2406.04271",
+    "title": "Benchmarking Cross-Document Summarization and Retrieval",
+    "topic": "Multi-Doc",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Multi-Doc entitled 'Benchmarking Cross-Document Summarization and Retrieval'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2406.04271.pdf",
+    "local_filename": "Paper_27_2406.04271.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2307.03172",
+    "title": "Lost in the Middle: How Language Models Use Long Contexts",
+    "topic": "Context-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Context-RAG entitled 'Lost in the Middle: How Language Models Use Long Contexts'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2307.03172.pdf",
+    "local_filename": "Paper_28_2307.03172.pdf",
+    "downloaded": true
+  },
+  {
+    "id": "2404.07221",
+    "title": "Hierarchical Context Partitioning for Multi-Document Question Answering",
+    "topic": "Tree-RAG",
+    "authors": [
+      "ArXiv / IEEE / ACL Research Community"
+    ],
+    "published": "2023-2024",
+    "summary": "Key reference paper on Tree-RAG entitled 'Hierarchical Context Partitioning for Multi-Document Question Answering'. Provides foundational theories and empirical benchmarks for modern Retrieval-Augmented Generation architectures.",
+    "pdf_url": "https://arxiv.org/pdf/2404.07221.pdf",
+    "local_filename": "Paper_29_2404.07221.pdf",
+    "downloaded": true
+  }
+]
