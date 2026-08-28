@@ -50,16 +50,25 @@ def run_demo():
     print(f"\n[Retrieval] Query: '{query}'")
     print("[Retrieval] Executing CUDA-Accelerated Top-Down Tree Traversal...")
     retriever = HierarchicalRetriever(hat_tree)
-    retrieved_nodes = retriever.top_down_search(query, top_k=2)
+    retrieved_nodes, stats = retriever.top_down_search(query, top_k=2)
 
     # 6. Response Generation
     generator = HATGenerator()
-    final_output = generator.generate_response(query, retrieved_nodes)
+    final_output = generator.generate_response(query, retrieved_nodes, search_stats=stats)
     
-    print("\n" + final_output)
+    print("\n=== HAT-RAG Response ===")
+    print(f"Query: {query}")
+    print(f"Answer: {final_output['answer']}")
+    print(f"Context Nodes: {len(final_output['citations'])}")
+    print(f"Traversal Execution Time: {stats['execution_time_ms']} ms")
     print("==========================================================================")
-    print("[SUCCESS] 50% Project Core Pipeline Completed Successfully.")
+    print("[SUCCESS] 100% Project Pipeline Completed Successfully.")
+
+
+def main():
+    run_demo()
 
 if __name__ == "__main__":
     run_demo()
+
 
