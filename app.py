@@ -2,7 +2,7 @@
 HAT-RAG Production Enterprise Web Dashboard
 Hierarchical Abstract Tree for Cross-Document Retrieval-Augmented Generation
 Accelerated via NVIDIA CUDA GPU Computing
-Supports 4 Architectural Approaches & 29 Research Papers Repository
+Author: Nivesh Jain (Vishwakarma Institute of Technology, Pune)
 """
 
 import sys
@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 # Add project root to sys.path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 try:
     import streamlit as st
@@ -29,7 +29,7 @@ if HAS_STREAMLIT:
     from hat_rag.src.multi_approach import MultiApproachEngine
 
     st.set_page_config(
-        page_title="HAT-RAG | 4 Approaches & 29 Research Papers Platform",
+        page_title="HAT-RAG CUDA Research & Execution Platform",
         page_icon="⚡",
         layout="wide",
         initial_sidebar_state="expanded"
@@ -49,33 +49,40 @@ if HAS_STREAMLIT:
         return tree, docs
 
     def main():
-        st.title("⚡ HAT-RAG: 4 Approaches & 29 Research Papers Platform")
-        st.caption("Cross-Document Retrieval-Augmented Generation Accelerated with NVIDIA CUDA GPU Computing")
+        st.title("⚡ HAT-RAG: CUDA-Accelerated Hierarchical Abstract Tree Platform")
+        st.caption("Author: **Nivesh Jain** (Vishwakarma Institute of Technology, Pune) | Cross-Document RAG with NVIDIA CUDA Acceleration")
         st.divider()
 
         gpu_info = check_cuda_availability()
         st.sidebar.title("🎮 Hardware Command Center")
         st.sidebar.info(f"**Backend**: {gpu_info['backend']}")
         st.sidebar.text(f"Device: {gpu_info['device_name']}")
-        st.sidebar.text(f"CUDA Available: {gpu_info['cuda_available']}")
+        st.sidebar.text(f"CUDA Active: {gpu_info['cuda_available']}")
 
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
             "📊 Executive Overview",
             "📁 Ingest & Tree Builder",
             "🔍 RAG Search Engine",
-            "🔀 4 Architectural Approaches",
+            "🔀 5 Architectural Approaches",
             "📚 29 Research Papers",
-            "📈 Baseline Benchmark"
+            "📈 Empirical Benchmark",
+            "🖼️ Research Paper & Figures"
         ])
 
         tree, docs = get_default_tree()
 
         with tab1:
-            st.subheader("System Performance & Overview")
-            col1, col2, col3 = st.columns(3)
+            st.subheader("System Performance & Hardware Overview")
+            col1, col2, col3, col4 = st.columns(4)
             col1.metric("Indexed Documents", len(docs))
             col2.metric("Total Tree Nodes", len(tree.nodes))
             col3.metric("Root Clusters", len(tree.root_nodes))
+            col4.metric("Hardware Backend", "CUDA GPU" if gpu_info['cuda_available'] else "CPU Vector")
+
+            st.divider()
+            st.markdown("### 🧮 Mathematical Formulation")
+            st.latex(r"S_l(v | q) = s(q, v) + \lambda R(v, q) = \frac{f(q) \cdot f(v)}{\|f(q)\|_2 \|f(v)\|_2} + \lambda R(v, q)")
+            st.latex(r"\mathcal{O}_{\text{HAT}} = \mathcal{O}\left( d \sum_{l=0}^L b_l \right) \ll \mathcal{O}(N \cdot d)")
 
         with tab2:
             st.subheader("Document Ingestion & Tree Inspection")
@@ -135,31 +142,39 @@ if HAS_STREAMLIT:
                 st.info("Papers index not generated. Run `python download_papers.py` to generate index.")
 
         with tab6:
-            st.subheader("HAT-RAG vs Standard Flat RAG Benchmark")
-            if st.button("Run Speed Benchmark"):
+            st.subheader("HAT-RAG vs Standard Flat RAG Empirical Benchmark")
+            if st.button("Run Comprehensive Speed Benchmark"):
                 evaluator = RAGEvaluator(tree)
                 res = evaluator.evaluate_query("How to prevent motor alignment errors?")
+                
+                c1, c2, c3 = st.columns(3)
+                c1.metric("HAT Traversal Time", f"{res['hat_rag']['execution_time_ms']} ms")
+                c2.metric("Flat Search Time", f"{res['flat_rag']['execution_time_ms']} ms")
+                c3.metric("Node Evaluation Reduction", f"{res['comparison']['node_eval_reduction_percent']}%")
+                
                 st.json(res)
 
-    if __name__ == "__main__":
-        main()
-
-                b2.metric("Flat Search Time", f"{res['flat_rag']['execution_time_ms']} ms")
-                b3.metric("Node Reduction", f"{res['comparison']['node_eval_reduction_percent']}% Saved")
-
-                st.json(res)
+        with tab7:
+            st.subheader("🖼️ Research Paper Figures Gallery (Nivesh Jain, 2026)")
+            fig_dir = Path(__file__).resolve().parent / "paper_figures"
+            if fig_dir.exists():
+                images = sorted(list(fig_dir.glob("*.png")) + list(fig_dir.glob("*.jpg")))
+                if images:
+                    img_cols = st.columns(2)
+                    for idx, img_path in enumerate(images):
+                        with img_cols[idx % 2]:
+                            st.image(str(img_path), caption=img_path.name, use_column_width=True)
+                else:
+                    st.info("No figures found in paper_figures folder.")
+            else:
+                st.info("paper_figures folder does not exist.")
 
     if __name__ == "__main__":
         main()
 else:
     def main():
-        print("Streamlit not installed. Launch demo via 'python hat_rag/demo_hat_rag.py'")
+        print("Streamlit not installed. Launch CLI runner via 'py run_app.py --mode demo'")
 
     if __name__ == "__main__":
         main()
 
-        }
-        chunks = processor.process_documents(docs)
-        tree = HierarchicalAbstractTree(max_levels=2, clusters_per_level=2)
-        tree.build_tree(chunks)
-        return tree, docs

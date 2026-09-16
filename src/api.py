@@ -1,3 +1,8 @@
+"""
+REST API Microservice Engine for HAT-RAG
+Author: Nivesh Jain (Vishwakarma Institute of Technology, Pune)
+"""
+
 import os
 import logging
 from typing import Dict, List, Any, Optional
@@ -15,18 +20,18 @@ from hat_rag.src.hierarchical_tree import HierarchicalAbstractTree
 from hat_rag.src.retriever import HierarchicalRetriever
 from hat_rag.src.generator import HATGenerator
 from hat_rag.src.evaluator import RAGEvaluator
+from hat_rag.src.multi_approach import MultiApproachEngine
 
 logger = logging.getLogger(__name__)
 
-# Core Global Engine State
 global_tree = None
 
 def init_default_engine():
     global global_tree
     processor = DocumentProcessor()
     docs = {
-        "cooling.txt": "Ceiling fans function by creating a wind chill factor. High speed rotation produces downward airflow, reducing temperature in halls by up to 4C.",
-        "maintenance.txt": "Tool wear in stamping fan blades causes motor alignment errors. Daily torque inspections prevent excessive vibration, bearing wear, and failure.",
+        "cooling.txt": "Ceiling fans function by creating a wind chill factor. High speed rotation produces downward airflow, reducing effective temperature in halls by up to 4C.",
+        "maintenance.txt": "Tool wear in stamping fan blades causes motor alignment errors. Daily torque inspections prevent excessive vibration, bearing wear, and operational failure.",
         "energy.txt": "Brushless DC motor (BLDC) ceiling fans consume up to 65% less power compared to standard induction motors with smart microcontroller adaptive speed control."
     }
     chunks = processor.process_documents(docs)
@@ -37,9 +42,9 @@ init_default_engine()
 
 if HAS_FASTAPI:
     app = FastAPI(
-        title="HAT-RAG CUDA REST API Service",
-        description="Hierarchical Abstract Tree for Cross-Document RAG Accelerated with NVIDIA CUDA",
-        version="1.0.0"
+        title="HAT-RAG CUDA REST API Microservice",
+        description="Hierarchical Abstract Tree for Cross-Document RAG Accelerated with NVIDIA CUDA Computing by Nivesh Jain",
+        version="2.0.0"
     )
 
     class QueryRequest(BaseModel):
@@ -53,6 +58,7 @@ if HAS_FASTAPI:
     def health_check():
         return {
             "status": "online",
+            "author": "Nivesh Jain (Vishwakarma Institute of Technology, Pune)",
             "cuda_status": check_cuda_availability(),
             "nodes_indexed": len(global_tree.nodes) if global_tree else 0
         }
@@ -83,6 +89,14 @@ if HAS_FASTAPI:
         res = generator.generate_response(req.query, nodes, search_stats=stats)
         return res
 
+    @app.post("/compare")
+    def compare_architectures(req: QueryRequest):
+        if not global_tree:
+            raise HTTPException(status_code=400, detail="Tree not initialized")
+
+        engine = MultiApproachEngine(global_tree)
+        return engine.compare_all(req.query, top_k=req.top_k)
+
     @app.post("/benchmark")
     def run_benchmark(req: QueryRequest):
         if not global_tree:
@@ -90,3 +104,23 @@ if HAS_FASTAPI:
             
         evaluator = RAGEvaluator(global_tree)
         return evaluator.evaluate_query(req.query, top_k=req.top_k)
+
+    @app.get("/cuda/status")
+    def cuda_status():
+        return check_cuda_availability()
+
+    @app.get("/cuda/benchmark")
+    def cuda_benchmark(vectors: int = 5000, dim: int = 384):
+        return benchmark_cuda_vs_cpu(vector_count=vectors, dim=dim)
+
+    @app.get("/tree/structure")
+    def tree_structure():
+        if not global_tree:
+            return {"nodes": {}}
+        return {
+            "max_levels": global_tree.max_levels,
+            "clusters_per_level": global_tree.clusters_per_level,
+            "total_nodes": len(global_tree.nodes),
+            "root_nodes": [r.node_id for r in global_tree.root_nodes]
+        }
+

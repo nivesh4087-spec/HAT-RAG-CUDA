@@ -136,36 +136,59 @@ class Approach4_RAPTOR_RAG:
             "complexity": "O(N_all_levels)"
         }
 
+class Approach5_Hybrid_HAT_Graph:
+    """Approach 5: Hybrid HAT + Graph-RAG (Hierarchical Traversal with Graph Edge Expansion)"""
+    def __init__(self, tree: HierarchicalAbstractTree):
+        self.hat = Approach1_HAT_RAG(tree)
+        self.graph = Approach3_Graph_RAG(tree)
+
+    def query(self, query_text: str, top_k: int = 3) -> Tuple[List[TreeNode], Dict[str, Any]]:
+        start = time.perf_counter()
+        hat_nodes, h_stats = self.hat.query(query_text, top_k=top_k)
+        
+        expanded_nodes = list(hat_nodes)
+        visited = {n.node_id for n in hat_nodes}
+        
+        for n in hat_nodes:
+            neighbors = self.graph.graph.get(n.node_id, [])
+            for n_id in neighbors:
+                if n_id not in visited and len(expanded_nodes) < top_k + 2:
+                    visited.add(n_id)
+                    expanded_nodes.append(self.hat.tree.nodes[n_id])
+
+        elapsed = (time.perf_counter() - start) * 1000.0
+        return expanded_nodes[:top_k], {
+            "approach": "Approach 5: Hybrid HAT + Graph-RAG",
+            "execution_time_ms": round(elapsed, 3),
+            "nodes_evaluated": h_stats["nodes_evaluated"] + len(expanded_nodes),
+            "complexity": "O(k log N + E_local)"
+        }
+
+
 class MultiApproachEngine:
-    """Unified Orchestrator comparing all 4 RAG Architectural Approaches."""
+    """Unified Orchestrator comparing all 5 RAG Architectural Approaches."""
     def __init__(self, tree: HierarchicalAbstractTree):
         self.tree = tree
         self.a1 = Approach1_HAT_RAG(tree)
         self.a2 = Approach2_Flat_RAG(tree)
         self.a3 = Approach3_Graph_RAG(tree)
         self.a4 = Approach4_RAPTOR_RAG(tree)
+        self.a5 = Approach5_Hybrid_HAT_Graph(tree)
 
     def compare_all(self, query_text: str, top_k: int = 3) -> Dict[str, Any]:
         n1, s1 = self.a1.query(query_text, top_k)
         n2, s2 = self.a2.query(query_text, top_k)
         n3, s3 = self.a3.query(query_text, top_k)
         n4, s4 = self.a4.query(query_text, top_k)
-        
+        n5, s5 = self.a5.query(query_text, top_k)
+
         return {
             "query": query_text,
             "approaches": [
                 {"stats": s1, "results_snippets": [n.text[:80] + "..." for n in n1]},
                 {"stats": s2, "results_snippets": [n.text[:80] + "..." for n in n2]},
                 {"stats": s3, "results_snippets": [n.text[:80] + "..." for n in n3]},
-                {"stats": s4, "results_snippets": [n.text[:80] + "..." for n in n4]}
+                {"stats": s4, "results_snippets": [n.text[:80] + "..." for n in n4]},
+                {"stats": s5, "results_snippets": [n.text[:80] + "..." for n in n5]}
             ]
-        }
-
-        nodes = [leafs[i] for i in top_idx]
-        elapsed = (time.perf_counter() - start) * 1000
-        return nodes, {
-            "approach": "Approach 2: Standard Flat Dense Vector RAG",
-            "execution_time_ms": round(elapsed, 3),
-            "nodes_evaluated": len(leafs),
-            "complexity": "O(N)"
         }

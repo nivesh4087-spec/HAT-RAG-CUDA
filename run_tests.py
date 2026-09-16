@@ -1,5 +1,6 @@
 """
 Custom Test Runner for HAT-RAG using standard unittest framework
+Author: Nivesh Jain (Vishwakarma Institute of Technology, Pune)
 """
 
 import sys
@@ -7,7 +8,7 @@ import unittest
 from pathlib import Path
 
 # Add project root to sys.path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from hat_rag.src.cuda_utils import check_cuda_availability, gpu_batch_cosine_similarity, benchmark_cuda_vs_cpu
 from hat_rag.src.document_processor import DocumentProcessor
@@ -17,7 +18,8 @@ from hat_rag.src.hierarchical_tree import HierarchicalAbstractTree
 from hat_rag.src.retriever import HierarchicalRetriever
 from hat_rag.src.generator import HATGenerator
 from hat_rag.src.evaluator import RAGEvaluator
-from hat_rag.src.multi_approach import MultiApproachEngine
+from hat_rag.src.multi_approach import MultiApproachEngine, Approach5_Hybrid_HAT_Graph
+
 
 class TestHATRAG(unittest.TestCase):
 
@@ -65,6 +67,7 @@ class TestHATRAG(unittest.TestCase):
         resp = generator.generate_response("motor inspection", nodes, search_stats=stats)
         self.assertIn("answer", resp)
         self.assertGreater(len(resp["citations"]), 0)
+        self.assertGreater(resp["faithfulness_score"], 0.0)
 
     def test_multi_approach_engine(self):
         processor = DocumentProcessor(chunk_size=10, chunk_overlap=2)
@@ -75,13 +78,14 @@ class TestHATRAG(unittest.TestCase):
         
         multi_engine = MultiApproachEngine(tree)
         res = multi_engine.compare_all("test query")
-        self.assertEqual(len(res["approaches"]), 4)
+        self.assertEqual(len(res["approaches"]), 5)
         self.assertIn("Approach 1", res["approaches"][0]["stats"]["approach"])
         self.assertIn("Approach 2", res["approaches"][1]["stats"]["approach"])
         self.assertIn("Approach 3", res["approaches"][2]["stats"]["approach"])
         self.assertIn("Approach 4", res["approaches"][3]["stats"]["approach"])
-
+        self.assertIn("Approach 5", res["approaches"][4]["stats"]["approach"])
 
 
 if __name__ == "__main__":
     unittest.main()
+

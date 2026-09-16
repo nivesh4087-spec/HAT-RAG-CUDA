@@ -1,6 +1,7 @@
 """
 HAT-RAG Demo: Hierarchical Abstract Tree for Cross-Document Retrieval-Augmented Generation
 Accelerated with NVIDIA CUDA GPU Computing
+Author: Nivesh Jain (Vishwakarma Institute of Technology, Pune)
 """
 
 import sys
@@ -8,7 +9,7 @@ import os
 from pathlib import Path
 
 # Add project root to sys.path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from hat_rag.src.cuda_utils import check_cuda_availability
 from hat_rag.src.document_processor import DocumentProcessor
@@ -16,14 +17,17 @@ from hat_rag.src.hierarchical_tree import HierarchicalAbstractTree
 from hat_rag.src.retriever import HierarchicalRetriever
 from hat_rag.src.generator import HATGenerator
 
+
 def run_demo():
     print("==========================================================================")
     print("Hierarchical Abstract Tree (HAT) RAG - CUDA Accelerated Engine Demo")
+    print("Author: Nivesh Jain (Vishwakarma Institute of Technology, Pune)")
     print("==========================================================================")
     
     # 1. GPU / Hardware Check
     gpu_info = check_cuda_availability()
     print(f"[Hardware Setup] Active Device: {gpu_info['device_name']}")
+    print(f"[Hardware Setup] Backend: {gpu_info['backend']}")
     print(f"[Hardware Setup] CUDA Status: {'Available' if gpu_info['cuda_available'] else 'CPU Execution Fallback Mode'}")
     print("-" * 74)
 
@@ -58,8 +62,9 @@ def run_demo():
     
     print("\n=== HAT-RAG Response ===")
     print(f"Query: {query}")
-    print(f"Answer: {final_output['answer']}")
-    print(f"Context Nodes: {len(final_output['citations'])}")
+    print(f"Answer:\n{final_output['answer']}")
+    print(f"\nFaithfulness Score: {final_output['faithfulness_score']}")
+    print(f"Context Nodes Used: {len(final_output['citations'])}")
     print(f"Traversal Execution Time: {stats['execution_time_ms']} ms")
     print("==========================================================================")
     print("[SUCCESS] 100% Project Pipeline Completed Successfully.")
@@ -70,5 +75,6 @@ def main():
 
 if __name__ == "__main__":
     run_demo()
+
 
 
