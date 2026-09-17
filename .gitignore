@@ -9,3 +9,19 @@ papers/*.pdf
 # Local paper drafts / journal templates (IBERAMIA submission assets)
 IBERAMIA/
 iberamia/
+
+# Paper figures
+paper_figures/
+
+# Research paper documentation generators and data scripts
+build_final_doc.py
+build_svgs.py
+create_papers_doc.py
+download_jucs_papers.py
+download_papers.py
+generate_jucs_pdf_summaries.py
+generate_papers_doc.py
+generate_pdf_docs.py
+generate_svg_flowcharts.py
+paper_data_p*.py
+RESEARCH_PAPERS_SUMMARY_DOCUMENTATION.*
