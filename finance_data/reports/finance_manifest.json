@@ -1,0 +1,52 @@
+[
+  {
+    "ticker": "AAPL",
+    "company_name": "Apple Inc.",
+    "filing_type": "Form 10-K Annual Report (US-GAAP)",
+    "period": "Fiscal Year 2023 - 2024",
+    "filename": "AAPL_Apple_Financial_Report_2024.txt",
+    "path": "C:\\Users\\Rachit\\Documents\\edisem5\\finance_data\\reports\\AAPL_Apple_Financial_Report_2024.txt",
+    "word_count": 259,
+    "lines": 7
+  },
+  {
+    "ticker": "MSFT",
+    "company_name": "Microsoft Corporation",
+    "filing_type": "Form 10-K Annual Report (US-GAAP)",
+    "period": "Fiscal Year 2023 - 2024",
+    "filename": "MSFT_Microsoft_Financial_Report_2024.txt",
+    "path": "C:\\Users\\Rachit\\Documents\\edisem5\\finance_data\\reports\\MSFT_Microsoft_Financial_Report_2024.txt",
+    "word_count": 257,
+    "lines": 7
+  },
+  {
+    "ticker": "NVDA",
+    "company_name": "NVIDIA Corporation",
+    "filing_type": "Form 10-K Annual Report (US-GAAP)",
+    "period": "Fiscal Year 2024",
+    "filename": "NVDA_NVIDIA_Financial_Report_2024.txt",
+    "path": "C:\\Users\\Rachit\\Documents\\edisem5\\finance_data\\reports\\NVDA_NVIDIA_Financial_Report_2024.txt",
+    "word_count": 253,
+    "lines": 7
+  },
+  {
+    "ticker": "AMZN",
+    "company_name": "Amazon.com, Inc.",
+    "filing_type": "Form 10-K Annual Report (US-GAAP)",
+    "period": "Fiscal Year 2023 - 2024",
+    "filename": "AMZN_Amazon_Financial_Report_2024.txt",
+    "path": "C:\\Users\\Rachit\\Documents\\edisem5\\finance_data\\reports\\AMZN_Amazon_Financial_Report_2024.txt",
+    "word_count": 232,
+    "lines": 7
+  },
+  {
+    "ticker": "TSLA",
+    "company_name": "Tesla, Inc.",
+    "filing_type": "Form 10-K Annual Report (US-GAAP)",
+    "period": "Fiscal Year 2023 - 2024",
+    "filename": "TSLA_Tesla_Financial_Report_2024.txt",
+    "path": "C:\\Users\\Rachit\\Documents\\edisem5\\finance_data\\reports\\TSLA_Tesla_Financial_Report_2024.txt",
+    "word_count": 240,
+    "lines": 7
+  }
+]
