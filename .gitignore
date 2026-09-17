@@ -10,6 +10,10 @@ papers/*.pdf
 IBERAMIA/
 iberamia/
 
+# SuperFRI template & figure generation
+superfri-template/
+build_paper_figures.py
+
 # Paper figures
 paper_figures/
 
