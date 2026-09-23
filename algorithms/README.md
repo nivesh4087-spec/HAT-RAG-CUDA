@@ -25,13 +25,13 @@ inside Algorithm 3 rather than in a module of its own.
 
 **No.** Everything here runs on plain CPU — that is how every number in this README
 was produced (torch CPU build, no CUDA device). The full finance corpus builds in
-about 33 seconds end to end, and roughly 1 second with `--summarizer extractive`.
+about 45 seconds end to end, and roughly 1 second with `--summarizer extractive`.
 
 CUDA is an optional accelerator, not a requirement:
 
 | Stage | CPU today | What CUDA would change |
 |---|---|---|
-| Embedding | ~36 texts/sec | Larger batches + fp16; the win shows up at thousands of chunks |
+| Embedding | ~20-45 texts/sec | Larger batches + fp16; the win shows up at thousands of chunks |
 | k-means | 3–9 ms per level | Already negligible at this size; the assignment step is one matmul |
 | LLM summarisation | 3–10 s per abstract node | The only real bottleneck — a GPU cuts it to well under a second |
 
@@ -72,7 +72,8 @@ Useful flags (both runners): `--levels`, `--children`, `--alpha`, `--max-cross-l
 ## Dense encoder (inside Algorithm 3)
 
 Replaces the earlier random-projection placeholder, so cosine similarity carries actual
-semantics — Apple's and NVIDIA's balance-sheet passages score 0.70 against each other.
+semantics — Apple's and Microsoft's balance-sheet passages score 0.62 against each other,
+and the strongest cross-company link in the built tree reaches 0.69.
 
 - `sentence-transformers/all-MiniLM-L6-v2`, d = 384, L2-normalised output, so every
   downstream dot product *is* cosine similarity.
@@ -102,7 +103,7 @@ encoder stats, metrics, node embeddings and cross-links.
 ```
 24 leaf chunks (5 companies) -> 5 L1 abstracts -> 2 L2 abstracts -> 1 root   (24x compression)
 29 explicit alpha edges, 17 of them between different companies
-embed 0.22s | cluster 0.01s | summarize 32.3s (LLM) | crosslink 0.00s
+embed 0.33s | cluster 0.06s | summarize 43.8s (LLM) | crosslink 0.01s | total 44.2s
 ```
 
 ---
