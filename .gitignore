@@ -6,6 +6,12 @@ venv/
 papers/*.pdf
 
 
+# Documentation & Reports
+docs/
+md/
+# Research paper publications
+research_papers/
+
 # Local paper drafts / journal templates (IBERAMIA submission assets)
 IBERAMIA/
 iberamia/

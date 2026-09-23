@@ -84,9 +84,6 @@ HAT-RAG-CUDA/
 ├── papers/                  # Research paper manifests & metadata index
 │   ├── PAPERS_MANIFEST.md   # Detailed manifest of 29 research papers
 │   └── papers_index.json    # Machine-readable paper index catalog
-├── research_papers/         # Primary research paper publications
-│   └── IBERAMIA.pdf         # Conference/Journal publication manuscript
-├── docs/                    # Technical architecture & methodology reports
 ├── app.py                   # Streamlit Interactive Web Dashboard
 ├── demo_hat_rag.py          # Standalone terminal demonstration script
 ├── run_app.py               # System launcher CLI
@@ -187,7 +184,6 @@ When running the FastAPI server, the following endpoints are available:
 The [papers/](papers/) directory contains cataloged research benchmarks:
 - **[PAPERS_MANIFEST.md](papers/PAPERS_MANIFEST.md)**: Index and analysis of 29 foundational research papers spanning Hierarchical Indexing, Graph RAG, Multi-Hop QA, and CUDA Vector Acceleration.
 - **[papers_index.json](papers/papers_index.json)**: Machine-readable JSON metadata for cross-referencing research literature.
-- **[research_papers/IBERAMIA.pdf](research_papers/IBERAMIA.pdf)**: Submission manuscript and academic paper.
 
 ---
 
