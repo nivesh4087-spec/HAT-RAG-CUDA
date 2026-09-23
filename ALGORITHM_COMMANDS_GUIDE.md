@@ -150,6 +150,7 @@ Runs the exact same pipeline on the finance corpus, but uses `facebook/bart-larg
 #### Output Differences from Command 1:
 - **Summarizer**: Displays `backend=transformers::facebook/bart-large-cnn`.
 - **Abstract Texts**: Instead of extracting existing sentences, internal nodes (`L1_A0`, `L2_A0`, `ROOT`) contain synthesized paragraphs authored by the BART model.
+BART (Bidirectional and Auto-Regressive Transformers) is a sequence-to-sequence neural network model created by Meta in 2019 that combines a bidirectional encoder like BERT with an autoregressive decoder like GPT.
 - **Timing**: Takes ~40 seconds on CPU because generating sentences with an autoregressive transformer requires beam search decoding.
 - **$\alpha$-links**: Auto-calibrated threshold produces 29 cross-child links (17 between different companies).
 
