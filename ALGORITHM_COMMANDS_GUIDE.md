@@ -101,6 +101,7 @@ Runs the complete knowledge construction pipeline over 5 real SEC 10-K corporate
   E shape = (24, 384) | 90.9 texts/sec on CPU (12 threads)
 ```
 > **What this means**: The 24 passages are converted into 384-dimensional unit vectors ($E \in \mathbb{R}^{24 \times 384}$) using `all-MiniLM-L6-v2`.
+all-MiniLM-L6-v2 is a lightweight, high-performance Sentence Transformers model that turns sentences and paragraphs into 384-dimensional numeric vectors.
 
 ```text
 [PHASE 3] ALGORITHM 3: HIERARCHICAL ABSTRACT TREE CONSTRUCTION -> H
