@@ -25,6 +25,21 @@ class DocumentChunker:
                 units.extend([s.strip() for s in s_list if s.strip()])
         return units
 
+    @staticmethod
+    def _dominant_section(sections: List[str]) -> str:
+        """Section a chunk actually covers: the most frequent heading among its
+        sentences (earliest one wins a tie), not whichever heading came last."""
+        if not sections:
+            return "General Overview"
+        counts: Dict[str, int] = {}
+        for sec in sections:
+            counts[sec] = counts.get(sec, 0) + 1
+        best = max(counts.values())
+        for sec in sections:                     # preserve document order on ties
+            if counts[sec] == best:
+                return sec
+        return sections[0]
+
     def chunk_document(self, text: str, doc_id: str, extra_metadata: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         units = self.split_sentences(text)
         if not units:
@@ -33,6 +48,7 @@ class DocumentChunker:
         chunks = []
         current_words: List[str] = []
         current_sentences: List[str] = []
+        current_sections: List[str] = []
         current_section = "General Overview"
         chunk_idx = 0
 
@@ -53,7 +69,7 @@ class DocumentChunker:
                     "chunk_id": f"{doc_id}_c{chunk_idx}_{chunk_hash}",
                     "doc_id": doc_id,
                     "chunk_index": chunk_idx,
-                    "section": current_section,
+                    "section": self._dominant_section(current_sections),
                     "text": chunk_text_str,
                     "token_count": len(current_words),
                     "hash": chunk_hash
@@ -66,19 +82,23 @@ class DocumentChunker:
 
                 overlap_words: List[str] = []
                 overlap_sentences: List[str] = []
-                for s in reversed(current_sentences):
+                overlap_sections: List[str] = []
+                for s, sec in zip(reversed(current_sentences), reversed(current_sections)):
                     s_w = s.split()
                     if len(overlap_words) + len(s_w) <= self.chunk_overlap:
                         overlap_words = s_w + overlap_words
                         overlap_sentences.insert(0, s)
+                        overlap_sections.insert(0, sec)
                     else:
                         break
 
                 current_words = overlap_words + unit_words
                 current_sentences = overlap_sentences + [unit]
+                current_sections = overlap_sections + [current_section]
             else:
                 current_words.extend(unit_words)
                 current_sentences.append(unit)
+                current_sections.append(current_section)
 
         if current_sentences:
             chunk_text_str = " ".join(current_sentences)
@@ -87,7 +107,7 @@ class DocumentChunker:
                 "chunk_id": f"{doc_id}_c{chunk_idx}_{chunk_hash}",
                 "doc_id": doc_id,
                 "chunk_index": chunk_idx,
-                "section": current_section,
+                "section": self._dominant_section(current_sections),
                 "text": chunk_text_str,
                 "token_count": len(current_words),
                 "hash": chunk_hash
