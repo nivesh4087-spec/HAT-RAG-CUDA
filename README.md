@@ -81,6 +81,7 @@ HAT-RAG-CUDA/
 │   ├── test_evaluator.py    # Evaluator metrics tests
 │   ├── test_retriever.py    # Top-down retrieval validation tests
 │   └── test_tree.py         # Hierarchical tree construction tests
+├── algorithms/              # Standalone offline knowledge construction (Algorithms 1 & 3)
 ├── papers/                  # Research paper manifests & metadata index
 │   ├── PAPERS_MANIFEST.md   # Detailed manifest of 29 research papers
 │   └── papers_index.json    # Machine-readable paper index catalog
@@ -89,6 +90,7 @@ HAT-RAG-CUDA/
 ├── run_app.py               # System launcher CLI
 ├── run_tests.py             # Unit test runner
 ├── requirements.txt         # Production dependencies
+├── ALGORITHM_COMMANDS_GUIDE.md # Execution & output breakdown guide for algorithms/
 └── README.md                # Project documentation
 ```
 
