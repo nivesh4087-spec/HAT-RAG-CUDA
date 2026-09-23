@@ -4,11 +4,12 @@ OFFLINE / KNOWLEDGE CONSTRUCTION SHOWCASE -- GENERAL RESEARCH CORPUS
 Runs the full indexing path end to end on a small multi-document corpus:
 
     Document corpus
-      -> Algorithm 1: document chunking            -> chunk collection C
-      -> Algorithm 2: GPU-accelerated dense embed  -> embedding matrix E
-      -> Algorithm 3: HAT construction             -> tree H (+ alpha edges)
+      -> Algorithm 1: document chunking   -> chunk collection C
+      -> dense embedding of the chunks    -> embedding matrix E
+      -> Algorithm 3: HAT construction    -> tree H (+ alpha edges)
 
 Knowledge construction only -- query-time retrieval is not part of this script.
+Runs on CPU; a GPU is optional.
 
     python algorithms/run_demo.py
     python algorithms/run_demo.py --summarizer extractive     # skip the LLM
@@ -22,10 +23,12 @@ current_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(current_dir))
 
 from algo1_document_chunking import DocumentChunker
-from algo2_gpu_dense_embedding import DEFAULT_MODEL, DenseEmbeddingModel, describe_device
 from algo3_hierarchical_abstract_tree import (
+    DEFAULT_MODEL,
     DEFAULT_SUMMARIZER_MODEL,
+    DenseEmbeddingModel,
     HierarchicalAbstractTreeBuilder,
+    describe_device,
 )
 
 DOCUMENTS = {
@@ -58,7 +61,7 @@ DOCUMENTS = {
 
 def run_pipeline_demo(args):
     print("*" * 100)
-    print("   HAT-RAG OFFLINE KNOWLEDGE CONSTRUCTION -- ALGORITHMS 1, 2 AND 3")
+    print("   HAT-RAG OFFLINE KNOWLEDGE CONSTRUCTION -- ALGORITHM 1 AND ALGORITHM 3")
     print("*" * 100)
 
     # ---------------------------------------------------------------- PHASE 1
@@ -77,7 +80,7 @@ def run_pipeline_demo(args):
 
     # ---------------------------------------------------------------- PHASE 2
     print("\n" + "-" * 100)
-    print("[PHASE 2] ALGORITHM 2: GPU-ACCELERATED DENSE EMBEDDING -> matrix E")
+    print("[PHASE 2] DENSE EMBEDDING OF C -> matrix E (leaf vectors for Algorithm 3)")
     embedder = DenseEmbeddingModel(model_name=args.model, device=args.device)
     print(f"  {embedder.banner()}")
     E = embedder.encode_chunks(all_leaf_chunks)
@@ -117,7 +120,7 @@ def run_pipeline_demo(args):
     print(" PIPELINE AUDIT")
     print("=" * 100)
     print(f"  Algorithm 1 (chunking)            : PASSED ({len(all_leaf_chunks)} chunks / {len(DOCUMENTS)} docs)")
-    print(f"  Algorithm 2 (dense embedding)     : PASSED ({E.shape[0]}x{E.shape[1]} matrix, "
+    print(f"  Dense embedding                   : PASSED ({E.shape[0]}x{E.shape[1]} matrix, "
           f"{embedder.stats.backend.split('::')[0]})")
     print(f"  Algorithm 3 (HAT construction)    : PASSED ({len(builder.nodes)} nodes over "
           f"{len(counts)} levels, {builder.metrics.cross_links} alpha edges)")
@@ -137,7 +140,7 @@ def _cli():
     p.add_argument("--summarizer", choices=["auto", "llm", "extractive"], default="auto")
     p.add_argument("--summarizer-model", default=DEFAULT_SUMMARIZER_MODEL)
     p.add_argument("--model", default=DEFAULT_MODEL)
-    p.add_argument("--device", default="auto", help="auto | cuda | cuda:0 | cpu")
+    p.add_argument("--device", default="auto", help="cpu is the default; cuda used only if present")
     p.add_argument("--show-leaves", type=int, default=3)
     args = p.parse_args()
     if args.alpha != "auto":

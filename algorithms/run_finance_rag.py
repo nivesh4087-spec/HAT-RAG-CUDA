@@ -1,14 +1,15 @@
 """
 OFFLINE / KNOWLEDGE CONSTRUCTION PIPELINE -- CORPORATE FINANCE CORPUS
 
-Document corpus -> Algorithm 1 (chunking) -> Algorithm 2 (GPU dense embedding)
--> Algorithm 3 (HAT construction) -> serialized Hierarchical Abstract Tree H.
+Document corpus -> Algorithm 1 (chunking) -> Algorithm 3 (HAT construction)
+-> serialized Hierarchical Abstract Tree H.
 
-Indexing only: no query-time retrieval in this pipeline.
+Indexing only: no query-time retrieval in this pipeline. Runs on CPU; --device
+cuda is accepted but not required.
 
     python algorithms/run_finance_rag.py                    # abstractive LLM abstracts
     python algorithms/run_finance_rag.py --summarizer extractive   # fast, no LLM
-    python algorithms/run_finance_rag.py --device cuda --alpha 0.65
+    python algorithms/run_finance_rag.py --alpha 0.65
 """
 
 import argparse
@@ -21,10 +22,12 @@ current_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(current_dir))
 
 from algo1_document_chunking import DocumentChunker
-from algo2_gpu_dense_embedding import DEFAULT_MODEL, DenseEmbeddingModel, describe_device
 from algo3_hierarchical_abstract_tree import (
+    DEFAULT_MODEL,
     DEFAULT_SUMMARIZER_MODEL,
+    DenseEmbeddingModel,
     HierarchicalAbstractTreeBuilder,
+    describe_device,
 )
 
 
@@ -40,7 +43,7 @@ def load_finance_corpus():
 def run_finance_pipeline(args):
     print("=" * 100)
     print(" HAT-RAG OFFLINE KNOWLEDGE CONSTRUCTION -- FINANCIAL & ACCOUNTING CORPUS")
-    print(" Algorithm 1 (chunking) -> Algorithm 2 (dense embedding) -> Algorithm 3 (HAT)")
+    print(" Algorithm 1 (document chunking) -> Algorithm 3 (hierarchical abstract tree)")
     print("=" * 100)
 
     corpus = load_finance_corpus()
@@ -70,7 +73,7 @@ def run_finance_pipeline(args):
 
     # ---------------------------------------------------------------- PHASE 2
     print("\n" + "-" * 100)
-    print("[PHASE 2] ALGORITHM 2: GPU-ACCELERATED DENSE EMBEDDING -> matrix E")
+    print("[PHASE 2] DENSE EMBEDDING OF C -> matrix E (leaf vectors for Algorithm 3)")
     embedder = DenseEmbeddingModel(model_name=args.model, device=args.device)
     print(f"  {embedder.banner()}")
     E = embedder.encode_chunks(all_chunks)
@@ -146,7 +149,7 @@ def _cli():
     p.add_argument("--summarizer", choices=["auto", "llm", "extractive"], default="auto")
     p.add_argument("--summarizer-model", default=DEFAULT_SUMMARIZER_MODEL)
     p.add_argument("--model", default=DEFAULT_MODEL, help="sentence-transformers embedding model")
-    p.add_argument("--device", default="auto", help="auto | cuda | cuda:0 | cpu")
+    p.add_argument("--device", default="auto", help="cpu is the default; cuda used only if present")
     p.add_argument("--show-leaves", type=int, default=2, help="leaf chunks printed per parent")
     p.add_argument("--no-embeddings", action="store_true", help="omit vectors from the JSON export")
     args = p.parse_args()
