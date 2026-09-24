@@ -19,7 +19,7 @@ This module covers knowledge construction only -- no query-time retrieval.
 
 import os
 
-# Keep the transformer stack quiet and off the TensorFlow import path.
+
 os.environ.setdefault("USE_TF", "0")
 os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
 os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")

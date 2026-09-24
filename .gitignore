@@ -15,7 +15,7 @@ md/
 # Local paper drafts / journal templates (IBERAMIA submission assets)
 IBERAMIA/
 iberamia/
-
+srs/
 # SuperFRI template & figure generation
 superfri-template/
 build_paper_figures.py
