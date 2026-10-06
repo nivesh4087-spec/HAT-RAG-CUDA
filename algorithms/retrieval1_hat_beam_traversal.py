@@ -45,6 +45,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 
 import numpy as np
+from scipy import sparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -95,21 +96,27 @@ class RetrievalResult:
 _STANDARD_RE = re.compile(r"\bASC\s?\d{3}\b")
 _ACRONYM_RE = re.compile(r"\b[A-Z][A-Z0-9&]{1,}[A-Z0-9]\b|\bR&D\b")
 _PROPER_RE = re.compile(r"\b[A-Z][a-zA-Z]+(?:[\s-][A-Z][a-zA-Z]+)*\b")
+_MIDCAP_RE = re.compile(r"(?<=[a-z0-9,;:(]\s)[A-Z][a-zA-Z]+")
 
 
 class EntityIndex:
     """
     Accounting standards, acronyms and proper-noun phrases per leaf, with an
-    inverted index. A capitalised word only counts if the corpus never uses it
-    in lower case, which drops sentence-initial 'Total' or 'Revenue' without a
-    hand-written stoplist. Entities found in more than half the leaves link
-    everything to everything and are dropped; the rest carry an IDF weight.
+    inverted index. No hand-written stoplist: a capitalised word is dropped if
+    the corpus ever uses it in lower case, and a lone capitalised word must
+    also appear capitalised mid-sentence somewhere -- so sentence-initial
+    'Total', 'Operating' or 'Goodwill' never become entities, while 'Azure',
+    'Megapack' or a multi-word name like 'Project A76' do. Entities found in
+    more than half the leaves link everything to everything and are dropped;
+    the rest carry an IDF weight.
     """
 
     def __init__(self, texts: Dict[int, str]):
         self.common: Set[str] = set()
+        self.midcaps: Set[str] = set()
         for t in texts.values():
             self.common.update(re.findall(r"\b[a-z][a-z-]+\b", t))
+            self.midcaps.update(w.lower() for w in _MIDCAP_RE.findall(t))
         self.of: Dict[int, Set[str]] = {i: self.extract(t) for i, t in texts.items()}
 
         n = max(1, len(texts))
@@ -128,12 +135,30 @@ class EntityIndex:
             if phrase == "ASC":
                 continue
             words = [w for w in phrase.split() if w.lower() not in self.common]
+            if len(phrase.split()) == 1 and words and words[0].lower() not in self.midcaps:
+                continue                             # only ever seen opening a sentence
             if words:
                 ents.add(" ".join(words).lower())
         return ents
 
-    def shared_weight(self, a: int, b: int) -> float:
-        return sum(self.idf.get(e, 0.0) for e in self.of.get(a, set()) & self.of.get(b, set()))
+    def pair_weights(self) -> Dict[Tuple[int, int], float]:
+        """IDF-weighted shared-entity weight for every pair of leaves that share one."""
+        pairs: Dict[Tuple[int, int], float] = {}
+        for e, post in self.postings.items():
+            for x in range(len(post)):
+                for y in range(x + 1, len(post)):
+                    key = (min(post[x], post[y]), max(post[x], post[y]))
+                    pairs[key] = pairs.get(key, 0.0) + self.idf[e]
+        return pairs
+
+
+def symmetric_matrix(pairs: Dict[Tuple[int, int], float], n: int) -> sparse.csr_matrix:
+    rows, cols, vals = [], [], []
+    for (a, b), w in pairs.items():
+        rows += [a, b]
+        cols += [b, a]
+        vals += [w, w]
+    return sparse.csr_matrix((vals, (rows, cols)), shape=(n, n), dtype=np.float64)
 
 
 # ----------------------------------------------------------------------------
@@ -193,6 +218,8 @@ class TreeIndex:
                 if j is not None:
                     self.sequence[i].append(j)
         self._entities: Optional[EntityIndex] = None
+        self._edges: Optional[Dict[str, sparse.csr_matrix]] = None
+        self.edge_build_seconds = 0.0
 
     # -- construction --------------------------------------------------------
     @classmethod
@@ -225,6 +252,22 @@ class TreeIndex:
         if self._entities is None:
             self._entities = EntityIndex({int(i): self.nodes[i].text for i in self.leaf_idx})
         return self._entities
+
+    @property
+    def edges(self) -> Dict[str, sparse.csr_matrix]:
+        """H's explicit edges as symmetric node x node matrices, built once:
+        'alpha' (cross-child links, weight = cosine), 'sequence' (reading order,
+        weight 1) and 'entity' (shared entities, IDF-weighted)."""
+        if self._edges is None:
+            t0 = time.perf_counter()
+            seq = {(min(i, j), max(i, j)): 1.0 for i in self.leaf_idx for j in self.sequence[int(i)]}
+            self._edges = {
+                "alpha": symmetric_matrix(self.alpha_pairs, self.n_nodes),
+                "sequence": symmetric_matrix(seq, self.n_nodes),
+                "entity": symmetric_matrix(self.entities.pair_weights(), self.n_nodes),
+            }
+            self.edge_build_seconds = time.perf_counter() - t0
+        return self._edges
 
     def depth(self) -> int:
         return int(self.level.max()) if len(self.level) else 0
@@ -285,15 +328,20 @@ def diversity_rank(pool: Sequence[int], sims: Dict[int, float], doc_of: Sequence
 
 
 def personalized_pagerank(W: np.ndarray, personal: np.ndarray, damping: float = 0.5,
-                          iterations: int = 30) -> np.ndarray:
-    """r = (1 - d) p + d P^T r over a symmetric weight matrix W."""
+                          tol: float = 1e-9, max_iter: int = 100) -> np.ndarray:
+    """Fixed point of r = (1 - d) p + d P^T r over a symmetric weight matrix W,
+    iterated until the L1 change drops below tol (the error shrinks by d per step)."""
     out = W.sum(axis=1, keepdims=True)
     out[out == 0.0] = 1.0
     PT = (W / out).T
     p = personal / personal.sum()
-    r = p.copy()
-    for _ in range(iterations):
-        r = (1.0 - damping) * p + damping * (PT @ r)
+    restart = (1.0 - damping) * p
+    r = p
+    for _ in range(max_iter):
+        nxt = restart + damping * (PT @ r)
+        if np.abs(nxt - r).sum() < tol:
+            return nxt
+        r = nxt
     return r
 
 
@@ -364,35 +412,30 @@ class HATBeamRetriever:
         self.damping = damping
         self.n_seeds = n_seeds
         self.w_sequence = w_sequence
-        if entity_seeding or ranking == "ppr":
+        self._graph = None
+        if entity_seeding:
             _ = index.entities                       # build the inverted index up front
+        if ranking == "ppr":                         # H's edges as one weighted matrix, built once
+            edges = index.edges
+            graph = edges["entity"].copy()
+            if follow_alpha:
+                graph = graph + edges["alpha"]
+            if follow_sequence:
+                graph = graph + w_sequence * edges["sequence"]
+            # dense slicing is far cheaper per query while the matrix fits comfortably
+            self._graph = graph.toarray() if graph.shape[0] <= 4096 else graph.tocsr()
 
     def retrieve(self, query: str, k: int = 5) -> RetrievalResult:
         return self.search(self.index.encode_query(query), k=k, query=query)
 
     # -- step 4: graph propagation over the candidate subgraph ---------------
     def _propagate(self, pool: List[int], sims: Dict[int, float], linked: Set[int]) -> Dict[int, float]:
-        idx = self.index
-        ents = idx.entities
         at = {i: n for n, i in enumerate(pool)}
         m = len(pool)
-        W = np.zeros((m, m), dtype=np.float64)
-        if self.follow_alpha:
-            for (a, b), w in idx.alpha_pairs.items():
-                if a in at and b in at:
-                    W[at[a], at[b]] += w
-                    W[at[b], at[a]] += w
-        if self.follow_sequence:
-            for i in pool:
-                for j in idx.sequence[i]:
-                    if j in at:
-                        W[at[i], at[j]] += self.w_sequence
-        for x in range(m):
-            for y in range(x + 1, m):
-                w = ents.shared_weight(pool[x], pool[y])
-                if w:
-                    W[x, y] += w
-                    W[y, x] += w
+        if isinstance(self._graph, np.ndarray):
+            W = self._graph[np.ix_(pool, pool)]
+        else:
+            W = self._graph[pool][:, pool].toarray()
 
         personal = np.zeros(m, dtype=np.float64)
         for i in sorted(pool, key=lambda i: -sims[i])[: self.n_seeds]:
