@@ -1,0 +1,36 @@
+{
+  "rule": "Decision rule, fixed before the final run:\n      score = 1/2 * finance recall@k + 1/2 * mean synthetic recall@k\n      within one point of each other, the method that scores the smaller\n      fraction of the corpus per query ranks higher.",
+  "table": {
+    "HAT-RAG": {
+      "finance_recall": 0.8503205128205129,
+      "synthetic_recall": 0.9668116605616606,
+      "score": 0.9085660866910867,
+      "cost_fraction": 0.3857482587316518
+    },
+    "Flat dense": {
+      "finance_recall": 0.8387820512820513,
+      "synthetic_recall": 0.8864545177045177,
+      "score": 0.8626182844932845,
+      "cost_fraction": 1.0
+    },
+    "RAPTOR collapsed": {
+      "finance_recall": 0.746474358974359,
+      "synthetic_recall": 0.85130772005772,
+      "score": 0.7988910395160396,
+      "cost_fraction": 1.1790046451191392
+    },
+    "Graph PPR": {
+      "finance_recall": 0.8342948717948718,
+      "synthetic_recall": 0.9381118881118882,
+      "score": 0.8862033799533799,
+      "cost_fraction": 1.0
+    }
+  },
+  "ranking": [
+    "HAT-RAG",
+    "Graph PPR",
+    "Flat dense",
+    "RAPTOR collapsed"
+  ],
+  "best": "HAT-RAG"
+}
