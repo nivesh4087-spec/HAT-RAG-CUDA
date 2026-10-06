@@ -1,8 +1,9 @@
-# HAT-RAG — Offline / Knowledge Construction
+# HAT-RAG — Knowledge Construction and Retrieval
 
-Standalone implementation of the **indexing half** of the Hierarchical Abstract Tree
-for Cross-Document RAG (HAT-RAG). This directory builds the tree `H` from a document
-corpus. **Query-time retrieval is deliberately not implemented here.**
+Standalone implementation of the Hierarchical Abstract Tree for Cross-Document RAG
+(HAT-RAG). This directory builds the tree `H` from a document corpus (offline half), and
+retrieves evidence from it with four interchangeable retrieval algorithms (online half),
+compared head to head in [`compare-algos/`](./compare-algos/).
 
 ```
 DOCUMENT CORPUS
@@ -14,10 +15,14 @@ DOCUMENT CORPUS
       +--> ALGORITHM 3: HAT construction    -> tree H
                 (k-means clustering -> cluster abstracts -> LLM summarisation)
                 + explicit alpha cross-child relationships
+      |
+QUERY +--> RETRIEVAL 1 (Algorithm 4): HAT beam traversal + graph propagation -> evidence R
+           (retrieval 2-4: flat dense, RAPTOR collapsed tree, graph PageRank -- baselines)
 ```
 
-Two algorithm files only: chunking and tree construction. The dense encoder lives
-inside Algorithm 3 rather than in a module of its own.
+The dense encoder lives inside Algorithm 3 rather than in a module of its own. The
+query-time index (`TreeIndex`) lives in retrieval 1 and is shared by all four
+retrievers, so every method scores the same vectors.
 
 ---
 
@@ -51,6 +56,11 @@ kernel-level tuning, not a rewrite. Until then `--device cpu` is the working def
 | [`run_demo.py`](./run_demo.py) | Full pipeline on a small engineering-research corpus. |
 | [`run_finance_rag.py`](./run_finance_rag.py) | Full pipeline on the SEC 10-K corpus in [`../finance_data/reports/`](../finance_data/reports/) (AAPL, MSFT, NVDA, AMZN, TSLA). |
 | `hat_tree_structure.json` / `hat_finance_tree_structure.json` | Serialized trees (nodes, embeddings, cross-links, build metrics). |
+| [`retrieval1_hat_beam_traversal.py`](./retrieval1_hat_beam_traversal.py) | **Retrieval 1 / Algorithm 4 (ours, best of the four).** Beam descent of `H`, entity linking, expansion along alpha and reading-order edges, personalised PageRank over the candidate subgraph, relevance-gated diversity. Also holds the shared `TreeIndex`. |
+| [`retrieval2_flat_dense.py`](./retrieval2_flat_dense.py) | **Retrieval 2.** Flat dense baseline: cosine against every leaf. |
+| [`retrieval3_raptor_collapsed_tree.py`](./retrieval3_raptor_collapsed_tree.py) | **Retrieval 3.** RAPTOR-style collapsed tree: every level pooled, cosine top-k. |
+| [`retrieval4_graph_ppr.py`](./retrieval4_graph_ppr.py) | **Retrieval 4.** Entity-graph baseline: personalised PageRank over a whole-corpus passage graph. |
+| [`compare-algos/`](./compare-algos/) | Benchmark queries, evaluation harness, results, figures and the comparison report. |
 
 ---
 
@@ -62,10 +72,17 @@ python algorithms/run_finance_rag.py --summarizer extractive   # ~1s, no LLM
 python algorithms/run_demo.py                                  # engineering corpus
 python algorithms/algo1_document_chunking.py                   # Algorithm 1 alone
 python algorithms/algo3_hierarchical_abstract_tree.py          # Algorithm 3 alone
+
+python algorithms/retrieval1_hat_beam_traversal.py --context   # retrieve from the finance tree
+python algorithms/retrieval1_hat_beam_traversal.py --query "How does Tesla set its warranty reserves?"
+python algorithms/retrieval2_flat_dense.py                     # each baseline the same way
+python algorithms/compare-algos/run_comparison.py              # full comparison -> results/
+python algorithms/compare-algos/make_figures.py                # -> figures/, results/tables.md
 ```
 
 Useful flags (both runners): `--levels`, `--children`, `--alpha`, `--max-cross-links`,
 `--summarizer {auto,llm,extractive}`, `--model`, `--device`, `--chunk-size`, `--chunk-overlap`.
+Retrieval 1: `--beam`, `--lam`, `-k`, `--paper-spec` (the original Algorithm 4), `--context`.
 
 ---
 
@@ -108,8 +125,19 @@ embed 0.33s | cluster 0.06s | summarize 43.8s (LLM) | crosslink 0.01s | total 44
 
 ---
 
+## Retrieval — four algorithms compared
+
+| Rank | Retriever | Finance recall@5 | Synthetic recall@5 (8–128 docs) | Share of corpus scored |
+|---:|---|---:|---:|---:|
+| 1 | HAT-RAG (retrieval 1) | 85.0% | 96.7% | 39% |
+| 2 | Graph PPR (retrieval 4) | 83.4% | 93.8% | 100% |
+| 3 | Flat dense (retrieval 2) | 83.9% | 88.6% | 100% |
+| 4 | RAPTOR collapsed (retrieval 3) | 74.6% | 85.1% | 118% |
+
+Method, figures, ablations and limitations: [`compare-algos/README.md`](./compare-algos/README.md).
+
 ## Scope
 
-Implemented: corpus → chunks → embeddings → hierarchical abstract tree, persisted to JSON.
-Not implemented (by design): query embedding, tree traversal, retrieval, reranking and
-answer generation.
+Implemented: corpus → chunks → embeddings → hierarchical abstract tree, persisted to JSON;
+query → evidence set with provenance (`assemble_context` builds the generator context).
+Not implemented yet: answer generation from the retrieved context.
