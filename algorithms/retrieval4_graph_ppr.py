@@ -12,19 +12,19 @@ spread along the graph:
                        + reading-order adjacency  (chunk i <-> i+1 of the same filing)
     online  : q_hat -> cosine against all N leaves -> top seeds
               + passages that mention an entity named in the query
-              -> personalised PageRank (damping d) -> top-k by PageRank mass
+              -> personalised PageRank (damping d) over the WHOLE graph
+              -> top-k by PageRank mass
 
-Same leaf vectors and encoder as the other three retrievers. Cost per query is
-N cosine scores plus the walk over the whole graph; building the graph is a
-one-off O(N^2) similarity pass.
+Same leaf vectors, encoder and entity extractor as the other retrievers. Cost
+per query is N cosine scores plus a walk over the whole graph; building the
+graph is a one-off O(N^2) similarity pass.
 """
 
 import argparse
-import re
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict
 
 import numpy as np
 from scipy import sparse
@@ -40,43 +40,6 @@ from retrieval1_hat_beam_traversal import (
 )
 
 
-# ----------------------------------------------------------------------------
-# Lightweight entity extraction
-# ----------------------------------------------------------------------------
-_STANDARD_RE = re.compile(r"\bASC\s?\d{3}\b")
-_ACRONYM_RE = re.compile(r"\b[A-Z][A-Z0-9&]{1,}[A-Z0-9]\b|\bR&D\b")
-_PROPER_RE = re.compile(r"\b[A-Z][a-zA-Z]+(?:[\s-][A-Z][a-zA-Z]+)*\b")
-
-
-class EntityExtractor:
-    """
-    Pulls accounting standards, acronyms and proper-noun phrases out of text.
-    A capitalised word only counts as an entity if the corpus never uses it in
-    lower case -- that drops sentence-initial words like 'Total' or 'Revenue'
-    without a hand-written stoplist.
-    """
-
-    def __init__(self, corpus_texts: List[str]):
-        self.common: Set[str] = set()
-        for t in corpus_texts:
-            self.common.update(w for w in re.findall(r"\b[a-z][a-z-]+\b", t))
-
-    def __call__(self, text: str) -> Set[str]:
-        ents: Set[str] = set()
-        ents.update(m.replace(" ", "").lower() for m in _STANDARD_RE.findall(text))
-        ents.update(m.lower() for m in _ACRONYM_RE.findall(text) if m != "ASC")
-        for phrase in _PROPER_RE.findall(text):
-            if phrase == "ASC":
-                continue
-            words = [w for w in phrase.split() if w.lower() not in self.common]
-            if words:
-                ents.add(" ".join(words).lower())
-        return ents
-
-
-# ============================================================================
-# Graph retriever
-# ============================================================================
 class GraphPPRRetriever:
     """
     Parameters
@@ -100,19 +63,10 @@ class GraphPPRRetriever:
         self.leaves = index.leaf_idx
         t0 = time.perf_counter()
 
-        texts = [index.text(i) for i in self.leaves]
         n = len(self.leaves)
-        self.extract = EntityExtractor(texts)
-        self.entities: List[Set[str]] = [self.extract(t) for t in texts]
-        self.entity_postings: Dict[str, List[int]] = {}
-        for j, ents in enumerate(self.entities):
-            for e in ents:
-                self.entity_postings.setdefault(e, []).append(j)
-        # an entity in half the corpus links everything to everything: drop it,
-        # and weight the rest by IDF so rare shared entities count for more
-        self.idf = {e: float(np.log(n / len(p))) for e, p in self.entity_postings.items()
-                    if 1 < len(p) <= max(2, n // 2)}
-
+        local = {int(i): j for j, i in enumerate(self.leaves)}
+        self.local = local
+        self.ents = index.entities
         edges: Dict[tuple, float] = {}
 
         def add(a: int, b: int, w: float):
@@ -120,12 +74,13 @@ class GraphPPRRetriever:
                 key = (min(a, b), max(a, b))
                 edges[key] = edges.get(key, 0.0) + w
 
-        # entity edges: passages that name the same entity
-        for e, w in self.idf.items():
-            post = self.entity_postings[e]
+        # entity edges: passages that name the same entity, IDF-weighted
+        for e, post in self.ents.postings.items():
+            if len(post) < 2:
+                continue
             for x in range(len(post)):
                 for y in range(x + 1, len(post)):
-                    add(post[x], post[y], w_entity * w)
+                    add(local[post[x]], local[post[y]], w_entity * self.ents.idf[e])
         # semantic edges: top-m neighbours above tau
         E = index.E[self.leaves]
         sim = E @ E.T
@@ -136,12 +91,10 @@ class GraphPPRRetriever:
                 if sim[a, b] >= tau:
                     add(a, int(b), w_semantic * float(sim[a, b]))
         # reading-order edges inside one filing
-        pos = {(index.doc[i], index.nodes[i].metadata.get("chunk_index")): j
-               for j, i in enumerate(self.leaves)}
-        for (doc, ci), j in pos.items():
-            nxt = pos.get((doc, ci + 1)) if ci is not None else None
-            if nxt is not None:
-                add(j, nxt, w_sequence)
+        for i in self.leaves:
+            for j in index.sequence[int(i)]:
+                if local[int(i)] < local[j]:
+                    add(local[int(i)], local[j], w_sequence)
 
         rows, cols, vals = [], [], []
         for (a, b), w in edges.items():
@@ -168,8 +121,9 @@ class GraphPPRRetriever:
         personal[seeds] = np.clip(sims[seeds], 1e-6, None)
         # entity linking: passages naming an entity that the query names
         linked = 0
-        for e in self.extract(query):
-            for j in self.entity_postings.get(e, []):
+        for e in self.ents.extract(query):
+            for i in self.ents.postings.get(e, []):
+                j = self.local[i]
                 personal[j] += max(float(sims[j]), 1e-6)
                 linked += 1
         personal /= personal.sum()
@@ -209,7 +163,7 @@ if __name__ == "__main__":
     index = TreeIndex.from_json(args.tree, device=args.device)
     retriever = GraphPPRRetriever(index)
     print(f"[Graph] {len(retriever.leaves)} passages, {retriever.n_edges} edges, "
-          f"{len(retriever.entity_postings)} distinct entities, built in {retriever.build_seconds:.3f}s")
+          f"{len(retriever.ents.postings)} distinct entities, built in {retriever.build_seconds:.3f}s")
     for q in args.query or DEMO_QUERIES:
         print_result(index, retriever.retrieve(q, k=args.k))
     print("=" * 100)

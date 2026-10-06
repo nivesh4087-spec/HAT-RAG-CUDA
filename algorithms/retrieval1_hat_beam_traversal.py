@@ -1,23 +1,32 @@
 """
-RETRIEVAL 1 (ALGORITHM 4): HAT BEAM-GUIDED TOP-DOWN RETRIEVAL  -- our method
+RETRIEVAL 1 (ALGORITHM 4): HAT BEAM TRAVERSAL + GRAPH PROPAGATION  -- our method
 
 Online half of HAT-RAG. Takes the tree H built by Algorithm 3 and answers a
-query by descending it instead of scoring every chunk:
+query without scoring every chunk:
 
     query q  -> same dense encoder as the tree -> q_hat
-    ROOT     -> children -> keep the top-beta abstracts -> their children -> ... -> leaves
-             + alpha cross-child edges followed sideways, so related material
-               under a different parent is reachable without climbing back up
-             + diversity-aware ranking  score = sim(q, v) + lambda * [doc(v) not yet in R]
+    1. descend    ROOT -> children -> keep the top-beta abstracts -> ... -> leaves
+                  (alpha edges let the beam step sideways to an abstract under
+                  a different parent)
+    2. link       leaves naming an entity the query names (ASC 842, AWS, a
+                  project code ...) join the pool through an inverted index
+    3. expand     from the strongest leaves along H's explicit leaf edges:
+                  alpha cross-child edges + reading order inside a filing
+    4. propagate  personalised PageRank over the candidate subgraph, using
+                  H's own edges (alpha, reading order, shared entities)
+    5. select     relevance-gated diversity: a filing not yet in R earns a
+                  bonus in proportion to how relevant that filing is
     -> evidence set R (top-k leaves) -> context C(R) with provenance markers
 
-Scoring is lazy: a candidate set is only scored when a decision depends on it
-(pruning a level wider than the beam, or ranking leaves), so the nodes-scored
-count reflects what the traversal actually had to look at.
+Only the candidates the descent reaches are ever scored, so the cost stays
+sub-linear in the corpus size; ranking quality comes from the graph signal
+that H already stores. Steps 2-5 were added after the comparison in
+compare-algos/ showed the paper's plain doc-novelty bonus ranked last; pass
+**PAPER_SPEC to get the original beam + alpha + bonus version back.
 
-This module also holds the query-time index (TreeIndex) and the result type
-that the three comparison retrievers (retrieval2..4) reuse, so every method
-scores the exact same vectors produced by the exact same encoder.
+This module also holds the query-time index (TreeIndex), the entity index and
+the result type that the three comparison retrievers (retrieval2..4) reuse, so
+every method scores the exact same vectors produced by the exact same encoder.
 """
 
 import os
@@ -28,11 +37,12 @@ os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 import argparse
+import re
 import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Set, Union
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 
 import numpy as np
 
@@ -80,14 +90,61 @@ class RetrievalResult:
 
 
 # ----------------------------------------------------------------------------
+# Entity index over the leaf chunks
+# ----------------------------------------------------------------------------
+_STANDARD_RE = re.compile(r"\bASC\s?\d{3}\b")
+_ACRONYM_RE = re.compile(r"\b[A-Z][A-Z0-9&]{1,}[A-Z0-9]\b|\bR&D\b")
+_PROPER_RE = re.compile(r"\b[A-Z][a-zA-Z]+(?:[\s-][A-Z][a-zA-Z]+)*\b")
+
+
+class EntityIndex:
+    """
+    Accounting standards, acronyms and proper-noun phrases per leaf, with an
+    inverted index. A capitalised word only counts if the corpus never uses it
+    in lower case, which drops sentence-initial 'Total' or 'Revenue' without a
+    hand-written stoplist. Entities found in more than half the leaves link
+    everything to everything and are dropped; the rest carry an IDF weight.
+    """
+
+    def __init__(self, texts: Dict[int, str]):
+        self.common: Set[str] = set()
+        for t in texts.values():
+            self.common.update(re.findall(r"\b[a-z][a-z-]+\b", t))
+        self.of: Dict[int, Set[str]] = {i: self.extract(t) for i, t in texts.items()}
+
+        n = max(1, len(texts))
+        postings: Dict[str, List[int]] = {}
+        for i, ents in self.of.items():
+            for e in ents:
+                postings.setdefault(e, []).append(i)
+        self.postings = {e: p for e, p in postings.items() if len(p) <= max(2, n // 2)}
+        self.idf = {e: float(np.log(n / len(p))) for e, p in self.postings.items()}
+
+    def extract(self, text: str) -> Set[str]:
+        ents: Set[str] = set()
+        ents.update(m.replace(" ", "").lower() for m in _STANDARD_RE.findall(text))
+        ents.update(m.lower() for m in _ACRONYM_RE.findall(text) if m != "ASC")
+        for phrase in _PROPER_RE.findall(text):
+            if phrase == "ASC":
+                continue
+            words = [w for w in phrase.split() if w.lower() not in self.common]
+            if words:
+                ents.add(" ".join(words).lower())
+        return ents
+
+    def shared_weight(self, a: int, b: int) -> float:
+        return sum(self.idf.get(e, 0.0) for e in self.of.get(a, set()) & self.of.get(b, set()))
+
+
+# ----------------------------------------------------------------------------
 # Query-time view of a persisted tree
 # ----------------------------------------------------------------------------
 class TreeIndex:
     """
     Flattens the TreeNode graph into arrays a retriever can score against:
     one L2-normalised embedding row per node, levels, parent/child index lists,
-    alpha cross-link adjacency and provenance. Built once, shared by every
-    retriever so they all see identical vectors.
+    alpha cross-link adjacency, reading-order adjacency and provenance. Built
+    once, shared by every retriever so they all see identical vectors.
     """
 
     def __init__(self, nodes: Dict[str, TreeNode], root_ids: Sequence[str],
@@ -114,8 +171,28 @@ class TreeIndex:
             [self.pos[l["target_id"]] for l in n.cross_links if l["target_id"] in self.pos]
             for n in self.nodes
         ]
+        self.alpha_pairs: Dict[Tuple[int, int], float] = {}
+        for i, n in enumerate(self.nodes):
+            for l in n.cross_links:
+                j = self.pos.get(l["target_id"])
+                if j is not None:
+                    self.alpha_pairs[(min(i, j), max(i, j))] = float(l["score"])
         self.doc: List[Optional[str]] = [n.doc_id for n in self.nodes]
         self.docs: List[List[str]] = [n.source_docs for n in self.nodes]
+
+        # reading-order neighbours: chunk i-1 and i+1 of the same document,
+        # recovered from the provenance every leaf already carries
+        slot = {(n.doc_id, n.metadata.get("chunk_index")): i
+                for i, n in enumerate(self.nodes) if n.level == 0}
+        self.sequence: List[List[int]] = [[] for _ in self.nodes]
+        for (doc, ci), i in slot.items():
+            if ci is None:
+                continue
+            for nb in (ci - 1, ci + 1):
+                j = slot.get((doc, nb))
+                if j is not None:
+                    self.sequence[i].append(j)
+        self._entities: Optional[EntityIndex] = None
 
     # -- construction --------------------------------------------------------
     @classmethod
@@ -141,6 +218,13 @@ class TreeIndex:
     @property
     def n_leaves(self) -> int:
         return int(self.is_leaf.sum())
+
+    @property
+    def entities(self) -> EntityIndex:
+        """Built on first use, once per index (offline cost, like the alpha edges)."""
+        if self._entities is None:
+            self._entities = EntityIndex({int(i): self.nodes[i].text for i in self.leaf_idx})
+        return self._entities
 
     def depth(self) -> int:
         return int(self.level.max()) if len(self.level) else 0
@@ -174,21 +258,43 @@ class TreeIndex:
 
 
 # ----------------------------------------------------------------------------
-# Diversity-aware ranking (maximal marginal relevance over provenance)
+# Ranking helpers
 # ----------------------------------------------------------------------------
 def diversity_rank(pool: Sequence[int], sims: Dict[int, float], doc_of: Sequence[Optional[str]],
-                   k: int, lam: float) -> List[int]:
-    """Greedy R <- R + argmax sim(q, v) + lam * [doc(v) not in docs(R)]."""
+                   k: int, lam: float, doc_weight: Optional[Dict[Optional[str], float]] = None) -> List[int]:
+    """Greedy R <- R + argmax s(v) + lam * w(doc(v)) * [doc(v) not in docs(R)].
+
+    w = 1 everywhere is the paper's plain provenance bonus; passing doc_weight
+    gates it by how relevant each document is, so an off-topic filing earns no bonus."""
     remaining = list(pool)
     chosen: List[int] = []
     seen: Set[str] = set()
+
+    def bonus(i: int) -> float:
+        if doc_of[i] in seen:
+            return 0.0
+        return lam * (doc_weight.get(doc_of[i], 0.0) if doc_weight is not None else 1.0)
+
     while remaining and len(chosen) < k:
-        best = max(remaining, key=lambda i: sims[i] + (lam if doc_of[i] not in seen else 0.0))
+        best = max(remaining, key=lambda i: sims[i] + bonus(i))
         chosen.append(best)
         remaining.remove(best)
         if doc_of[best] is not None:
             seen.add(doc_of[best])
     return chosen
+
+
+def personalized_pagerank(W: np.ndarray, personal: np.ndarray, damping: float = 0.5,
+                          iterations: int = 30) -> np.ndarray:
+    """r = (1 - d) p + d P^T r over a symmetric weight matrix W."""
+    out = W.sum(axis=1, keepdims=True)
+    out[out == 0.0] = 1.0
+    PT = (W / out).T
+    p = personal / personal.sum()
+    r = p.copy()
+    for _ in range(iterations):
+        r = (1.0 - damping) * p + damping * (PT @ r)
+    return r
 
 
 # ----------------------------------------------------------------------------
@@ -206,43 +312,97 @@ def assemble_context(index: TreeIndex, result: RetrievalResult, max_words: int =
             if not words:
                 break
         if node.level == 0:
-            tag = f"[{node.doc_id} | {node.metadata.get('section', '')} | sim={score:.3f}]"
+            tag = f"[{node.doc_id} | {node.metadata.get('section', '')} | score={score:.3f}]"
         else:
-            tag = f"[{node.node_id} abstract over {', '.join(node.source_docs)} | sim={score:.3f}]"
+            tag = f"[{node.node_id} abstract over {', '.join(node.source_docs)} | score={score:.3f}]"
         blocks.append(f"{tag}\n{' '.join(words)}")
         used += len(words)
     return "\n\n".join(blocks)
 
 
 # ============================================================================
-# HAT beam-guided top-down retriever
+# HAT retriever
 # ============================================================================
+# The original Algorithm 4 from the paper: beam descent, alpha expansion, a
+# flat +lambda bonus for any unseen document, ranking by cosine alone.
+PAPER_SPEC = dict(follow_sequence=False, entity_seeding=False, ranking="similarity",
+                  gate_diversity=False)
+
+
 class HATBeamRetriever:
     """
-    Beam-guided descent of the HAT with alpha cross-child hops and
-    diversity-aware leaf ranking.
-
     Parameters
     ----------
-    index        : TreeIndex over the persisted tree.
-    beam_width   : abstracts kept per level (beta). Wider = more recall, more cost.
-    diversity    : lambda, bonus for a leaf from a document not yet in R.
-    follow_alpha : follow the explicit alpha edges -- sideways between abstracts
-                   during the descent, and from the strongest leaves at the end.
+    index           : TreeIndex over the persisted tree.
+    beam_width      : abstracts kept per level (beta). Wider = more recall, more cost.
+    diversity       : lambda, bonus for a leaf from a filing not yet in R.
+    follow_alpha    : use the alpha edges (sideways during the descent, and in expansion).
+    follow_sequence : use reading-order edges between neighbouring chunks of a filing.
+    entity_seeding  : add the leaves that name an entity the query names.
+    ranking         : 'ppr' (personalised PageRank over the candidate subgraph)
+                      or 'similarity' (cosine only).
+    gate_diversity  : scale the lambda bonus by the filing's relevance.
+    damping         : PageRank continuation probability.
+    n_seeds         : top-cosine leaves that personalise the walk.
     """
 
-    name = "HAT-RAG (beam traversal)"
+    name = "HAT-RAG (beam traversal + graph propagation)"
     short = "HAT-RAG"
 
     def __init__(self, index: TreeIndex, beam_width: int = 3, diversity: float = 0.15,
-                 follow_alpha: bool = True):
+                 follow_alpha: bool = True, follow_sequence: bool = True,
+                 entity_seeding: bool = True, ranking: str = "ppr", gate_diversity: bool = True,
+                 damping: float = 0.5, n_seeds: int = 3, w_sequence: float = 0.5):
         self.index = index
         self.beam_width = max(1, int(beam_width))
         self.diversity = float(diversity)
         self.follow_alpha = follow_alpha
+        self.follow_sequence = follow_sequence
+        self.entity_seeding = entity_seeding
+        self.ranking = ranking
+        self.gate_diversity = gate_diversity
+        self.damping = damping
+        self.n_seeds = n_seeds
+        self.w_sequence = w_sequence
+        if entity_seeding or ranking == "ppr":
+            _ = index.entities                       # build the inverted index up front
 
     def retrieve(self, query: str, k: int = 5) -> RetrievalResult:
         return self.search(self.index.encode_query(query), k=k, query=query)
+
+    # -- step 4: graph propagation over the candidate subgraph ---------------
+    def _propagate(self, pool: List[int], sims: Dict[int, float], linked: Set[int]) -> Dict[int, float]:
+        idx = self.index
+        ents = idx.entities
+        at = {i: n for n, i in enumerate(pool)}
+        m = len(pool)
+        W = np.zeros((m, m), dtype=np.float64)
+        if self.follow_alpha:
+            for (a, b), w in idx.alpha_pairs.items():
+                if a in at and b in at:
+                    W[at[a], at[b]] += w
+                    W[at[b], at[a]] += w
+        if self.follow_sequence:
+            for i in pool:
+                for j in idx.sequence[i]:
+                    if j in at:
+                        W[at[i], at[j]] += self.w_sequence
+        for x in range(m):
+            for y in range(x + 1, m):
+                w = ents.shared_weight(pool[x], pool[y])
+                if w:
+                    W[x, y] += w
+                    W[y, x] += w
+
+        personal = np.zeros(m, dtype=np.float64)
+        for i in sorted(pool, key=lambda i: -sims[i])[: self.n_seeds]:
+            personal[at[i]] = max(sims[i], 1e-6)
+        for j in linked:
+            if j in at:
+                personal[at[j]] += max(sims[j], 1e-6)
+        r = personalized_pagerank(W, personal, self.damping)
+        top = float(r.max()) or 1.0
+        return {i: float(r[at[i]]) / top for i in pool}
 
     def search(self, q: np.ndarray, k: int = 5, query: str = "") -> RetrievalResult:
         t0 = time.perf_counter()
@@ -259,6 +419,7 @@ class HATBeamRetriever:
         def top(cands: Sequence[int], n: int) -> List[int]:
             return sorted(cands, key=lambda i: -sims[i])[:n]
 
+        # -- step 1: beam descent ------------------------------------------
         trace: List[str] = []
         frontier = list(idx.root_idx)
         if len(frontier) > beam:
@@ -293,34 +454,74 @@ class HATBeamRetriever:
                 score(inner)
                 frontier = top(inner, beam)
                 kept = ", ".join(f"{idx.label(i)}={sims[i]:.3f}" for i in frontier)
-                trace.append(f"{len(inner)} abstracts ({lateral} via alpha) + {len(leaves)} leaves scored "
-                             f"-> beam [{kept}]")
+                trace.append(f"descend: {len(inner)} abstracts ({lateral} via alpha) + {len(leaves)} leaves "
+                             f"scored -> beam [{kept}]")
             else:                                    # nothing to prune -> expand all, no scoring
                 frontier = inner
                 if inner or leaves:
-                    trace.append(f"{len(inner)} abstracts expanded unscored + {len(leaves)} leaves scored")
+                    trace.append(f"descend: {len(inner)} abstracts expanded unscored + {len(leaves)} leaves scored")
 
-        if self.follow_alpha and leaf_pool:
-            # alpha expansion from the strongest leaves: related passages that sit
-            # under a parent the beam did not keep (often another company's filing)
+        # -- step 2: entity linking through the inverted index ----------------
+        linked: Set[int] = set()
+        if self.entity_seeding and query:
+            ents = idx.entities
+            named = sorted(e for e in ents.extract(query) if e in ents.postings)
+            for e in named:
+                linked.update(ents.postings[e])
+            new = [j for j in linked if j not in visited]
+            visited.update(new)
+            score(new)
+            leaf_pool.extend(new)
+            if named:
+                trace.append(f"link: query names {named} -> {len(linked)} leaves ({len(new)} new)")
+
+        # -- step 3: expansion along H's leaf edges ----------------------------
+        if (self.follow_alpha or self.follow_sequence) and leaf_pool:
             extra: List[int] = []
+            n_alpha = n_seq = 0
             for u in top(leaf_pool, k):
-                for p in idx.alpha[u]:
+                links = []
+                if self.follow_alpha:
+                    links += [(p, "a") for p in idx.alpha[u]]
+                if self.follow_sequence:
+                    links += [(p, "s") for p in idx.sequence[u]]
+                for p, kind in links:
                     if p not in visited and idx.is_leaf[p]:
                         visited.add(p)
                         extra.append(p)
+                        n_alpha += kind == "a"
+                        n_seq += kind == "s"
             if extra:
                 score(extra)
                 leaf_pool.extend(extra)
-                trace.append(f"alpha expansion: +{len(extra)} leaves from cross-links")
+                trace.append(f"expand: +{n_alpha} leaves via alpha edges, +{n_seq} via reading order")
 
-        chosen = diversity_rank(leaf_pool, sims, idx.doc, k, self.diversity)
+        if not leaf_pool:
+            return RetrievalResult(self.short, query, [], [], len(sims), time.perf_counter() - t0, trace)
+
+        # -- step 4: rank ------------------------------------------------------
+        if self.ranking == "ppr":
+            ranked = self._propagate(leaf_pool, sims, linked)
+            trace.append(f"propagate: PageRank over {len(leaf_pool)} candidate leaves")
+        else:
+            ranked = {i: sims[i] for i in leaf_pool}
+
+        # -- step 5: relevance-gated diversity -----------------------------------
+        weight = None
+        if self.gate_diversity:
+            doc_best: Dict[Optional[str], float] = {}
+            for i in leaf_pool:
+                doc_best[idx.doc[i]] = max(doc_best.get(idx.doc[i], 0.0), ranked[i])
+            best = max(doc_best.values()) or 1.0
+            weight = {d: max(0.0, s) / best for d, s in doc_best.items()}
+
+        chosen = diversity_rank(leaf_pool, ranked, idx.doc, k, self.diversity, weight)
         elapsed = time.perf_counter() - t0
         return RetrievalResult(
             method=self.short,
             query=query,
             node_ids=[idx.ids[i] for i in chosen],
-            scores=[sims[i] for i in chosen],
+            scores=[ranked[i] for i in chosen],
             nodes_scored=len(sims),
             seconds=elapsed,
             trace=trace,
@@ -331,7 +532,7 @@ class HATBeamRetriever:
 # Demonstration
 # ============================================================================
 DEMO_QUERIES = [
-    "How does Tesla establish warranty reserves?",
+    "What were Apple's diluted earnings per share?",
     "Compare the research and development spending of Apple and NVIDIA.",
     "Which companies account for leases under ASC 842?",
 ]
@@ -352,19 +553,21 @@ def print_result(index: TreeIndex, res: RetrievalResult, show_context: bool = Fa
             print(f"     {line}")
 
 
-def run_hat_retrieval_demo(tree_path: str, queries: Sequence[str], k: int, beam: int,
-                           lam: float, follow_alpha: bool, device: str, show_context: bool):
+def run_hat_retrieval_demo(tree_path: str, queries: Sequence[str], k: int, beam: int, lam: float,
+                           paper_spec: bool, device: str, show_context: bool):
     print("=" * 100)
-    print(" RETRIEVAL 1 / ALGORITHM 4: HAT BEAM-GUIDED TOP-DOWN RETRIEVAL")
+    print(" RETRIEVAL 1 / ALGORITHM 4: HAT BEAM TRAVERSAL + GRAPH PROPAGATION")
     print("=" * 100)
     index = TreeIndex.from_json(tree_path, device=device)
     print(f"[Index] {Path(tree_path).name}: {index.n_nodes} nodes, {index.n_leaves} leaves, "
-          f"depth {index.depth()}, {sum(len(a) for a in index.alpha)} alpha edges")
+          f"depth {index.depth()}, {len(index.alpha_pairs)} alpha edges, "
+          f"{len(index.entities.postings)} indexed entities")
     print(f"[Encoder] {index.embedder.banner()}")
-    print(f"[Config] beam={beam} lambda={lam} k={k} alpha-edges={'on' if follow_alpha else 'off'} "
+    cfg = PAPER_SPEC if paper_spec else {}
+    retriever = HATBeamRetriever(index, beam_width=beam, diversity=lam, **cfg)
+    print(f"[Config] beam={beam} lambda={lam} k={k} ranking={retriever.ranking} "
+          f"entity-seeding={retriever.entity_seeding} reading-order={retriever.follow_sequence} "
           f"| scoring on {describe_device(index.device)}")
-
-    retriever = HATBeamRetriever(index, beam_width=beam, diversity=lam, follow_alpha=follow_alpha)
     for q in queries:
         print_result(index, retriever.retrieve(q, k=k), show_context=show_context)
     print("=" * 100)
@@ -372,13 +575,13 @@ def run_hat_retrieval_demo(tree_path: str, queries: Sequence[str], k: int, beam:
 
 
 def _cli():
-    p = argparse.ArgumentParser(description="Retrieval 1: HAT beam-guided top-down retrieval")
+    p = argparse.ArgumentParser(description="Retrieval 1: HAT beam traversal + graph propagation")
     p.add_argument("--tree", default=str(DEFAULT_TREE), help="tree JSON written by Algorithm 3")
     p.add_argument("--query", action="append", help="query text (repeatable); demo queries if omitted")
     p.add_argument("-k", type=int, default=5, help="evidence set size")
     p.add_argument("--beam", type=int, default=3, help="beam width beta")
     p.add_argument("--lam", type=float, default=0.15, help="diversity weight lambda")
-    p.add_argument("--no-alpha", action="store_true", help="ignore the alpha cross-child edges")
+    p.add_argument("--paper-spec", action="store_true", help="the original Algorithm 4 (no linking, no PageRank)")
     p.add_argument("--device", default="cpu", help="cpu | cuda")
     p.add_argument("--context", action="store_true", help="print the assembled context C(R)")
     return p.parse_args()
@@ -387,4 +590,4 @@ def _cli():
 if __name__ == "__main__":
     args = _cli()
     run_hat_retrieval_demo(args.tree, args.query or DEMO_QUERIES, args.k, args.beam, args.lam,
-                           not args.no_alpha, args.device, args.context)
+                           args.paper_spec, args.device, args.context)
