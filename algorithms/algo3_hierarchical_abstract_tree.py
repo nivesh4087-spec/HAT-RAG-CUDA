@@ -202,7 +202,8 @@ class DenseEmbeddingModel:
             if self.use_fp16:
                 self._backend = self._backend.half()
             self.stats.backend = f"sentence-transformers::{self.model_name}"
-            self.stats.dim = int(self._backend.get_sentence_embedding_dimension())
+            get_dim = getattr(self._backend, "get_embedding_dimension", None) or self._backend.get_sentence_embedding_dimension
+            self.stats.dim = int(get_dim())
         except Exception as exc:  # noqa: BLE001 - any load failure degrades gracefully
             if not self.allow_fallback:
                 raise

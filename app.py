@@ -14,6 +14,7 @@ from typing import Dict, Any, List, Optional, Tuple
 ROOT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT_DIR))
 sys.path.insert(0, str(ROOT_DIR / "algorithms"))
+sys.path.insert(0, str(ROOT_DIR / "algorithms" / "compare-algos"))
 
 import streamlit as st
 
@@ -583,7 +584,7 @@ def main():
                 st.info("Building 128-document Scaled Benchmark Tree...")
                 t0 = time.perf_counter()
                 try:
-                    from algorithms.compare_algos.synthetic_corpus import build_corpus
+                    from synthetic_corpus import build_corpus
                     from algorithms.algo1_document_chunking import DocumentChunker
                     from algorithms.algo3_hierarchical_abstract_tree import DenseEmbeddingModel, HierarchicalAbstractTreeBuilder
 
