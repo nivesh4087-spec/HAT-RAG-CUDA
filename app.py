@@ -19,7 +19,6 @@ import streamlit as st
 
 st.set_page_config(
     page_title="HAT-RAG: Financial RAG Intelligence Engine",
-    page_icon="💼",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -117,14 +116,14 @@ def get_company_badge_html(tag: str) -> str:
 
 
 def main():
-    st.markdown('<div class="main-title">💼 HAT-RAG: Corporate Financial Intelligence Platform</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">HAT-RAG: Corporate Financial Intelligence Platform</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">Multi-Algorithm RAG Engine over Form 10-K SEC Filings (Apple, Amazon, Microsoft, NVIDIA, Tesla)</div>', unsafe_allow_html=True)
 
     corpus_data = load_corpus_files()
     preset_queries = load_preset_queries()
 
     # Hardware & Index Status in Sidebar
-    st.sidebar.title("🎛️ System Control")
+    st.sidebar.title("System Control")
     st.sidebar.markdown(f"**Corpus**: `finance_data/reports/`")
     st.sidebar.markdown(f"**Loaded Filings**: `{len(corpus_data)} corporate reports`")
     
@@ -140,10 +139,10 @@ def main():
 
     # Main Application Navigation Tabs
     tab_query, tab_compare, tab_corpus, tab_pipeline = st.tabs([
-        "🔍 Financial Query Engine",
-        "⚔️ 4-Algorithm Head-to-Head",
-        "📁 Financial Corpus & Tree Explorer",
-        "⚡ Indexing & Pipeline Runner"
+        "Financial Query Engine",
+        "4-Algorithm Head-to-Head",
+        "Financial Corpus & Tree Explorer",
+        "Indexing & Pipeline Runner"
     ])
 
     # -------------------------------------------------------------------------
@@ -185,7 +184,7 @@ def main():
             placeholder="Type your financial prompt here..."
         )
 
-        if st.button("🚀 Run Retrieval Query", type="primary", use_container_width=True):
+        if st.button("Run Retrieval Query", type="primary", use_container_width=True):
             if not query_text.strip():
                 st.warning("Please enter a query.")
             else:
@@ -204,7 +203,7 @@ def main():
                     res3 = r3.retrieve(query_text, k=k_val)
                     res4 = r4.retrieve(query_text, k=k_val)
 
-                    st.markdown("### 📊 Search Cost & Performance Breakdown")
+                    st.markdown("### Search Cost & Performance Breakdown")
                     col1, col2, col3, col4 = st.columns(4)
                     data_blocks = [
                         (col1, "HAT-RAG", res1),
@@ -219,7 +218,7 @@ def main():
                             st.metric("Nodes Scored", f"{r.nodes_scored} / {tree_index.n_nodes}", f"{r.nodes_scored/tree_index.n_nodes*100:.1f}%")
 
                     st.divider()
-                    st.markdown("### 📑 Top Evidence Retrieved by Each Algorithm")
+                    st.markdown("### Top Evidence Retrieved by Each Algorithm")
                     t_col1, t_col2, t_col3, t_col4 = st.columns(4)
                     for col, title, r in data_blocks:
                         with col:
@@ -247,9 +246,8 @@ def main():
                     m2.metric("Nodes Scored", f"{result.nodes_scored} / {tree_index.n_nodes}", f"{result.nodes_scored/tree_index.n_nodes*100:.1f}% of corpus")
                     m3.metric("Top Result Score", f"{result.scores[0]:.4f}" if result.scores else "0.0")
 
-
                 # Retrieved Evidence Cards
-                st.markdown(f"### 📑 Top-{len(result.node_ids)} Retrieved Financial Passages")
+                st.markdown(f"### Top-{len(result.node_ids)} Retrieved Financial Passages")
                 for rank, (nid, score) in enumerate(zip(result.node_ids, result.scores), 1):
                     pos = tree_index.pos[nid]
                     label_tag = tree_index.label(pos)
@@ -258,7 +256,7 @@ def main():
                     lvl = tree_index.level[pos]
 
                     badge_html = get_company_badge_html(label_tag)
-                    tier_str = "🍃 Leaf Chunk (Raw 10-K Filing)" if is_leaf else f"🌳 Tier-{lvl} Synthesized Abstract Summary"
+                    tier_str = "Leaf Chunk (Raw 10-K Filing)" if is_leaf else f"Tier-{lvl} Synthesized Abstract Summary"
 
                     with st.container():
                         c_card_meta, c_card_text = st.columns([1, 4])
@@ -272,7 +270,7 @@ def main():
                         st.divider()
 
                 # Assembled Context
-                with st.expander("📦 Assembled Context for LLM", expanded=False):
+                with st.expander("Assembled Context for LLM", expanded=False):
                     st.caption("This formatted text package containing the retrieved paragraphs is what gets passed to an LLM to generate answers.")
                     assembled = assemble_context(tree_index, result)
                     st.text_area("Context String for LLM:", value=assembled, height=200)
@@ -281,7 +279,7 @@ def main():
     # TAB 2: 4-Algorithm Head-to-Head Comparison
     # -------------------------------------------------------------------------
     with tab_compare:
-        st.subheader("⚔️ Head-to-Head Algorithm Comparison")
+        st.subheader("Head-to-Head Algorithm Comparison")
         st.caption("Benchmark all 4 algorithms concurrently on the same financial question over the identical TreeIndex.")
 
         comp_query = st.text_input(
@@ -291,7 +289,7 @@ def main():
         )
         comp_k = st.slider("Comparison Top Evidence (k):", min_value=1, max_value=10, value=5, key="comp_k_slider")
 
-        if st.button("⚡ Run 4-Way Comparative Benchmark", type="primary", use_container_width=True):
+        if st.button("Run 4-Way Comparative Benchmark", type="primary", use_container_width=True):
             from algorithms.retrieval1_hat_beam_traversal import HATBeamRetriever
             from algorithms.retrieval2_flat_dense import FlatDenseRetriever
             from algorithms.retrieval3_raptor_collapsed_tree import CollapsedTreeRetriever
@@ -306,7 +304,7 @@ def main():
             res3 = r3.retrieve(comp_query, k=comp_k)
             res4 = r4.retrieve(comp_query, k=comp_k)
 
-            st.markdown("### 📊 Search Cost & Performance Breakdown")
+            st.markdown("### Search Cost & Performance Breakdown")
             col1, col2, col3, col4 = st.columns(4)
             data_blocks = [
                 (col1, "HAT-RAG", res1),
@@ -321,9 +319,9 @@ def main():
                     st.metric("Nodes Scored", f"{r.nodes_scored} / {tree_index.n_nodes}", f"{r.nodes_scored/tree_index.n_nodes*100:.1f}%")
 
             st.divider()
-            st.markdown("### 📑 Top Evidence Retrieved by Each Algorithm")
+            st.markdown("### Top Evidence Retrieved by Each Algorithm")
             t_col1, t_col2, t_col3, t_col4 = st.columns(4)
-            for col, title, r, _, _ in data_blocks:
+            for col, title, r in data_blocks:
                 with col:
                     st.markdown(f"#### {title}")
                     for rank, (nid, sc) in enumerate(zip(r.node_ids, r.scores), 1):
@@ -335,7 +333,7 @@ def main():
 
             st.divider()
             st.markdown("""
-            #### 💡 Architectural Insights from Benchmark Results:
+            #### Architectural Insights from Benchmark Results:
             1. **Sub-linear Scaling**: HAT-RAG inspects only candidate paths reached by beam descent, scoring ~39% of the corpus on small trees and under 10% on large corpora.
             2. **Cross-Document Reasoning**: Explicit $\\alpha$-links enable HAT-RAG to hop across corporate branches (e.g., from Apple's R&D to NVIDIA's R&D) without ascending to distant common roots.
             3. **Precision**: Flat dense scores all 24 chunks linearly but lacks topological hierarchical summaries. RAPTOR pools leaves and abstracts indiscriminately, introducing summary duplication.
@@ -345,7 +343,7 @@ def main():
     # TAB 3: Financial Corpus & Tree Explorer
     # -------------------------------------------------------------------------
     with tab_corpus:
-        st.subheader("📁 Form 10-K Financial Corpus (`finance_data/reports/`)")
+        st.subheader("Form 10-K Financial Corpus (finance_data/reports/)")
         st.caption("Inspect the raw SEC 10-K documents and the constructed Hierarchical Abstract Tree topology.")
 
         c_file_sel, c_view_mode = st.columns([2, 1])
@@ -376,7 +374,7 @@ def main():
                 
                 if matching_nodes:
                     for nid, lbl, lvl, is_leaf, txt in matching_nodes:
-                        st.markdown(f"**Node `{nid}`** | Label: `{lbl}` | Level: `{lvl}` | {'🍃 Leaf' if is_leaf else '🌳 Abstract'}")
+                        st.markdown(f"**Node `{nid}`** | Label: `{lbl}` | Level: `{lvl}` | {'Leaf' if is_leaf else 'Abstract'}")
                         st.caption(txt)
                 else:
                     st.write("No nodes directly mapped to this filename.")
@@ -385,7 +383,7 @@ def main():
     # TAB 4: Indexing & Pipeline Runner
     # -------------------------------------------------------------------------
     with tab_pipeline:
-        st.subheader("⚡ Offline Knowledge Construction Pipeline")
+        st.subheader("Offline Knowledge Construction Pipeline")
         st.caption("Run Algorithm 1 (Document Chunking) and Algorithm 3 (Spherical k-Means Tree Construction) over `finance_data/reports/`.")
 
         p_col1, p_col2 = st.columns(2)
@@ -404,7 +402,7 @@ def main():
         3. **Algorithm 3 (`algo3_hierarchical_abstract_tree.py`)**: Spherical k-Means clustering + abstract summarization + cross-document lateral $\\alpha$-edges.
         """)
 
-        if st.button("🔨 Rebuild Tree Index from finance_data/reports", type="primary"):
+        if st.button("Rebuild Tree Index from finance_data/reports", type="primary"):
             st.info("Rebuilding knowledge tree from `finance_data/reports/`...")
             start_t = time.perf_counter()
             try:
