@@ -104,7 +104,7 @@ FINANCE_REPORTS_DIR = ROOT_DIR / "finance_data" / "reports"
 @st.cache_resource(show_spinner="Loading Knowledge Tree Index...")
 def get_tree_index(tree_path_str: str) -> Any:
     from algorithms.retrieval1_hat_beam_traversal import TreeIndex
-    return TreeIndex.from_json(tree_path_str, device="auto")
+    return TreeIndex.from_json(tree_path_str, device="cpu")
 
 
 @st.cache_resource(show_spinner="Building Passage Graph for Graph PPR...")
