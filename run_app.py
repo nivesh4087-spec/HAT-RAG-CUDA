@@ -22,7 +22,7 @@ def main():
         run_demo()
     elif args.mode == "app":
         import os
-        os.system("streamlit run hat_rag/app.py")
+        os.system("streamlit run app.py --server.fileWatcherType none")
     elif args.mode == "api":
         import uvicorn
         uvicorn.run("hat_rag.src.api:app", host="0.0.0.0", port=args.port, reload=True)
