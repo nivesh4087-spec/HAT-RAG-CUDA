@@ -35,3 +35,10 @@ generate_pdf_docs.py
 generate_svg_flowcharts.py
 paper_data_p*.py
 RESEARCH_PAPERS_SUMMARY_DOCUMENTATION.*
+game.py
+game_data
+hit_sound.wav
+
+# Streamlit agent skills (environment-specific symlinks)
+.agents/
+.claude/

@@ -1,0 +1,1780 @@
+{
+  "queries": [
+    {
+      "id": "S01",
+      "type": "single",
+      "query": "What nominal efficiency does the heat sink of Project A76 record?",
+      "gold": [
+        {
+          "doc": "doc000_thermal.txt",
+          "terms": [
+            "heat sink of Project A76",
+            "nominal efficiency of 69.06"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "type": "single",
+      "query": "What settling time does the watchdog task of Project D56 record?",
+      "gold": [
+        {
+          "doc": "doc003_control.txt",
+          "terms": [
+            "watchdog task of Project D56",
+            "settling time of 26.73"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "type": "single",
+      "query": "What nominal efficiency does the weld seam of Project G79 record?",
+      "gold": [
+        {
+          "doc": "doc006_materials.txt",
+          "terms": [
+            "weld seam of Project G79",
+            "nominal efficiency of 38.71"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "type": "single",
+      "query": "What settling time does the review board of Project J24 record?",
+      "gold": [
+        {
+          "doc": "doc009_quality.txt",
+          "terms": [
+            "review board of Project J24",
+            "settling time of 81.04"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "type": "single",
+      "query": "What nominal efficiency does the duct geometry of Project M59 record?",
+      "gold": [
+        {
+          "doc": "doc012_thermal.txt",
+          "terms": [
+            "duct geometry of Project M59",
+            "nominal efficiency of 18.97"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "type": "single",
+      "query": "What settling time does the scheduler core of Project P74 record?",
+      "gold": [
+        {
+          "doc": "doc015_control.txt",
+          "terms": [
+            "scheduler core of Project P74",
+            "settling time of 26.0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "type": "single",
+      "query": "What nominal efficiency does the composite ply of Project S97 record?",
+      "gold": [
+        {
+          "doc": "doc018_materials.txt",
+          "terms": [
+            "composite ply of Project S97",
+            "nominal efficiency of 92.88"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "type": "single",
+      "query": "What settling time does the defect taxonomy of Project V80 record?",
+      "gold": [
+        {
+          "doc": "doc021_quality.txt",
+          "terms": [
+            "defect taxonomy of Project V80",
+            "settling time of 82.51"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "type": "single",
+      "query": "What mean latency does the inverter stage of Project Z29 record?",
+      "gold": [
+        {
+          "doc": "doc025_power.txt",
+          "terms": [
+            "inverter stage of Project Z29",
+            "mean latency of 89.69"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "type": "single",
+      "query": "What throughput index does the switch plane of Project CA97 record?",
+      "gold": [
+        {
+          "doc": "doc028_network.txt",
+          "terms": [
+            "switch plane of Project CA97",
+            "throughput index of 6.87"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "type": "single",
+      "query": "What mean latency does the audit trail of Project FA79 record?",
+      "gold": [
+        {
+          "doc": "doc031_safety.txt",
+          "terms": [
+            "audit trail of Project FA79",
+            "mean latency of 89.31"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "type": "single",
+      "query": "What throughput index does the wear model of Project IA18 record?",
+      "gold": [
+        {
+          "doc": "doc034_maintenance.txt",
+          "terms": [
+            "wear model of Project IA18",
+            "throughput index of 25.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "type": "single",
+      "query": "What mean latency does the current sensor of Project LA20 record?",
+      "gold": [
+        {
+          "doc": "doc037_power.txt",
+          "terms": [
+            "current sensor of Project LA20",
+            "mean latency of 73.65"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S14",
+      "type": "single",
+      "query": "What throughput index does the edge router of Project OA91 record?",
+      "gold": [
+        {
+          "doc": "doc040_network.txt",
+          "terms": [
+            "edge router of Project OA91",
+            "throughput index of 39.26"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S15",
+      "type": "single",
+      "query": "What mean latency does the isolation valve of Project RA97 record?",
+      "gold": [
+        {
+          "doc": "doc043_safety.txt",
+          "terms": [
+            "isolation valve of Project RA97",
+            "mean latency of 6.57"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S16",
+      "type": "single",
+      "query": "What throughput index does the torque schedule of Project UA53 record?",
+      "gold": [
+        {
+          "doc": "doc046_maintenance.txt",
+          "terms": [
+            "torque schedule of Project UA53",
+            "throughput index of 19.09"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S17",
+      "type": "single",
+      "query": "What duty margin does the cell stack of Project YA83 record?",
+      "gold": [
+        {
+          "doc": "doc050_storage.txt",
+          "terms": [
+            "cell stack of Project YA83",
+            "duty margin of 26.78"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S18",
+      "type": "single",
+      "query": "What leakage current does the optical probe of Project BB16 record?",
+      "gold": [
+        {
+          "doc": "doc053_sensing.txt",
+          "terms": [
+            "optical probe of Project BB16",
+            "leakage current of 67.8"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S19",
+      "type": "single",
+      "query": "What duty margin does the packaging spec of Project EB84 record?",
+      "gold": [
+        {
+          "doc": "doc056_logistics.txt",
+          "terms": [
+            "packaging spec of Project EB84",
+            "duty margin of 83.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S20",
+      "type": "single",
+      "query": "What leakage current does the notified body of Project HB40 record?",
+      "gold": [
+        {
+          "doc": "doc059_compliance.txt",
+          "terms": [
+            "notified body of Project HB40",
+            "leakage current of 70.42"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S21",
+      "type": "single",
+      "query": "What duty margin does the pack housing of Project KB37 record?",
+      "gold": [
+        {
+          "doc": "doc062_storage.txt",
+          "terms": [
+            "pack housing of Project KB37",
+            "duty margin of 82.42"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S22",
+      "type": "single",
+      "query": "What leakage current does the strain array of Project NB56 record?",
+      "gold": [
+        {
+          "doc": "doc065_sensing.txt",
+          "terms": [
+            "strain array of Project NB56",
+            "leakage current of 84.43"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S23",
+      "type": "single",
+      "query": "What duty margin does the transit lane of Project QB18 record?",
+      "gold": [
+        {
+          "doc": "doc068_logistics.txt",
+          "terms": [
+            "transit lane of Project QB18",
+            "duty margin of 53.64"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S24",
+      "type": "single",
+      "query": "What leakage current does the conformity file of Project TB87 record?",
+      "gold": [
+        {
+          "doc": "doc071_compliance.txt",
+          "terms": [
+            "conformity file of Project TB87",
+            "leakage current of 18.13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S25",
+      "type": "single",
+      "query": "What failure rate does the scheduler core of Project XB26 record?",
+      "gold": [
+        {
+          "doc": "doc075_control.txt",
+          "terms": [
+            "scheduler core of Project XB26",
+            "failure rate of 56.39"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S26",
+      "type": "single",
+      "query": "What recovery interval does the composite ply of Project AC49 record?",
+      "gold": [
+        {
+          "doc": "doc078_materials.txt",
+          "terms": [
+            "composite ply of Project AC49",
+            "recovery interval of 57.12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S27",
+      "type": "single",
+      "query": "What failure rate does the defect taxonomy of Project DC31 record?",
+      "gold": [
+        {
+          "doc": "doc081_quality.txt",
+          "terms": [
+            "defect taxonomy of Project DC31",
+            "failure rate of 24.99"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S28",
+      "type": "single",
+      "query": "What recovery interval does the fan curve of Project GC83 record?",
+      "gold": [
+        {
+          "doc": "doc084_thermal.txt",
+          "terms": [
+            "fan curve of Project GC83",
+            "recovery interval of 83.54"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S29",
+      "type": "single",
+      "query": "What failure rate does the fault handler of Project JC52 record?",
+      "gold": [
+        {
+          "doc": "doc087_control.txt",
+          "terms": [
+            "fault handler of Project JC52",
+            "failure rate of 12.27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S30",
+      "type": "single",
+      "query": "What recovery interval does the alloy sheet of Project MC54 record?",
+      "gold": [
+        {
+          "doc": "doc090_materials.txt",
+          "terms": [
+            "alloy sheet of Project MC54",
+            "recovery interval of 43.21"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S31",
+      "type": "single",
+      "query": "What failure rate does the gauge study of Project PC44 record?",
+      "gold": [
+        {
+          "doc": "doc093_quality.txt",
+          "terms": [
+            "gauge study of Project PC44",
+            "failure rate of 81.32"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S32",
+      "type": "single",
+      "query": "What recovery interval does the thermal interface of Project SC16 record?",
+      "gold": [
+        {
+          "doc": "doc096_thermal.txt",
+          "terms": [
+            "thermal interface of Project SC16",
+            "recovery interval of 59.11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S33",
+      "type": "single",
+      "query": "What settling time does the edge router of Project WC19 record?",
+      "gold": [
+        {
+          "doc": "doc100_network.txt",
+          "terms": [
+            "edge router of Project WC19",
+            "settling time of 53.12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S34",
+      "type": "single",
+      "query": "What nominal efficiency does the isolation valve of Project ZC89 record?",
+      "gold": [
+        {
+          "doc": "doc103_safety.txt",
+          "terms": [
+            "isolation valve of Project ZC89",
+            "nominal efficiency of 23.36"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S35",
+      "type": "single",
+      "query": "What settling time does the torque schedule of Project CD97 record?",
+      "gold": [
+        {
+          "doc": "doc106_maintenance.txt",
+          "terms": [
+            "torque schedule of Project CD97",
+            "settling time of 20.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S36",
+      "type": "single",
+      "query": "What nominal efficiency does the rectifier bank of Project FD72 record?",
+      "gold": [
+        {
+          "doc": "doc109_power.txt",
+          "terms": [
+            "rectifier bank of Project FD72",
+            "nominal efficiency of 66.9"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S37",
+      "type": "single",
+      "query": "What settling time does the time sync unit of Project ID33 record?",
+      "gold": [
+        {
+          "doc": "doc112_network.txt",
+          "terms": [
+            "time sync unit of Project ID33",
+            "settling time of 74.23"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S38",
+      "type": "single",
+      "query": "What nominal efficiency does the interlock chain of Project LD29 record?",
+      "gold": [
+        {
+          "doc": "doc115_safety.txt",
+          "terms": [
+            "interlock chain of Project LD29",
+            "nominal efficiency of 89.95"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S39",
+      "type": "single",
+      "query": "What settling time does the spares kit of Project OD37 record?",
+      "gold": [
+        {
+          "doc": "doc118_maintenance.txt",
+          "terms": [
+            "spares kit of Project OD37",
+            "settling time of 79.92"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S40",
+      "type": "single",
+      "query": "What nominal efficiency does the DC link of Project RD49 record?",
+      "gold": [
+        {
+          "doc": "doc121_power.txt",
+          "terms": [
+            "DC link of Project RD49",
+            "nominal efficiency of 35.39"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C01",
+      "type": "cross",
+      "query": "How does the heat sink of Project A76 relate to the DC link of Project B63?",
+      "gold": [
+        {
+          "doc": "doc000_thermal.txt",
+          "terms": [
+            "heat sink used in Project A76"
+          ]
+        },
+        {
+          "doc": "doc001_power.txt",
+          "terms": [
+            "DC link of Project B63"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "type": "cross",
+      "query": "How does the cell stack of Project C48 relate to the state machine of Project D56?",
+      "gold": [
+        {
+          "doc": "doc002_storage.txt",
+          "terms": [
+            "cell stack used in Project C48"
+          ]
+        },
+        {
+          "doc": "doc003_control.txt",
+          "terms": [
+            "state machine of Project D56"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "type": "cross",
+      "query": "How does the edge router of Project E47 relate to the pressure cell of Project F32?",
+      "gold": [
+        {
+          "doc": "doc004_network.txt",
+          "terms": [
+            "edge router used in Project E47"
+          ]
+        },
+        {
+          "doc": "doc005_sensing.txt",
+          "terms": [
+            "pressure cell of Project F32"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project G79 relate to the audit trail of Project H94?",
+      "gold": [
+        {
+          "doc": "doc006_materials.txt",
+          "terms": [
+            "alloy sheet used in Project G79"
+          ]
+        },
+        {
+          "doc": "doc007_safety.txt",
+          "terms": [
+            "audit trail of Project H94"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "type": "cross",
+      "query": "How does the staging depot of Project I45 relate to the defect taxonomy of Project J24?",
+      "gold": [
+        {
+          "doc": "doc008_logistics.txt",
+          "terms": [
+            "staging depot used in Project I45"
+          ]
+        },
+        {
+          "doc": "doc009_quality.txt",
+          "terms": [
+            "defect taxonomy of Project J24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C06",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project K13 relate to the conformity file of Project L41?",
+      "gold": [
+        {
+          "doc": "doc010_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project K13"
+          ]
+        },
+        {
+          "doc": "doc011_compliance.txt",
+          "terms": [
+            "conformity file of Project L41"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C07",
+      "type": "cross",
+      "query": "How does the heat sink of Project M59 relate to the DC link of Project N63?",
+      "gold": [
+        {
+          "doc": "doc012_thermal.txt",
+          "terms": [
+            "heat sink used in Project M59"
+          ]
+        },
+        {
+          "doc": "doc013_power.txt",
+          "terms": [
+            "DC link of Project N63"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C08",
+      "type": "cross",
+      "query": "How does the cell stack of Project O42 relate to the state machine of Project P74?",
+      "gold": [
+        {
+          "doc": "doc014_storage.txt",
+          "terms": [
+            "cell stack used in Project O42"
+          ]
+        },
+        {
+          "doc": "doc015_control.txt",
+          "terms": [
+            "state machine of Project P74"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C09",
+      "type": "cross",
+      "query": "How does the edge router of Project Q50 relate to the pressure cell of Project R91?",
+      "gold": [
+        {
+          "doc": "doc016_network.txt",
+          "terms": [
+            "edge router used in Project Q50"
+          ]
+        },
+        {
+          "doc": "doc017_sensing.txt",
+          "terms": [
+            "pressure cell of Project R91"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C10",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project S97 relate to the audit trail of Project T61?",
+      "gold": [
+        {
+          "doc": "doc018_materials.txt",
+          "terms": [
+            "alloy sheet used in Project S97"
+          ]
+        },
+        {
+          "doc": "doc019_safety.txt",
+          "terms": [
+            "audit trail of Project T61"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C11",
+      "type": "cross",
+      "query": "How does the staging depot of Project U27 relate to the defect taxonomy of Project V80?",
+      "gold": [
+        {
+          "doc": "doc020_logistics.txt",
+          "terms": [
+            "staging depot used in Project U27"
+          ]
+        },
+        {
+          "doc": "doc021_quality.txt",
+          "terms": [
+            "defect taxonomy of Project V80"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C12",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project W17 relate to the conformity file of Project X27?",
+      "gold": [
+        {
+          "doc": "doc022_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project W17"
+          ]
+        },
+        {
+          "doc": "doc023_compliance.txt",
+          "terms": [
+            "conformity file of Project X27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C13",
+      "type": "cross",
+      "query": "How does the heat sink of Project Y35 relate to the DC link of Project Z29?",
+      "gold": [
+        {
+          "doc": "doc024_thermal.txt",
+          "terms": [
+            "heat sink used in Project Y35"
+          ]
+        },
+        {
+          "doc": "doc025_power.txt",
+          "terms": [
+            "DC link of Project Z29"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C14",
+      "type": "cross",
+      "query": "How does the cell stack of Project AA78 relate to the state machine of Project BA81?",
+      "gold": [
+        {
+          "doc": "doc026_storage.txt",
+          "terms": [
+            "cell stack used in Project AA78"
+          ]
+        },
+        {
+          "doc": "doc027_control.txt",
+          "terms": [
+            "state machine of Project BA81"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C15",
+      "type": "cross",
+      "query": "How does the edge router of Project CA97 relate to the pressure cell of Project DA36?",
+      "gold": [
+        {
+          "doc": "doc028_network.txt",
+          "terms": [
+            "edge router used in Project CA97"
+          ]
+        },
+        {
+          "doc": "doc029_sensing.txt",
+          "terms": [
+            "pressure cell of Project DA36"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C16",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project EA52 relate to the audit trail of Project FA79?",
+      "gold": [
+        {
+          "doc": "doc030_materials.txt",
+          "terms": [
+            "alloy sheet used in Project EA52"
+          ]
+        },
+        {
+          "doc": "doc031_safety.txt",
+          "terms": [
+            "audit trail of Project FA79"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C17",
+      "type": "cross",
+      "query": "How does the staging depot of Project GA25 relate to the defect taxonomy of Project HA91?",
+      "gold": [
+        {
+          "doc": "doc032_logistics.txt",
+          "terms": [
+            "staging depot used in Project GA25"
+          ]
+        },
+        {
+          "doc": "doc033_quality.txt",
+          "terms": [
+            "defect taxonomy of Project HA91"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C18",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project IA18 relate to the conformity file of Project JA49?",
+      "gold": [
+        {
+          "doc": "doc034_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project IA18"
+          ]
+        },
+        {
+          "doc": "doc035_compliance.txt",
+          "terms": [
+            "conformity file of Project JA49"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C19",
+      "type": "cross",
+      "query": "How does the heat sink of Project KA62 relate to the DC link of Project LA20?",
+      "gold": [
+        {
+          "doc": "doc036_thermal.txt",
+          "terms": [
+            "heat sink used in Project KA62"
+          ]
+        },
+        {
+          "doc": "doc037_power.txt",
+          "terms": [
+            "DC link of Project LA20"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C20",
+      "type": "cross",
+      "query": "How does the cell stack of Project MA74 relate to the state machine of Project NA70?",
+      "gold": [
+        {
+          "doc": "doc038_storage.txt",
+          "terms": [
+            "cell stack used in Project MA74"
+          ]
+        },
+        {
+          "doc": "doc039_control.txt",
+          "terms": [
+            "state machine of Project NA70"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C21",
+      "type": "cross",
+      "query": "How does the edge router of Project OA91 relate to the pressure cell of Project PA86?",
+      "gold": [
+        {
+          "doc": "doc040_network.txt",
+          "terms": [
+            "edge router used in Project OA91"
+          ]
+        },
+        {
+          "doc": "doc041_sensing.txt",
+          "terms": [
+            "pressure cell of Project PA86"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C22",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project QA28 relate to the audit trail of Project RA97?",
+      "gold": [
+        {
+          "doc": "doc042_materials.txt",
+          "terms": [
+            "alloy sheet used in Project QA28"
+          ]
+        },
+        {
+          "doc": "doc043_safety.txt",
+          "terms": [
+            "audit trail of Project RA97"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C23",
+      "type": "cross",
+      "query": "How does the staging depot of Project SA62 relate to the defect taxonomy of Project TA74?",
+      "gold": [
+        {
+          "doc": "doc044_logistics.txt",
+          "terms": [
+            "staging depot used in Project SA62"
+          ]
+        },
+        {
+          "doc": "doc045_quality.txt",
+          "terms": [
+            "defect taxonomy of Project TA74"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C24",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project UA53 relate to the conformity file of Project VA12?",
+      "gold": [
+        {
+          "doc": "doc046_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project UA53"
+          ]
+        },
+        {
+          "doc": "doc047_compliance.txt",
+          "terms": [
+            "conformity file of Project VA12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C25",
+      "type": "cross",
+      "query": "How does the heat sink of Project WA65 relate to the DC link of Project XA57?",
+      "gold": [
+        {
+          "doc": "doc048_thermal.txt",
+          "terms": [
+            "heat sink used in Project WA65"
+          ]
+        },
+        {
+          "doc": "doc049_power.txt",
+          "terms": [
+            "DC link of Project XA57"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C26",
+      "type": "cross",
+      "query": "How does the cell stack of Project YA83 relate to the state machine of Project ZA16?",
+      "gold": [
+        {
+          "doc": "doc050_storage.txt",
+          "terms": [
+            "cell stack used in Project YA83"
+          ]
+        },
+        {
+          "doc": "doc051_control.txt",
+          "terms": [
+            "state machine of Project ZA16"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C27",
+      "type": "cross",
+      "query": "How does the edge router of Project AB55 relate to the pressure cell of Project BB16?",
+      "gold": [
+        {
+          "doc": "doc052_network.txt",
+          "terms": [
+            "edge router used in Project AB55"
+          ]
+        },
+        {
+          "doc": "doc053_sensing.txt",
+          "terms": [
+            "pressure cell of Project BB16"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C28",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project CB71 relate to the audit trail of Project DB57?",
+      "gold": [
+        {
+          "doc": "doc054_materials.txt",
+          "terms": [
+            "alloy sheet used in Project CB71"
+          ]
+        },
+        {
+          "doc": "doc055_safety.txt",
+          "terms": [
+            "audit trail of Project DB57"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C29",
+      "type": "cross",
+      "query": "How does the staging depot of Project EB84 relate to the defect taxonomy of Project FB10?",
+      "gold": [
+        {
+          "doc": "doc056_logistics.txt",
+          "terms": [
+            "staging depot used in Project EB84"
+          ]
+        },
+        {
+          "doc": "doc057_quality.txt",
+          "terms": [
+            "defect taxonomy of Project FB10"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C30",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project GB61 relate to the conformity file of Project HB40?",
+      "gold": [
+        {
+          "doc": "doc058_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project GB61"
+          ]
+        },
+        {
+          "doc": "doc059_compliance.txt",
+          "terms": [
+            "conformity file of Project HB40"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C31",
+      "type": "cross",
+      "query": "How does the heat sink of Project IB24 relate to the DC link of Project JB81?",
+      "gold": [
+        {
+          "doc": "doc060_thermal.txt",
+          "terms": [
+            "heat sink used in Project IB24"
+          ]
+        },
+        {
+          "doc": "doc061_power.txt",
+          "terms": [
+            "DC link of Project JB81"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C32",
+      "type": "cross",
+      "query": "How does the cell stack of Project KB37 relate to the state machine of Project LB41?",
+      "gold": [
+        {
+          "doc": "doc062_storage.txt",
+          "terms": [
+            "cell stack used in Project KB37"
+          ]
+        },
+        {
+          "doc": "doc063_control.txt",
+          "terms": [
+            "state machine of Project LB41"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C33",
+      "type": "cross",
+      "query": "How does the edge router of Project MB77 relate to the pressure cell of Project NB56?",
+      "gold": [
+        {
+          "doc": "doc064_network.txt",
+          "terms": [
+            "edge router used in Project MB77"
+          ]
+        },
+        {
+          "doc": "doc065_sensing.txt",
+          "terms": [
+            "pressure cell of Project NB56"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C34",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project OB17 relate to the audit trail of Project PB44?",
+      "gold": [
+        {
+          "doc": "doc066_materials.txt",
+          "terms": [
+            "alloy sheet used in Project OB17"
+          ]
+        },
+        {
+          "doc": "doc067_safety.txt",
+          "terms": [
+            "audit trail of Project PB44"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C35",
+      "type": "cross",
+      "query": "How does the staging depot of Project QB18 relate to the defect taxonomy of Project RB45?",
+      "gold": [
+        {
+          "doc": "doc068_logistics.txt",
+          "terms": [
+            "staging depot used in Project QB18"
+          ]
+        },
+        {
+          "doc": "doc069_quality.txt",
+          "terms": [
+            "defect taxonomy of Project RB45"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C36",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project SB34 relate to the conformity file of Project TB87?",
+      "gold": [
+        {
+          "doc": "doc070_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project SB34"
+          ]
+        },
+        {
+          "doc": "doc071_compliance.txt",
+          "terms": [
+            "conformity file of Project TB87"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C37",
+      "type": "cross",
+      "query": "How does the heat sink of Project UB81 relate to the DC link of Project VB78?",
+      "gold": [
+        {
+          "doc": "doc072_thermal.txt",
+          "terms": [
+            "heat sink used in Project UB81"
+          ]
+        },
+        {
+          "doc": "doc073_power.txt",
+          "terms": [
+            "DC link of Project VB78"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C38",
+      "type": "cross",
+      "query": "How does the cell stack of Project WB80 relate to the state machine of Project XB26?",
+      "gold": [
+        {
+          "doc": "doc074_storage.txt",
+          "terms": [
+            "cell stack used in Project WB80"
+          ]
+        },
+        {
+          "doc": "doc075_control.txt",
+          "terms": [
+            "state machine of Project XB26"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C39",
+      "type": "cross",
+      "query": "How does the edge router of Project YB42 relate to the pressure cell of Project ZB94?",
+      "gold": [
+        {
+          "doc": "doc076_network.txt",
+          "terms": [
+            "edge router used in Project YB42"
+          ]
+        },
+        {
+          "doc": "doc077_sensing.txt",
+          "terms": [
+            "pressure cell of Project ZB94"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C40",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project AC49 relate to the audit trail of Project BC54?",
+      "gold": [
+        {
+          "doc": "doc078_materials.txt",
+          "terms": [
+            "alloy sheet used in Project AC49"
+          ]
+        },
+        {
+          "doc": "doc079_safety.txt",
+          "terms": [
+            "audit trail of Project BC54"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C41",
+      "type": "cross",
+      "query": "How does the staging depot of Project CC50 relate to the defect taxonomy of Project DC31?",
+      "gold": [
+        {
+          "doc": "doc080_logistics.txt",
+          "terms": [
+            "staging depot used in Project CC50"
+          ]
+        },
+        {
+          "doc": "doc081_quality.txt",
+          "terms": [
+            "defect taxonomy of Project DC31"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C42",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project EC52 relate to the conformity file of Project FC22?",
+      "gold": [
+        {
+          "doc": "doc082_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project EC52"
+          ]
+        },
+        {
+          "doc": "doc083_compliance.txt",
+          "terms": [
+            "conformity file of Project FC22"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C43",
+      "type": "cross",
+      "query": "How does the heat sink of Project GC83 relate to the DC link of Project HC84?",
+      "gold": [
+        {
+          "doc": "doc084_thermal.txt",
+          "terms": [
+            "heat sink used in Project GC83"
+          ]
+        },
+        {
+          "doc": "doc085_power.txt",
+          "terms": [
+            "DC link of Project HC84"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C44",
+      "type": "cross",
+      "query": "How does the cell stack of Project IC44 relate to the state machine of Project JC52?",
+      "gold": [
+        {
+          "doc": "doc086_storage.txt",
+          "terms": [
+            "cell stack used in Project IC44"
+          ]
+        },
+        {
+          "doc": "doc087_control.txt",
+          "terms": [
+            "state machine of Project JC52"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C45",
+      "type": "cross",
+      "query": "How does the edge router of Project KC11 relate to the pressure cell of Project LC16?",
+      "gold": [
+        {
+          "doc": "doc088_network.txt",
+          "terms": [
+            "edge router used in Project KC11"
+          ]
+        },
+        {
+          "doc": "doc089_sensing.txt",
+          "terms": [
+            "pressure cell of Project LC16"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C46",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project MC54 relate to the audit trail of Project NC12?",
+      "gold": [
+        {
+          "doc": "doc090_materials.txt",
+          "terms": [
+            "alloy sheet used in Project MC54"
+          ]
+        },
+        {
+          "doc": "doc091_safety.txt",
+          "terms": [
+            "audit trail of Project NC12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C47",
+      "type": "cross",
+      "query": "How does the staging depot of Project OC69 relate to the defect taxonomy of Project PC44?",
+      "gold": [
+        {
+          "doc": "doc092_logistics.txt",
+          "terms": [
+            "staging depot used in Project OC69"
+          ]
+        },
+        {
+          "doc": "doc093_quality.txt",
+          "terms": [
+            "defect taxonomy of Project PC44"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C48",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project QC70 relate to the conformity file of Project RC91?",
+      "gold": [
+        {
+          "doc": "doc094_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project QC70"
+          ]
+        },
+        {
+          "doc": "doc095_compliance.txt",
+          "terms": [
+            "conformity file of Project RC91"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C49",
+      "type": "cross",
+      "query": "How does the heat sink of Project SC16 relate to the DC link of Project TC35?",
+      "gold": [
+        {
+          "doc": "doc096_thermal.txt",
+          "terms": [
+            "heat sink used in Project SC16"
+          ]
+        },
+        {
+          "doc": "doc097_power.txt",
+          "terms": [
+            "DC link of Project TC35"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C50",
+      "type": "cross",
+      "query": "How does the cell stack of Project UC49 relate to the state machine of Project VC43?",
+      "gold": [
+        {
+          "doc": "doc098_storage.txt",
+          "terms": [
+            "cell stack used in Project UC49"
+          ]
+        },
+        {
+          "doc": "doc099_control.txt",
+          "terms": [
+            "state machine of Project VC43"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C51",
+      "type": "cross",
+      "query": "How does the edge router of Project WC19 relate to the pressure cell of Project XC72?",
+      "gold": [
+        {
+          "doc": "doc100_network.txt",
+          "terms": [
+            "edge router used in Project WC19"
+          ]
+        },
+        {
+          "doc": "doc101_sensing.txt",
+          "terms": [
+            "pressure cell of Project XC72"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C52",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project YC12 relate to the audit trail of Project ZC89?",
+      "gold": [
+        {
+          "doc": "doc102_materials.txt",
+          "terms": [
+            "alloy sheet used in Project YC12"
+          ]
+        },
+        {
+          "doc": "doc103_safety.txt",
+          "terms": [
+            "audit trail of Project ZC89"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C53",
+      "type": "cross",
+      "query": "How does the staging depot of Project AD82 relate to the defect taxonomy of Project BD77?",
+      "gold": [
+        {
+          "doc": "doc104_logistics.txt",
+          "terms": [
+            "staging depot used in Project AD82"
+          ]
+        },
+        {
+          "doc": "doc105_quality.txt",
+          "terms": [
+            "defect taxonomy of Project BD77"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C54",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project CD97 relate to the conformity file of Project DD27?",
+      "gold": [
+        {
+          "doc": "doc106_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project CD97"
+          ]
+        },
+        {
+          "doc": "doc107_compliance.txt",
+          "terms": [
+            "conformity file of Project DD27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C55",
+      "type": "cross",
+      "query": "How does the heat sink of Project ED61 relate to the DC link of Project FD72?",
+      "gold": [
+        {
+          "doc": "doc108_thermal.txt",
+          "terms": [
+            "heat sink used in Project ED61"
+          ]
+        },
+        {
+          "doc": "doc109_power.txt",
+          "terms": [
+            "DC link of Project FD72"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C56",
+      "type": "cross",
+      "query": "How does the cell stack of Project GD85 relate to the state machine of Project HD60?",
+      "gold": [
+        {
+          "doc": "doc110_storage.txt",
+          "terms": [
+            "cell stack used in Project GD85"
+          ]
+        },
+        {
+          "doc": "doc111_control.txt",
+          "terms": [
+            "state machine of Project HD60"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C57",
+      "type": "cross",
+      "query": "How does the edge router of Project ID33 relate to the pressure cell of Project JD35?",
+      "gold": [
+        {
+          "doc": "doc112_network.txt",
+          "terms": [
+            "edge router used in Project ID33"
+          ]
+        },
+        {
+          "doc": "doc113_sensing.txt",
+          "terms": [
+            "pressure cell of Project JD35"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C58",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project KD42 relate to the audit trail of Project LD29?",
+      "gold": [
+        {
+          "doc": "doc114_materials.txt",
+          "terms": [
+            "alloy sheet used in Project KD42"
+          ]
+        },
+        {
+          "doc": "doc115_safety.txt",
+          "terms": [
+            "audit trail of Project LD29"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C59",
+      "type": "cross",
+      "query": "How does the staging depot of Project MD96 relate to the defect taxonomy of Project ND24?",
+      "gold": [
+        {
+          "doc": "doc116_logistics.txt",
+          "terms": [
+            "staging depot used in Project MD96"
+          ]
+        },
+        {
+          "doc": "doc117_quality.txt",
+          "terms": [
+            "defect taxonomy of Project ND24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C60",
+      "type": "cross",
+      "query": "How does the inspection cycle of Project OD37 relate to the conformity file of Project PD16?",
+      "gold": [
+        {
+          "doc": "doc118_maintenance.txt",
+          "terms": [
+            "inspection cycle used in Project OD37"
+          ]
+        },
+        {
+          "doc": "doc119_compliance.txt",
+          "terms": [
+            "conformity file of Project PD16"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C61",
+      "type": "cross",
+      "query": "How does the heat sink of Project QD78 relate to the DC link of Project RD49?",
+      "gold": [
+        {
+          "doc": "doc120_thermal.txt",
+          "terms": [
+            "heat sink used in Project QD78"
+          ]
+        },
+        {
+          "doc": "doc121_power.txt",
+          "terms": [
+            "DC link of Project RD49"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C62",
+      "type": "cross",
+      "query": "How does the cell stack of Project SD50 relate to the state machine of Project TD50?",
+      "gold": [
+        {
+          "doc": "doc122_storage.txt",
+          "terms": [
+            "cell stack used in Project SD50"
+          ]
+        },
+        {
+          "doc": "doc123_control.txt",
+          "terms": [
+            "state machine of Project TD50"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C63",
+      "type": "cross",
+      "query": "How does the edge router of Project UD16 relate to the pressure cell of Project VD30?",
+      "gold": [
+        {
+          "doc": "doc124_network.txt",
+          "terms": [
+            "edge router used in Project UD16"
+          ]
+        },
+        {
+          "doc": "doc125_sensing.txt",
+          "terms": [
+            "pressure cell of Project VD30"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C64",
+      "type": "cross",
+      "query": "How does the alloy sheet of Project WD63 relate to the audit trail of Project XD21?",
+      "gold": [
+        {
+          "doc": "doc126_materials.txt",
+          "terms": [
+            "alloy sheet used in Project WD63"
+          ]
+        },
+        {
+          "doc": "doc127_safety.txt",
+          "terms": [
+            "audit trail of Project XD21"
+          ]
+        }
+      ]
+    }
+  ]
+}
