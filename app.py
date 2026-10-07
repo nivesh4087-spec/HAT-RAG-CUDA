@@ -47,22 +47,6 @@ st.markdown("""
         line-height: 1.5;
     }
     
-    .status-badge {
-        display: inline-block;
-        padding: 0.2rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        margin-right: 0.35rem;
-        margin-bottom: 0.35rem;
-    }
-    
-    .badge-primary { background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.4); }
-    .badge-success { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.4); }
-    .badge-muted { background: rgba(148, 163, 184, 0.15); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.25); }
-    
     .company-badge {
         display: inline-block;
         padding: 0.15rem 0.5rem;
@@ -78,21 +62,13 @@ st.markdown("""
     .badge-tsla { background-color: #DC2626; }
     .badge-synth { background-color: #4F46E5; }
     .badge-default { background-color: #6366F1; }
-    
-    .evidence-box {
-        background: rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 0.75rem;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # Datasets definition
 DATASETS = {
     "finance": {
-        "title": "SEC Form 10-K Filings (Real Data)",
+        "title": "SEC Form 10-K Filings",
         "desc": "5 Corporate Reports (AAPL, AMZN, MSFT, NVDA, TSLA) | 24 Leaf Chunks | 32 Total Nodes",
         "tree_file": ROOT_DIR / "algorithms" / "hat_finance_tree_structure.json",
         "queries_file": ROOT_DIR / "algorithms" / "compare-algos" / "finance_queries.json",
@@ -106,7 +82,7 @@ DATASETS = {
         ]
     },
     "enterprise": {
-        "title": "Enterprise Scaled Benchmark (Production Scale)",
+        "title": "Scaled Benchmark",
         "desc": "128 Technical Dossiers | 1,582 Leaf Chunks | 1,809 Total Nodes | Sub-linear Scaling Demonstration",
         "tree_file": ROOT_DIR / "algorithms" / "hat_enterprise_tree_structure.json",
         "queries_file": ROOT_DIR / "algorithms" / "compare-algos" / "enterprise_queries.json",
@@ -127,7 +103,7 @@ FINANCE_REPORTS_DIR = ROOT_DIR / "finance_data" / "reports"
 @st.cache_resource(show_spinner="Loading Knowledge Tree Index...")
 def get_tree_index(tree_path_str: str) -> Any:
     from algorithms.retrieval1_hat_beam_traversal import TreeIndex
-    return TreeIndex.from_json(tree_path_str, device="cpu")
+    return TreeIndex.from_json(tree_path_str, device="auto")
 
 
 @st.cache_resource(show_spinner="Building Passage Graph for Graph PPR...")
@@ -180,17 +156,20 @@ def main():
     dataset_key = st.sidebar.radio(
         "Active Knowledge Tree:",
         options=["finance", "enterprise"],
-        format_func=lambda k: DATASETS[k]["title"],
-        index=0
+        format_func=lambda k: "SEC 10-K Filings" if k == "finance" else "Scaled Benchmark",
+        index=0,
+        key="sidebar_dataset_radio"
     )
     selected_dataset = DATASETS[dataset_key]
     tree_path = selected_dataset["tree_file"]
 
-    # Detect dataset change to synchronize default question in UI
+    # Synchronize questions whenever dataset changes
     if st.session_state.get("prev_dataset_key") != dataset_key:
         st.session_state["prev_dataset_key"] = dataset_key
-        st.session_state["selected_benchmark_q"] = selected_dataset["sample_questions"][0]
-        st.session_state["interactive_query_val"] = selected_dataset["sample_questions"][0]
+        st.session_state["tab1_query_text"] = selected_dataset["sample_questions"][0]
+        st.session_state["tab2_comp_query"] = selected_dataset["sample_questions"][0]
+        st.session_state["tab1_preset_select"] = selected_dataset["sample_questions"][0]
+        st.session_state["tab2_preset_select"] = selected_dataset["sample_questions"][0]
 
     if not tree_path.exists():
         st.sidebar.error(f"Tree index file `{tree_path.name}` not found. Build it in Tab 4.")
@@ -204,11 +183,11 @@ def main():
     # Hardware & Index Info
     st.sidebar.markdown("---")
     st.sidebar.markdown("**System Architecture**")
-    st.sidebar.text("Execution Engine: CPU (PyTorch)")
-    st.sidebar.text(f"Dense Encoder: all-MiniLM-L6-v2 (d=384)")
-    st.sidebar.text(f"Total Tree Nodes: {tree_index.n_nodes}")
+    st.sidebar.text(f"Device: {tree_index.device}")
+    st.sidebar.text(f"Encoder: {tree_index.embedder.banner().split('|')[0].strip()}")
+    st.sidebar.text(f"Total Nodes: {tree_index.n_nodes}")
     st.sidebar.text(f"Leaf Passages: {tree_index.n_leaves}")
-    st.sidebar.text(f"Lateral Alpha-Edges: {len(tree_index.alpha_pairs)}")
+    st.sidebar.text(f"Lateral Alpha-Links: {len(tree_index.alpha_pairs)}")
     st.sidebar.caption(selected_dataset["desc"])
 
     # -------------------------------------------------------------------------
@@ -253,20 +232,25 @@ def main():
             with t_col3:
                 damping_factor = st.slider("PageRank Damping (d)", min_value=0.1, max_value=0.9, value=0.5, step=0.05)
 
-        # Preset Questions
+        # Preset Questions with on_change synchronization
         curated_qs = selected_dataset["sample_questions"]
+        
+        def on_tab1_preset_change():
+            val = st.session_state.get("tab1_preset_select")
+            if val and val != "Custom Question":
+                st.session_state["tab1_query_text"] = val
+
         selected_preset = st.selectbox(
             "Select Sample Question (or write custom below):",
-            options=["Custom Question"] + curated_qs,
-            index=1
+            options=curated_qs + ["Custom Question"],
+            key="tab1_preset_select",
+            on_change=on_tab1_preset_change
         )
 
-        initial_val = selected_preset if selected_preset != "Custom Question" else st.session_state.get("interactive_query_val", curated_qs[0])
         query_text = st.text_area(
             "Query Prompt:",
-            value=initial_val,
-            height=75,
-            key="tab1_query_area"
+            key="tab1_query_text",
+            height=75
         )
 
         if st.button("Execute Search", type="primary", use_container_width=True, key="btn_exec_tab1"):
@@ -353,7 +337,7 @@ def main():
                         lvl = tree_index.level[pos]
 
                         badge_html = get_tag_badge_html(label_tag)
-                        tier_label = "Leaf Chunk (Raw Passage)" if is_leaf else f"Tier-{lvl} Abstract Summary"
+                        tier_label = "Leaf Passage" if is_leaf else f"Tier-{lvl} Abstract Summary"
 
                         with st.container(border=True):
                             c_top1, c_top2 = st.columns([3, 1])
@@ -380,18 +364,22 @@ def main():
         )
 
         curated_qs = selected_dataset["sample_questions"]
+
+        def on_tab2_preset_change():
+            val = st.session_state.get("tab2_preset_select")
+            if val and val != "Custom Question":
+                st.session_state["tab2_comp_query"] = val
+
         selected_bench_q = st.selectbox(
             "Select Benchmark Question:",
-            options=["Custom Question"] + curated_qs,
-            index=1,
-            key="bench_q_picker"
+            options=curated_qs + ["Custom Question"],
+            key="tab2_preset_select",
+            on_change=on_tab2_preset_change
         )
 
-        bench_default = selected_bench_q if selected_bench_q != "Custom Question" else curated_qs[0]
         comp_query = st.text_input(
             "Question Text:",
-            value=bench_default,
-            key="comp_query_input_tab2"
+            key="tab2_comp_query"
         )
         comp_k = st.slider("Evaluation Depth (k):", min_value=1, max_value=10, value=5, key="comp_k_slider_tab2")
 
@@ -446,7 +434,7 @@ def main():
             else:
                 st.info(
                     f"Small Corpus Note: On small document sets ({tree_index.n_nodes} nodes), brute-force scanning is fast because "
-                    f"matrix multiplication is negligible. Select 'Enterprise Scaled Benchmark' in the sidebar to observe the 90%+ pruning effect at scale."
+                    f"matrix multiplication is negligible. Select 'Scaled Benchmark' in the sidebar to observe the 90%+ pruning effect at scale."
                 )
 
             st.divider()
@@ -515,7 +503,7 @@ def main():
                     else:
                         st.write("No nodes mapped directly to this document.")
         else:
-            st.info(f"The Enterprise Benchmark corpus contains {tree_index.n_leaves} passages across 128 dossiers.")
+            st.info(f"The Scaled Benchmark corpus contains {tree_index.n_leaves} passages across 128 dossiers.")
             
             # Show tree level distribution
             levels_count = {}
@@ -574,7 +562,7 @@ def main():
                     args = Args()
                     args.summarizer = "extractive" if "extractive" in summarizer_choice.lower() else "llm"
                     args.alpha = alpha_threshold
-                    args.device = "cpu"
+                    args.device = "auto"
                     args.chunk_size = 60
                     args.chunk_overlap = 15
                     args.branching = 4
@@ -591,8 +579,8 @@ def main():
                     st.code(traceback.format_exc())
 
         with c_build2:
-            if st.button("Rebuild Enterprise Scaled Tree (1,809 nodes)", use_container_width=True):
-                st.info("Building 128-document Scaled Enterprise Tree...")
+            if st.button("Rebuild Scaled Benchmark Tree (1,809 nodes)", use_container_width=True):
+                st.info("Building 128-document Scaled Benchmark Tree...")
                 t0 = time.perf_counter()
                 try:
                     from algorithms.compare_algos.synthetic_corpus import build_corpus
@@ -603,19 +591,19 @@ def main():
                         documents, queries, _ = build_corpus(n_docs=128, seed=17)
                         chunker = DocumentChunker(chunk_size=60, chunk_overlap=10)
                         chunks = chunker.process_corpus(documents)
-                        embedder = DenseEmbeddingModel(model_name="sentence-transformers/all-MiniLM-L6-v2", device="cpu", verbose=False)
+                        embedder = DenseEmbeddingModel(model_name="sentence-transformers/all-MiniLM-L6-v2", device="auto", verbose=False)
                         builder = HierarchicalAbstractTreeBuilder(
                             embedder=embedder, max_levels=6, target_children=8, alpha="auto",
-                            summarizer_mode="extractive", device="cpu", verbose=False
+                            summarizer_mode="extractive", device="auto", verbose=False
                         )
                         builder.build_tree(chunks)
                         builder.save_tree_json(str(ROOT_DIR / "algorithms" / "hat_enterprise_tree_structure.json"))
 
                     elapsed = time.perf_counter() - t0
-                    st.success(f"Enterprise Scaled Tree rebuilt in {elapsed:.2f}s ({len(builder.nodes)} nodes)!")
+                    st.success(f"Scaled Benchmark Tree rebuilt in {elapsed:.2f}s ({len(builder.nodes)} nodes)!")
                     st.cache_resource.clear()
                 except Exception as e:
-                    st.error(f"Error rebuilding enterprise tree: {e}")
+                    st.error(f"Error rebuilding tree: {e}")
                     import traceback
                     st.code(traceback.format_exc())
 
