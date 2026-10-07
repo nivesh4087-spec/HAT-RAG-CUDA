@@ -29,11 +29,11 @@ st.markdown("""
     .main-title {
         font-size: 2.2rem;
         font-weight: 700;
-        color: #1E293B;
+        color: #FFFFFF;
         margin-bottom: 0.2rem;
     }
     .sub-title {
-        color: #64748B;
+        color: #CBD5E1;
         font-size: 1rem;
         margin-bottom: 1.5rem;
     }
