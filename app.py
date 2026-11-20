@@ -1,613 +1,675 @@
 """
-HAT-RAG: Enterprise Knowledge & Retrieval Engine
-Hierarchical Abstract Tree for Cross-Document RAG with Sub-Linear Scaling
+HAT-RAG: Hierarchical Abstract Tree retrieval for large document estates.
+
+    streamlit run app.py
+
+Tabs
+    Ask         chat with the knowledge base: any question -> retrieval (any of
+                the four methods) -> grounded, cited answer from Groq / Gemini
+    Compare     one question, all four retrievers side by side (+ their answers)
+    Benchmarks  the evaluation results, interactive
+    Corpus      browse documents and the tree
+    Build       rebuild the indexes
 """
 
-import sys
 import os
-import json
+import sys
 import time
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
-# Add project root and algorithms to sys.path
-ROOT_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT_DIR))
-sys.path.insert(0, str(ROOT_DIR / "algorithms"))
-sys.path.insert(0, str(ROOT_DIR / "algorithms" / "compare-algos"))
+os.environ.setdefault("USE_TF", "0")
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+
+ROOT = Path(__file__).resolve().parent
+for p in (ROOT, ROOT / "algorithms", ROOT / "algorithms" / "compare-algos"):
+    sys.path.insert(0, str(p))
 
 import streamlit as st
 
-st.set_page_config(
-    page_title="HAT-RAG: Enterprise Knowledge & Retrieval Engine",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="HAT-RAG", page_icon=":material/account_tree:", layout="wide",
+                   initial_sidebar_state="expanded")
 
-# Clean, Professional Research Dashboard Styling (No Emojis, Native Contrast)
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    
-    .main-title {
-        font-size: 2.1rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        color: #F8FAFC;
-        margin-bottom: 0.2rem;
-    }
-    
-    .sub-title {
-        color: #94A3B8;
-        font-size: 0.95rem;
-        margin-bottom: 1.25rem;
-        line-height: 1.5;
-    }
-    
-    .company-badge {
-        display: inline-block;
-        padding: 0.15rem 0.5rem;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        color: white;
-    }
-    .badge-aapl { background-color: #475569; }
-    .badge-amzn { background-color: #D97706; }
-    .badge-msft { background-color: #0284C7; }
-    .badge-nvda { background-color: #16A34A; }
-    .badge-tsla { background-color: #DC2626; }
-    .badge-synth { background-color: #4F46E5; }
-    .badge-default { background-color: #6366F1; }
-</style>
-""", unsafe_allow_html=True)
+from webapp import charts
+from webapp.style import CSS, METHOD_COLORS, METHOD_FAMILY, METHOD_ORDER, dot, esc, hero, stats
 
-# Datasets definition
-DATASETS = {
-    "finance": {
-        "title": "SEC Form 10-K Filings",
-        "desc": "5 Corporate Reports (AAPL, AMZN, MSFT, NVDA, TSLA) | 24 Leaf Chunks | 32 Total Nodes",
-        "tree_file": ROOT_DIR / "algorithms" / "hat_finance_tree_structure.json",
-        "queries_file": ROOT_DIR / "algorithms" / "compare-algos" / "finance_queries.json",
-        "is_synthetic": False,
-        "sample_questions": [
-            "Compare the research and development spending of Apple and NVIDIA.",
-            "What gross margin did Apple report in 2024?",
-            "How does Tesla evaluate its warranty reserves?",
-            "What goodwill impairment policies does Microsoft maintain?",
-            "What are Amazon's primary operating segments and cloud drivers?"
-        ]
+st.markdown(CSS, unsafe_allow_html=True)
+
+ALGO = ROOT / "algorithms"
+QDIR = ALGO / "compare-algos"
+MULTIHOP_TREE = ROOT / "data" / "multihop_rag" / "trees" / "hat_multihop_full.json"
+
+KBS: Dict[str, Dict[str, Any]] = {
+    "multihop": {
+        "name": "MultiHop-RAG news archive",
+        "short": "MultiHop-RAG",
+        "tree": MULTIHOP_TREE,
+        "blurb": "609 real articles from 49 publishers (TechCrunch, The Verge, BBC, Fortune ...), 1.06M words. "
+                 "The large-scale benchmark: questions need evidence from 2-4 different articles.",
+        "placeholder": "Ask anything about the late-2023 tech, business, science or sports news ...",
+        "color": "#2a78d6",
     },
     "enterprise": {
-        "title": "Scaled Benchmark",
-        "desc": "128 Technical Dossiers | 1,582 Leaf Chunks | 1,809 Total Nodes | Sub-linear Scaling Demonstration",
-        "tree_file": ROOT_DIR / "algorithms" / "hat_enterprise_tree_structure.json",
-        "queries_file": ROOT_DIR / "algorithms" / "compare-algos" / "enterprise_queries.json",
-        "is_synthetic": True,
-        "sample_questions": [
-            "What nominal efficiency does the heat sink of Project A76 record?",
-            "What settling time does the watchdog task of Project D56 record?",
-            "Compare failure rates and recovery intervals across power modules.",
-            "Which projects report thermal management interface anomalies?",
-            "What duty margin and throughput index are logged for energy storage packs?"
-        ]
-    }
+        "name": "Engineering dossiers (synthetic)",
+        "short": "Synthetic, 128 docs",
+        "tree": ALGO / "hat_enterprise_tree_structure.json",
+        "blurb": "128 generated technical dossiers with planted facts and cross-document bridges, "
+                 "built so that surface similarity alone fails.",
+        "placeholder": "e.g. What settling time does the watchdog task of Project D56 record?",
+        "color": "#1baf7a",
+    },
+    "finance": {
+        "name": "SEC 10-K summaries",
+        "short": "10-K, 5 filings",
+        "tree": ALGO / "hat_finance_tree_structure.json",
+        "blurb": "Summaries of the 2024 10-K filings of Apple, Amazon, Microsoft, NVIDIA and Tesla. "
+                 "Small: useful for reading every chunk, too small for cost differences to show.",
+        "placeholder": "e.g. Compare the R&D spending of Apple and NVIDIA.",
+        "color": "#eb6834",
+    },
 }
-
-FINANCE_REPORTS_DIR = ROOT_DIR / "finance_data" / "reports"
-
-
-@st.cache_resource(show_spinner="Loading Knowledge Tree Index...")
-def get_tree_index(tree_path_str: str) -> Any:
-    from algorithms.retrieval1_hat_beam_traversal import TreeIndex
-    return TreeIndex.from_json(tree_path_str, device="cpu")
+METHOD_LABEL = {"HAT-RAG": "HAT-RAG (ours)", "Flat dense": "Flat dense",
+                "RAPTOR collapsed": "RAPTOR", "Graph PPR": "Graph PPR"}
 
 
-@st.cache_resource(show_spinner="Building Passage Graph for Graph PPR...")
-def get_graph_ppr_retriever(tree_path_str: str, damping: float = 0.5) -> Any:
-    idx = get_tree_index(tree_path_str)
-    from algorithms.retrieval4_graph_ppr import GraphPPRRetriever
-    return GraphPPRRetriever(idx, damping=damping)
+# ============================================================================
+# Cached resources
+# ============================================================================
+@st.cache_resource(show_spinner="Loading the encoder ...")
+def get_embedder():
+    from algo3_hierarchical_abstract_tree import DenseEmbeddingModel
+    return DenseEmbeddingModel(device="cpu", verbose=False)
 
 
-def load_finance_documents() -> Dict[str, str]:
-    corpus = {}
-    if FINANCE_REPORTS_DIR.exists():
-        for f in sorted(FINANCE_REPORTS_DIR.glob("*.txt")):
-            with open(f, "r", encoding="utf-8") as fp:
-                corpus[f.name] = fp.read()
-    return corpus
+@st.cache_resource(show_spinner="Loading the knowledge tree ...")
+def get_index(tree: str):
+    from retrieval1_hat_beam_traversal import TreeIndex
+    return TreeIndex.from_json(tree, embedder=get_embedder(), device="cpu")
 
 
-def get_tag_badge_html(tag: str) -> str:
-    tag_upper = tag.upper()
-    if "AAPL" in tag_upper:
-        return f'<span class="company-badge badge-aapl">AAPL</span>'
-    elif "AMZN" in tag_upper:
-        return f'<span class="company-badge badge-amzn">AMZN</span>'
-    elif "MSFT" in tag_upper:
-        return f'<span class="company-badge badge-msft">MSFT</span>'
-    elif "NVDA" in tag_upper:
-        return f'<span class="company-badge badge-nvda">NVDA</span>'
-    elif "TSLA" in tag_upper:
-        return f'<span class="company-badge badge-tsla">TSLA</span>'
-    elif "DOC" in tag_upper or "PROJECT" in tag_upper:
-        return f'<span class="company-badge badge-synth">{tag}</span>'
-    return f'<span class="company-badge badge-default">{tag}</span>'
+@st.cache_resource(show_spinner="Preparing the four retrievers (one-off) ...")
+def get_retrievers(tree: str, beam: int, lam: float, damping: float, n_seeds: int = 3,
+                   max_link: Optional[int] = None):
+    from retrieval1_hat_beam_traversal import HATBeamRetriever
+    from retrieval2_flat_dense import FlatDenseRetriever
+    from retrieval3_raptor_collapsed_tree import CollapsedTreeRetriever
+    index = get_index(tree)
+    return {"HAT-RAG": HATBeamRetriever(index, beam_width=beam, diversity=lam, n_seeds=n_seeds,
+                                        max_link=max_link),
+            "Flat dense": FlatDenseRetriever(index),
+            "RAPTOR collapsed": CollapsedTreeRetriever(index),
+            "Graph PPR": get_graph(tree, damping)}
 
 
-def main():
-    st.markdown('<div class="main-title">HAT-RAG: Enterprise Knowledge & Retrieval Engine</div>', unsafe_allow_html=True)
+@st.cache_resource(show_spinner="Building the passage graph for Graph PPR (one-off) ...")
+def get_graph(tree: str, damping: float):
+    from retrieval4_graph_ppr import GraphPPRRetriever
+    return GraphPPRRetriever(get_index(tree), damping=damping)
+
+
+@st.cache_data(show_spinner=False)
+def get_doc_meta(kb: str) -> Dict[str, Dict[str, Any]]:
+    if kb == "multihop":
+        from multihop_corpus import article_meta, load_articles
+        return article_meta(load_articles())
+    if kb == "finance":
+        names = {"AAPL": "Apple", "AMZN": "Amazon", "MSFT": "Microsoft", "NVDA": "NVIDIA", "TSLA": "Tesla"}
+        out = {}
+        for f in (ROOT / "finance_data" / "reports").glob("*.txt"):
+            t = f.name.split("_")[0]
+            out[f.name] = {"title": f"{names.get(t, t)} 10-K 2024", "source": t}
+        return out
+    from synthetic_corpus import build_corpus
+    _, _, aliases = build_corpus(n_docs=128, seed=17)
+    return {d: {"title": f"{a[0]} dossier", "source": d.split("_")[1].title()} for d, a in aliases.items()}
+
+
+@st.cache_data(show_spinner=False)
+def get_benchmark(kb: str) -> List[Dict[str, Any]]:
+    import json
+    if kb == "multihop":
+        from multihop_corpus import load_articles, load_queries
+        qs, _ = load_queries(load_articles())
+        return qs
+    name = "finance_queries.json" if kb == "finance" else "enterprise_queries.json"
+    return json.loads((QDIR / name).read_text(encoding="utf-8"))["queries"]
+
+
+@st.cache_data(show_spinner=False)
+def get_doc_text(kb: str, doc_id: str) -> str:
+    if kb == "multihop":
+        from multihop_corpus import article_meta, load_articles
+        arts = load_articles()
+        return dict(zip(article_meta(arts), arts))[doc_id]["body"]
+    if kb == "finance":
+        return (ROOT / "finance_data" / "reports" / doc_id).read_text(encoding="utf-8")
+    from synthetic_corpus import build_corpus
+    docs, _, _ = build_corpus(n_docs=128, seed=17)
+    return docs.get(doc_id, "")
+
+
+@st.cache_resource(show_spinner=False)
+def get_client(provider: str, model: Optional[str]):
+    from llm_answer import LLMError, make_client
+    try:
+        return make_client(provider, model or None), None
+    except LLMError as e:
+        return None, str(e)
+
+
+def suggestions(kb: str) -> List[str]:
+    if kb == "multihop":
+        picked, seen = [], set()
+        for q in get_benchmark(kb):
+            if q["split"] == "test" and len(q["query"]) < 170 and q["type"] not in seen:
+                picked.append(q["query"])
+                seen.add(q["type"])
+        return ["What happened at OpenAI's board in November 2023, and how did Microsoft react?",
+                "What are the main antitrust arguments the US government made against Google?"] + picked
+    qs = get_benchmark(kb)
+    return [q["query"] for q in qs if q["type"] == "cross"][:2] + [q["query"] for q in qs if q["type"] == "single"][:2]
+
+
+# ============================================================================
+# Small rendering helpers
+# ============================================================================
+def source_title(index, pos: int, meta: Dict[str, Dict[str, Any]]) -> str:
+    node = index.nodes[pos]
+    if node.level > 0:
+        return f"Tier-{node.level} abstract over {len(index.docs[pos])} document(s)"
+    m = meta.get(node.doc_id or "", {})
+    title = m.get("title") or index.label(pos)
+    return f"{m['source']} · {title}" if m.get("source") and m["source"] not in title else title
+
+
+def strip_header(kb: str, text: str) -> str:
+    """MultiHop chunks start with '[source, month] title.'; the card shows that already."""
+    if kb == "multihop" and text.startswith("[") and "] " in text:
+        head, _, rest = text.partition("] ")
+        title_end = rest.find(". ")
+        return rest[title_end + 2:] if 0 < title_end < 220 else rest
+    return text
+
+
+def gold_hits(index, result, item: Optional[Dict[str, Any]]):
+    """(set of retrieved positions that hold gold evidence, recall) for a benchmark question."""
+    if not item:
+        return set(), None
+    from run_comparison import covers
+    pos = [index.pos[n] for n in result.node_ids]
+    hit_pos = {i for i in pos if any(covers(index, i, g) for g in item["gold"])}
+    found = sum(any(covers(index, i, g) for i in pos) for g in item["gold"])
+    return hit_pos, found / max(1, len(item["gold"]))
+
+
+def render_sources(kb, index, sources, cited, meta, gold_pos=frozenset(), limit_chars: int = 520):
+    for s in sources:
+        pos = index.pos[s.node_id]
+        node = index.nodes[pos]
+        tags = ""
+        if node.level > 0:
+            tags += '<span class="tag abs">abstract</span>'
+        if pos in gold_pos:
+            tags += '<span class="tag gold">gold evidence</span>'
+        m = meta.get(node.doc_id or "", {})
+        when = f" · {m['month']}" if m.get("month") else ""
+        body = strip_header(kb, s.text)
+        body = body[:limit_chars] + ("…" if len(body) > limit_chars else "")
+        cls = "src" + (" cited" if s.n in cited else "") + (" gold" if pos in gold_pos else "")
+        st.markdown(
+            f'<div class="{cls}"><div class="h"><span class="n">[{s.n}]</span>'
+            f'<span class="ti">{esc(source_title(index, pos, meta))}</span>{tags}'
+            f'<span class="sc">{esc(when.strip(" ·"))} · score {s.score:.3f}</span></div>'
+            f'<div class="b">{esc(body)}</div></div>', unsafe_allow_html=True)
+
+
+def method_card(name: str, result, n_nodes: int, recall: Optional[float]) -> str:
+    pct = 100.0 * result.nodes_scored / max(1, n_nodes)
+    color = METHOD_COLORS[name]
+    rec = (f'<div class="mrow"><span>Gold evidence</span><b>{recall * 100:.0f}%</b></div>'
+           if recall is not None else "")
+    return (f'<div class="mcard{" ours" if name == "HAT-RAG" else ""}"><div class="t">{dot(color)}{esc(METHOD_LABEL[name])}</div>'
+            f'<div class="f">{esc(METHOD_FAMILY[name])}</div>'
+            f'<div class="mrow"><span>Scored</span><b>{result.nodes_scored:,} / {n_nodes:,}</b></div>'
+            f'<div class="bar"><i style="width:{min(100.0, pct):.1f}%;background:{color}"></i></div>'
+            f'<div class="mrow"><span>Of the index</span><b>{pct:.1f}%</b></div>'
+            f'<div class="mrow"><span>Latency</span><b>{result.seconds * 1000:.2f} ms</b></div>{rec}</div>')
+
+
+def evidence_html(kb, index, result, meta, gold_pos) -> str:
+    rows = []
+    for r, (nid, sc) in enumerate(zip(result.node_ids, result.scores), 1):
+        pos = index.pos[nid]
+        txt = strip_header(kb, index.text(pos))
+        g = '<span class="tag gold">gold</span>' if pos in gold_pos else ""
+        rows.append(f'<div class="ev"><span class="r">{r}.</span><span class="who">{esc(source_title(index, pos, meta))}</span>'
+                    f'{g}<br>{esc(txt[:170])}{"…" if len(txt) > 170 else ""}</div>')
+    return "".join(rows)
+
+
+def no_llm_note(err: Optional[str]):
     st.markdown(
-        '<div class="sub-title">'
-        'Hierarchical Abstract Tree for Cross-Document RAG | Sub-linear beam search with lateral alpha-links and graph propagation'
-        '</div>',
-        unsafe_allow_html=True
-    )
+        '<div class="note"><b>Retrieval only: no LLM key found.</b> Add <code>GROQ_API_KEY=...</code> '
+        '(or <code>GEMINI_API_KEY</code>) to <code>.env</code> in the project root, then reload. '
+        'The evidence below is what the model would receive.</div>', unsafe_allow_html=True)
+    if err:
+        st.caption(err)
 
-    # -------------------------------------------------------------------------
-    # SIDEBAR: Knowledge Base & Configuration
-    # -------------------------------------------------------------------------
-    st.sidebar.markdown("### Knowledge Base Selection")
-    
-    dataset_key = st.sidebar.radio(
-        "Active Knowledge Tree:",
-        options=["finance", "enterprise"],
-        format_func=lambda k: "SEC 10-K Filings" if k == "finance" else "Scaled Benchmark",
-        index=0,
-        key="sidebar_dataset_radio"
-    )
-    selected_dataset = DATASETS[dataset_key]
-    tree_path = selected_dataset["tree_file"]
 
-    # Synchronize questions whenever dataset changes
-    if st.session_state.get("prev_dataset_key") != dataset_key:
-        st.session_state["prev_dataset_key"] = dataset_key
-        st.session_state["tab1_query_text"] = selected_dataset["sample_questions"][0]
-        st.session_state["tab2_comp_query"] = selected_dataset["sample_questions"][0]
-        st.session_state["tab1_preset_select"] = selected_dataset["sample_questions"][0]
-        st.session_state["tab2_preset_select"] = selected_dataset["sample_questions"][0]
+# ============================================================================
+# Sidebar
+# ============================================================================
+def sidebar() -> Dict[str, Any]:
+    from llm_answer import PROVIDERS, available_providers
+    with st.sidebar:
+        st.markdown("### Knowledge base")
+        built = [k for k in KBS if KBS[k]["tree"].exists()]
+        kb = st.radio("Knowledge base", built, format_func=lambda k: KBS[k]["name"],
+                      label_visibility="collapsed", key="kb")
+        st.caption(KBS[kb]["blurb"])
+        missing = [k for k in KBS if k not in built]
+        if missing:
+            st.caption("Not built yet: " + ", ".join(KBS[k]["name"] for k in missing) + " (see the Build tab).")
 
-    if not tree_path.exists():
-        st.sidebar.error(f"Tree index file `{tree_path.name}` not found. Build it in Tab 4.")
-        st.error(f"Selected tree index not found at `{tree_path}`. Run indexing pipeline in Tab 4.")
+        st.markdown("### Language model")
+        have = available_providers()
+        options = ["auto"] + list(PROVIDERS)
+        provider = st.selectbox("Provider", options, format_func=lambda p: {
+            "auto": "Auto (Groq, then Gemini)", "groq": "Groq", "gemini": "Gemini"}[p], key="provider")
+        client, err = get_client(provider, None)
+        model = None
+        if client:
+            models = client.list_models() or [client.model]
+            idx = models.index(client.model) if client.model in models else 0
+            model = st.selectbox("Model", models, index=idx, key=f"model_{client.provider}")
+            if model != client.model:
+                client, err = get_client(client.provider, model)
+            st.markdown(f'<div class="meta-line">{dot("#0f7b0f")} Connected: {esc(client.label)}</div>',
+                        unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="meta-line">{dot("#d03b3b")} No key for '
+                        f'{"any provider" if provider == "auto" else PROVIDERS[provider]["label"]}</div>',
+                        unsafe_allow_html=True)
+            st.caption("Put GROQ_API_KEY / GEMINI_API_KEY in .env and reload.")
+        mode = st.radio("Answer style", ["grounded", "open"], horizontal=True, key="answer_mode",
+                        format_func=lambda m: "Sources only" if m == "grounded" else "Sources + general knowledge")
+
+        st.markdown("### Retrieval")
+        k = st.slider("Evidence passages (k)", 3, 12, 8, key="k")
+        large = kb == "multihop"
+        with st.expander("HAT-RAG tuning"):
+            fast = st.toggle("Fast mode: cap broad entity links", value=False, key=f"fast_{kb}",
+                             help="Entities named in more than 200 passages (a publisher, say) only mark "
+                                  "candidates instead of pulling every passage that names them into the pool. "
+                                  "On MultiHop-RAG: ~10x faster, about half a point of recall lower.")
+            beam = st.slider("Beam width β", 1, 12, 3 if (fast or not large) else 5, key=f"beam_{kb}_{fast}",
+                             help="Large-corpus default (5) was chosen on the MultiHop-RAG dev split.")
+            lam = st.slider("Diversity λ", 0.0, 0.5, 0.15, 0.05, key="lam")
+            damping = st.slider("PageRank damping", 0.1, 0.9, 0.5, 0.05, key="damping")
+        n_seeds = 6 if large and not fast else 3
+        max_link = 200 if fast else None
+        if have:
+            st.caption("Keys found: " + ", ".join(PROVIDERS[p]["label"] for p in have))
+    return dict(kb=kb, client=client, llm_error=err, mode=mode, k=k, beam=beam, lam=lam, damping=damping,
+                n_seeds=n_seeds, max_link=max_link)
+
+
+# ============================================================================
+# Tabs
+# ============================================================================
+def answer_turn(cfg, index, retriever, method, meta, prompt, history) -> List[Dict[str, Any]]:
+    """Render one question + streamed answer; return the two turns for the history."""
+    from llm_answer import LLMError, build_messages, build_sources, cited, normalize_citations
+    kb = cfg["kb"]
+    with st.chat_message("user", avatar=":material/person:"):
+        st.markdown(prompt)
+    with st.chat_message("assistant", avatar=":material/account_tree:"):
+        result = retriever.retrieve(prompt, k=cfg["k"])
+        sources = build_sources(index, result, meta)
+        stat_line = (f'{dot(METHOD_COLORS[method])} {esc(METHOD_LABEL[method])} scored '
+                     f'{result.nodes_scored:,} of {index.n_nodes:,} nodes '
+                     f'({100 * result.nodes_scored / index.n_nodes:.1f}%) in {result.seconds * 1000:.1f} ms')
+        client = cfg["client"]
+        text = ""
+        if client is None:
+            no_llm_note(cfg["llm_error"])
+            text = "_Retrieval only (no LLM configured)._"
+        else:
+            msgs = build_messages(prompt, sources, cfg["mode"],
+                                  [{"role": t["role"], "content": t["content"]} for t in history
+                                   if not t["content"].startswith("_")])
+            t0 = time.perf_counter()
+            try:
+                text = st.write_stream(client.stream(msgs))
+            except LLMError as e:
+                try:                                       # one non-streaming retry (handles 429 backoff)
+                    text = client.chat(msgs)["text"]
+                    st.markdown(text)
+                except LLMError as e2:
+                    st.error(f"The model call failed: {e2}")
+                    text = f"_Model call failed: {e}_"
+            stat_line += f" · answered by {esc(client.label)} in {time.perf_counter() - t0:.1f} s"
+        st.markdown(f'<div class="meta-line">{stat_line}</div>', unsafe_allow_html=True)
+        if text and text != normalize_citations(text):
+            text = normalize_citations(text)        # store the [n] form for re-rendering
+        used = cited(text or "", len(sources))
+        with st.expander(f"Sources ({len(sources)})", expanded=client is None):
+            render_sources(kb, index, sources, used, meta)
+    return [{"role": "user", "content": prompt},
+            {"role": "assistant", "content": text or "", "sources": sources, "cited": used, "stats": stat_line}]
+
+
+def tab_ask(cfg, index, retrievers, meta):
+    kb = cfg["kb"]
+    c1, c2 = st.columns([3, 1.2], vertical_alignment="bottom")
+    with c1:
+        method = st.segmented_control("Retriever", METHOD_ORDER, default="HAT-RAG", key="ask_method",
+                                      format_func=lambda m: METHOD_LABEL[m])
+    with c2:
+        if st.button("Clear conversation", icon=":material/delete_sweep:", width="stretch"):
+            st.session_state[f"chat_{kb}"] = []
+    method = method or "HAT-RAG"
+    history = st.session_state.setdefault(f"chat_{kb}", [])
+
+    pending = st.session_state.pop(f"pending_{kb}", None)
+    conv = st.container()
+    with conv:
+        for turn in history:
+            with st.chat_message(turn["role"], avatar=":material/person:" if turn["role"] == "user" else ":material/account_tree:"):
+                st.markdown(turn["content"])
+                if turn.get("stats"):
+                    st.markdown(f'<div class="meta-line">{turn["stats"]}</div>', unsafe_allow_html=True)
+                if turn.get("sources"):
+                    with st.expander(f"Sources ({len(turn['sources'])})"):
+                        render_sources(kb, index, turn["sources"], turn.get("cited", []), meta)
+
+    if not history and not pending and not st.session_state.get(f"chat_input_{kb}"):
+        st.markdown('<div class="section-lead">Ask any question in your own words. The retriever finds evidence in '
+                    f'{index.n_leaves:,} passages, and the model answers from it with numbered citations. '
+                    'Some starting points:</div>', unsafe_allow_html=True)
+        cols = st.columns(2)
+        for i, q in enumerate(suggestions(kb)[:6]):
+            if cols[i % 2].button(q, key=f"sugg_{kb}_{i}", width="stretch"):
+                st.session_state[f"pending_{kb}"] = q
+                st.rerun()
+
+    prompt = st.chat_input(KBS[kb]["placeholder"], key=f"chat_input_{kb}") or pending
+    if not prompt:
+        return
+    with conv:
+        history += answer_turn(cfg, index, retrievers[method], method, meta, prompt, history)
+
+
+def tab_compare(cfg, index, retrievers, meta):
+    from llm_answer import LLMError, build_messages, build_sources, normalize_citations
+    kb = cfg["kb"]
+    st.markdown('<div class="section-lead">Run one question through all four retrievers over the same vectors. '
+                'Pick a benchmark question to see which method actually finds the labelled evidence.</div>',
+                unsafe_allow_html=True)
+    bench = get_benchmark(kb)
+    pool = [q for q in bench if q.get("split", "test") == "test"][:400]
+    c1, c2 = st.columns([1, 2])
+    with c1:
+        source = st.radio("Question", ["Benchmark question", "My own question"], key="cmp_src", horizontal=True)
+    with c2:
+        if source == "Benchmark question":
+            types = sorted({q["type"] for q in pool})
+            qtype = st.segmented_control("Type", types, default=types[0], key=f"cmp_type_{kb}") or types[0]
+    if source == "Benchmark question":
+        subset = [q for q in pool if q["type"] == qtype]
+        item = st.selectbox("Benchmark question", subset, format_func=lambda q: q["query"],
+                            key=f"cmp_q_{kb}_{qtype}")
+        query = item["query"]
+    else:
+        item = None
+        query = st.text_input("Your question", key=f"cmp_free_{kb}", placeholder=KBS[kb]["placeholder"])
+    g1, g2 = st.columns([1, 1])
+    k = g1.slider("k (evidence per method)", 3, 10, 5, key="cmp_k")
+    with_answers = g2.toggle("Also generate an answer from each method's evidence", value=False,
+                             disabled=cfg["client"] is None, key="cmp_ans")
+    if not st.button("Compare the four retrievers", type="primary", icon=":material/compare_arrows:",
+                     width="stretch") or not query:
         return
 
-    # Load active TreeIndex
-    tree_index = get_tree_index(str(tree_path))
-    finance_docs = load_finance_documents()
+    q = index.encode_query(query)
+    results = {m: retrievers[m].search(q, k=k, query=query) for m in METHOD_ORDER}
+    golds = {m: gold_hits(index, results[m], item) for m in METHOD_ORDER}
+    cols = st.columns(4)
+    for col, m in zip(cols, METHOD_ORDER):
+        col.markdown(method_card(m, results[m], index.n_nodes, golds[m][1]), unsafe_allow_html=True)
 
-    # Hardware & Index Info
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("**System Architecture**")
-    st.sidebar.text(f"Device: {tree_index.device}")
-    st.sidebar.text(f"Encoder: {tree_index.embedder.banner().split('|')[0].strip()}")
-    st.sidebar.text(f"Total Nodes: {tree_index.n_nodes}")
-    st.sidebar.text(f"Leaf Passages: {tree_index.n_leaves}")
-    st.sidebar.text(f"Lateral Alpha-Links: {len(tree_index.alpha_pairs)}")
-    st.sidebar.caption(selected_dataset["desc"])
+    if item:
+        ans = f" · reference answer: <b>{esc(item['answer'])}</b>" if item.get("answer") else ""
+        st.markdown(f'<div class="meta-line" style="margin-top:.6rem">This question needs {len(item["gold"])} piece(s) '
+                    f'of evidence from {len({g["doc"] for g in item["gold"]})} document(s){ans}</div>',
+                    unsafe_allow_html=True)
 
-    # -------------------------------------------------------------------------
-    # TABS NAVIGATION
-    # -------------------------------------------------------------------------
-    tab_query, tab_compare, tab_corpus, tab_pipeline = st.tabs([
-        "Interactive Retrieval",
-        "Head-to-Head Benchmark",
-        "Corpus & Tree Explorer",
-        "Offline Indexing Pipeline"
-    ])
+    st.markdown("#### Evidence retrieved")
+    cols = st.columns(4)
+    for col, m in zip(cols, METHOD_ORDER):
+        col.markdown(f'<div class="mcard">{evidence_html(kb, index, results[m], meta, golds[m][0])}</div>',
+                     unsafe_allow_html=True)
 
-    # -------------------------------------------------------------------------
-    # TAB 1: Interactive Retrieval Engine
-    # -------------------------------------------------------------------------
-    with tab_query:
-        st.subheader("Interactive Retrieval Engine")
-        st.caption(f"Active Tree: {selected_dataset['title']} ({tree_index.n_nodes} nodes)")
+    if with_answers and cfg["client"]:
+        st.markdown("#### Answers from each method's evidence")
+        cols = st.columns(4)
+        for col, m in zip(cols, METHOD_ORDER):
+            with col, st.container(border=True):
+                st.markdown(f'{dot(METHOD_COLORS[m])} **{METHOD_LABEL[m]}**', unsafe_allow_html=True)
+                try:
+                    with st.spinner("Generating ..."):
+                        out = cfg["client"].chat(build_messages(query, build_sources(index, results[m], meta), "grounded"))
+                    st.markdown(normalize_citations(out["text"]))
+                except LLMError as e:
+                    st.error(str(e))
 
-        c_algo, c_k = st.columns([3, 1])
-        with c_algo:
-            algo_option = st.selectbox(
-                "Retrieval Strategy:",
-                [
-                    "HAT-RAG (Algorithm 4 - Ours)",
-                    "Flat Dense RAG (Vanilla Baseline)",
-                    "RAPTOR Collapsed Tree (Pooled Baseline)",
-                    "Entity Graph PPR (GraphRAG Baseline)",
-                    "Compare All 4 Simultaneously"
-                ],
-                index=0
-            )
-        with c_k:
-            k_val = st.slider("Top Evidence (k):", min_value=1, max_value=10, value=5, key="k_slider_tab1")
+    with st.expander("HAT-RAG search trace"):
+        for line in results["HAT-RAG"].trace:
+            st.text(line)
 
-        with st.expander("Search Tuning Hyperparameters", expanded=False):
-            t_col1, t_col2, t_col3 = st.columns(3)
-            with t_col1:
-                beam_width = st.slider("Beam Width (beta)", min_value=1, max_value=8, value=3)
-            with t_col2:
-                diversity_weight = st.slider("Diversity Penalty (lambda)", min_value=0.0, max_value=0.5, value=0.15, step=0.05)
-            with t_col3:
-                damping_factor = st.slider("PageRank Damping (d)", min_value=0.1, max_value=0.9, value=0.5, step=0.05)
 
-        # Preset Questions with on_change synchronization
-        curated_qs = selected_dataset["sample_questions"]
-        
-        def on_tab1_preset_change():
-            val = st.session_state.get("tab1_preset_select")
-            if val and val != "Custom Question":
-                st.session_state["tab1_query_text"] = val
+def tab_benchmarks():
+    verdict = charts.load("verdict")
+    multihop = charts.load("multihop")
+    st.markdown('<div class="section-lead">All four retrievers read the same tree, chunks and vectors; '
+                'every number here comes from <code>algorithms/compare-algos/results/</code>.</div>',
+                unsafe_allow_html=True)
 
-        selected_preset = st.selectbox(
-            "Select Sample Question (or write custom below):",
-            options=curated_qs + ["Custom Question"],
-            key="tab1_preset_select",
-            on_change=on_tab1_preset_change
-        )
+    if multihop:
+        full = multihop["full"]
+        s5 = full["by_k"]["5"]["summary"]
+        s10 = full["by_k"]["10"]["summary"]
+        base = [m for m in METHOD_ORDER if m != "HAT-RAG"]
+        best = max(base, key=lambda m: s5[m]["recall"])
+        h, b = s5["HAT-RAG"], s5[best]
+        flat = s5["Flat dense"]
+        st.markdown(f"#### MultiHop-RAG at full scale: {full['index']['leaves']:,} passages, "
+                    f"{h['n_queries']:,} held-out questions")
+        st.markdown(stats([
+            (f"{h['recall'] * 100:.1f}%", "HAT-RAG recall@5", f"{(h['recall'] - b['recall']) * 100:+.1f} pts vs {best}", True),
+            (f"{b['recall'] * 100:.1f}%", f"Best baseline ({best})", None, False),
+            (f"{s10['HAT-RAG']['recall'] * 100:.1f}%", "HAT-RAG recall@10",
+             f"{(s10['HAT-RAG']['recall'] - max(s10[m]['recall'] for m in base)) * 100:+.1f} pts vs best", False),
+            (f"{h['nodes_scored'] / full['index']['nodes'] * 100:.1f}%", "Of the index scored per query",
+             f"{flat['nodes_scored'] / h['nodes_scored']:.0f}x fewer than flat", False),
+            (f"{h['latency_ms']:.1f} ms", "HAT-RAG search latency",
+             f"flat {flat['latency_ms']:.1f} ms · graph {s5['Graph PPR']['latency_ms']:.1f} ms", False),
+        ]), unsafe_allow_html=True)
 
-        query_text = st.text_area(
-            "Query Prompt:",
-            key="tab1_query_text",
-            height=75
-        )
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("**Recall@5 by question type**")
+            st.plotly_chart(charts.type_bars(s5, ["inference", "comparison", "temporal"],
+                                             {"inference": "Inference", "comparison": "Comparison",
+                                              "temporal": "Temporal"}),
+                            width="stretch", config={"displayModeBar": False})
+        with c2:
+            st.markdown("**Accuracy against cost** (HAT-RAG beam width swept)")
+            st.plotly_chart(charts.frontier(full["beam"], {m: s5[m] for m in base}),
+                            width="stretch", config={"displayModeBar": False})
+        rows = charts.haystack_rows()
+        if rows:
+            st.markdown(f"**Same {multihop['haystack']['queries']} questions, growing haystack** "
+                        "(real distractor articles added)")
+            c1, c2 = st.columns(2)
+            c1.plotly_chart(charts.size_lines(rows, "recall"), width="stretch",
+                            config={"displayModeBar": False})
+            c2.plotly_chart(charts.size_lines(rows, "nodes_scored"), width="stretch",
+                            config={"displayModeBar": False})
+    else:
+        st.info("MultiHop-RAG results not computed yet: run `python algorithms/compare-algos/run_multihop.py`.")
 
-        if st.button("Execute Search", type="primary", use_container_width=True, key="btn_exec_tab1"):
-            if not query_text.strip():
-                st.warning("Please enter a non-empty query prompt.")
-            else:
-                from algorithms.retrieval1_hat_beam_traversal import HATBeamRetriever, assemble_context
-                from algorithms.retrieval2_flat_dense import FlatDenseRetriever
-                from algorithms.retrieval3_raptor_collapsed_tree import CollapsedTreeRetriever
+    syn = charts.synthetic_rows()
+    if syn:
+        st.markdown("#### Synthetic scaling benchmark")
+        c1, c2 = st.columns(2)
+        c1.plotly_chart(charts.size_lines(syn, "recall"), width="stretch", config={"displayModeBar": False})
+        c2.plotly_chart(charts.size_lines(syn, "nodes_scored"), width="stretch",
+                        config={"displayModeBar": False})
 
-                if algo_option == "Compare All 4 Simultaneously":
-                    r1 = HATBeamRetriever(tree_index, beam_width=beam_width, diversity=diversity_weight)
-                    r2 = FlatDenseRetriever(tree_index)
-                    r3 = CollapsedTreeRetriever(tree_index)
-                    r4 = get_graph_ppr_retriever(str(tree_path), damping=damping_factor)
+    st.markdown("#### Tables")
+    import pandas as pd
+    table = []
+    for m in METHOD_ORDER:
+        row = {"Method": m}
+        if multihop:
+            row["MultiHop-RAG R@5"] = f"{multihop['full']['by_k']['5']['summary'][m]['recall'] * 100:.1f}%"
+            row["MultiHop-RAG R@10"] = f"{multihop['full']['by_k']['10']['summary'][m]['recall'] * 100:.1f}%"
+            row["MultiHop nodes scored"] = f"{multihop['full']['by_k']['5']['summary'][m]['nodes_scored']:,.0f}"
+        if verdict:
+            t = verdict["table"][m]
+            row["10-K R@5"] = f"{t['finance_recall'] * 100:.1f}%"
+            row["Synthetic R@5 (mean)"] = f"{t['synthetic_recall'] * 100:.1f}%"
+        table.append(row)
+    st.dataframe(pd.DataFrame(table), hide_index=True, width="stretch")
 
-                    res1 = r1.retrieve(query_text, k=k_val)
-                    res2 = r2.retrieve(query_text, k=k_val)
-                    res3 = r3.retrieve(query_text, k=k_val)
-                    res4 = r4.retrieve(query_text, k=k_val)
 
-                    st.markdown("#### Performance Breakdown")
-                    col1, col2, col3, col4 = st.columns(4)
-                    blocks = [
-                        (col1, "HAT-RAG (Ours)", res1, True),
-                        (col2, "Flat Dense RAG", res2, False),
-                        (col3, "RAPTOR Collapsed", res3, False),
-                        (col4, "Entity Graph PPR", res4, False)
-                    ]
+def tab_corpus(cfg, index, meta):
+    kb = cfg["kb"]
+    levels = {}
+    for lv in index.level:
+        levels[int(lv)] = levels.get(int(lv), 0) + 1
+    docs = sorted({d for d in index.doc if d})
+    st.markdown(stats([(f"{len(docs):,}", "Documents", None, False),
+                       (f"{index.n_leaves:,}", "Leaf passages", None, False),
+                       (f"{index.n_nodes - index.n_leaves:,}", "Abstract nodes", None, False),
+                       (f"{index.depth() + 1}", "Tree levels", None, False),
+                       (f"{len(index.alpha_pairs):,}", "Alpha cross-links", None, False)]), unsafe_allow_html=True)
+    st.caption("Nodes per level, leaves to root: " + " → ".join(f"{levels[l]:,}" for l in sorted(levels)))
 
-                    for col, title, r, is_ours in blocks:
-                        with col:
-                            with st.container(border=True):
-                                tag_sub = "Rank 1 (Sub-linear)" if is_ours else "Baseline"
-                                st.markdown(f"**{title}**  \n*{tag_sub}*")
-                                st.metric("Search Latency", f"{r.seconds * 1000:.2f} ms")
-                                pct_scored = (r.nodes_scored / tree_index.n_nodes) * 100
-                                st.metric("Nodes Evaluated", f"{r.nodes_scored} / {tree_index.n_nodes}", f"{pct_scored:.1f}%")
-
-                    st.divider()
-                    st.markdown("#### Top Evidence Retrieved by Algorithm")
-                    t_col1, t_col2, t_col3, t_col4 = st.columns(4)
-                    for col, title, r, _ in blocks:
-                        with col:
-                            st.markdown(f"**{title}**")
-                            for rank, (nid, sc) in enumerate(zip(r.node_ids, r.scores), 1):
-                                pos = tree_index.pos.get(nid)
-                                if pos is None:
-                                    continue
-                                tag = tree_index.label(pos)
-                                txt = tree_index.text(pos)
-                                badge = get_tag_badge_html(tag)
-                                st.markdown(f"#{rank} {badge} `{sc:.3f}`", unsafe_allow_html=True)
-                                st.caption(txt[:120] + ("..." if len(txt) > 120 else ""))
-                else:
-                    if "HAT-RAG" in algo_option:
-                        retriever = HATBeamRetriever(tree_index, beam_width=beam_width, diversity=diversity_weight)
-                    elif "Flat Dense" in algo_option:
-                        retriever = FlatDenseRetriever(tree_index)
-                    elif "RAPTOR" in algo_option:
-                        retriever = CollapsedTreeRetriever(tree_index)
-                    else:
-                        retriever = get_graph_ppr_retriever(str(tree_path), damping=damping_factor)
-
-                    single_res = retriever.retrieve(query_text, k=k_val)
-
-                    pct_scored = (single_res.nodes_scored / tree_index.n_nodes) * 100
-                    m1, m2, m3 = st.columns(3)
-                    with m1:
-                        st.metric("Search Latency", f"{single_res.seconds * 1000:.2f} ms")
-                    with m2:
-                        st.metric("Nodes Evaluated", f"{single_res.nodes_scored} / {tree_index.n_nodes}", f"{pct_scored:.1f}% of tree")
-                    with m3:
-                        st.metric("Top Result Score", f"{single_res.scores[0]:.4f}" if single_res.scores else "0.0")
-
-                    st.markdown(f"#### Top-{len(single_res.node_ids)} Retrieved Passages")
-                    for rank, (nid, score) in enumerate(zip(single_res.node_ids, single_res.scores), 1):
-                        pos = tree_index.pos.get(nid)
-                        if pos is None:
-                            continue
-                        label_tag = tree_index.label(pos)
-                        text = tree_index.text(pos)
-                        is_leaf = tree_index.is_leaf[pos]
-                        lvl = tree_index.level[pos]
-
-                        badge_html = get_tag_badge_html(label_tag)
-                        tier_label = "Leaf Passage" if is_leaf else f"Tier-{lvl} Abstract Summary"
-
-                        with st.container(border=True):
-                            c_top1, c_top2 = st.columns([3, 1])
-                            with c_top1:
-                                st.markdown(f"**Rank #{rank}** | {badge_html} | *{tier_label}*", unsafe_allow_html=True)
-                            with c_top2:
-                                st.markdown(f"**Score:** `{score:.4f}`")
-                            st.write(text)
-                            st.caption(f"Node ID: `{nid}`")
-
-                    with st.expander("Formatted LLM Context Buffer", expanded=False):
-                        st.caption("This synthesized text package is passed into the generative model context window.")
-                        assembled = assemble_context(tree_index, single_res)
-                        st.text_area("Context String:", value=assembled, height=180)
-
-    # -------------------------------------------------------------------------
-    # TAB 2: 4-Algorithm Head-to-Head Comparison
-    # -------------------------------------------------------------------------
-    with tab_compare:
-        st.subheader("Head-to-Head Retrieval Benchmark")
-        st.caption(
-            f"Benchmark all four retrieval algorithms concurrently over identical vectors. "
-            f"Active Dataset: {selected_dataset['title']} ({tree_index.n_nodes} nodes)."
-        )
-
-        curated_qs = selected_dataset["sample_questions"]
-
-        def on_tab2_preset_change():
-            val = st.session_state.get("tab2_preset_select")
-            if val and val != "Custom Question":
-                st.session_state["tab2_comp_query"] = val
-
-        selected_bench_q = st.selectbox(
-            "Select Benchmark Question:",
-            options=curated_qs + ["Custom Question"],
-            key="tab2_preset_select",
-            on_change=on_tab2_preset_change
-        )
-
-        comp_query = st.text_input(
-            "Question Text:",
-            key="tab2_comp_query"
-        )
-        comp_k = st.slider("Evaluation Depth (k):", min_value=1, max_value=10, value=5, key="comp_k_slider_tab2")
-
-        if st.button("Run 4-Way Comparative Benchmark", type="primary", use_container_width=True, key="btn_run_comp"):
-            from algorithms.retrieval1_hat_beam_traversal import HATBeamRetriever
-            from algorithms.retrieval2_flat_dense import FlatDenseRetriever
-            from algorithms.retrieval3_raptor_collapsed_tree import CollapsedTreeRetriever
-
-            r1 = HATBeamRetriever(tree_index, beam_width=3, diversity=0.15)
-            r2 = FlatDenseRetriever(tree_index)
-            r3 = CollapsedTreeRetriever(tree_index)
-            r4 = get_graph_ppr_retriever(str(tree_path), damping=0.5)
-
-            res1 = r1.retrieve(comp_query, k=comp_k)
-            res2 = r2.retrieve(comp_query, k=comp_k)
-            res3 = r3.retrieve(comp_query, k=comp_k)
-            res4 = r4.retrieve(comp_query, k=comp_k)
-
-            st.markdown("#### Search Cost & Latency Matrix")
-            col1, col2, col3, col4 = st.columns(4)
-            data_blocks = [
-                (col1, "HAT-RAG (Algorithm 4)", res1, True),
-                (col2, "Flat Dense RAG", res2, False),
-                (col3, "RAPTOR Collapsed", res3, False),
-                (col4, "Entity Graph PPR", res4, False)
-            ]
-
-            for col, title, r, is_ours in data_blocks:
-                with col:
-                    with st.container(border=True):
-                        st.markdown(f"**{title}**")
-                        if is_ours:
-                            st.caption("Rank 1 - Sub-linear Search")
-                        else:
-                            st.caption("Comparative Baseline")
-                        
-                        st.metric("Latency", f"{r.seconds * 1000:.2f} ms")
-                        pct = (r.nodes_scored / tree_index.n_nodes) * 100
-                        st.metric("Nodes Evaluated", f"{r.nodes_scored} / {tree_index.n_nodes}", f"{pct:.1f}%")
-
-            # Pruning Efficiency Callout
-            hat_pct = (res1.nodes_scored / tree_index.n_nodes) * 100
-            flat_pct = (res2.nodes_scored / tree_index.n_nodes) * 100
-            pruned_pct = 100.0 - hat_pct
-
-            if tree_index.n_nodes > 100:
-                st.success(
-                    f"Sub-Linear Scaling Demonstrated: HAT-RAG inspected only {res1.nodes_scored} nodes ({hat_pct:.1f}% of corpus), "
-                    f"pruning {pruned_pct:.1f}% of the search space. In contrast, Flat Dense scanned all {res2.nodes_scored} leaves "
-                    f"({flat_pct:.1f}%) and RAPTOR scanned {res3.nodes_scored} nodes."
-                )
-            else:
-                st.info(
-                    f"Small Corpus Note: On small document sets ({tree_index.n_nodes} nodes), brute-force scanning is fast because "
-                    f"matrix multiplication is negligible. Select 'Scaled Benchmark' in the sidebar to observe the 90%+ pruning effect at scale."
-                )
-
-            st.divider()
-            st.markdown("#### Top Evidence Retrieved by Each Algorithm")
-            t_col1, t_col2, t_col3, t_col4 = st.columns(4)
-            for col, title, r, _ in data_blocks:
-                with col:
-                    st.markdown(f"**{title}**")
-                    for rank, (nid, sc) in enumerate(zip(r.node_ids, r.scores), 1):
-                        pos = tree_index.pos.get(nid)
-                        if pos is None:
-                            continue
-                        tag = tree_index.label(pos)
-                        txt = tree_index.text(pos)
-                        badge = get_tag_badge_html(tag)
-                        st.markdown(f"#{rank} {badge} `{sc:.3f}`", unsafe_allow_html=True)
-                        st.caption(txt[:120] + ("..." if len(txt) > 120 else ""))
-
-            st.divider()
-            st.markdown("""
-            **Architectural Takeaways:**
-            1. **Sub-linear Scaling at Volume**: On large document collections (1,500+ chunks), HAT-RAG inspects ~100-150 nodes (~8% of the corpus) via beam descent, whereas Flat Dense scans 100% of chunks (O(N) brute-force).
-            2. **Cross-Document Reasoning**: Explicit lateral alpha-links connect related clusters across document boundaries without forcing the retriever to climb back to the global root.
-            3. **Immunity to Noise**: Flat Dense suffers accuracy degradation on large datasets because spurious distractor passages win cosine matches. HAT-RAG filters candidates through hierarchical cluster abstracts first.
-            """)
-
-    # -------------------------------------------------------------------------
-    # TAB 3: Corpus & Tree Explorer
-    # -------------------------------------------------------------------------
-    with tab_corpus:
-        st.subheader("Corpus & Knowledge Graph Explorer")
-        st.caption(f"Active Dataset: {selected_dataset['title']}")
-
-        if not selected_dataset["is_synthetic"]:
-            c_file_sel, c_view_mode = st.columns([2, 1])
-            with c_file_sel:
-                selected_file = st.selectbox("Select Corporate Filing:", list(finance_docs.keys()))
-            with c_view_mode:
-                view_mode = st.radio("Display Mode:", ["Raw Document Text", "Tree Nodes for Filing"], horizontal=True)
-
-            if selected_file:
-                doc_content = finance_docs[selected_file]
-                word_count = len(doc_content.split())
-                st.info(f"Document: {selected_file} | Word Count: {word_count} words")
-
-                if view_mode == "Raw Document Text":
-                    st.text_area("Filing Content:", value=doc_content, height=400)
-                else:
-                    st.markdown("#### Indexed Nodes for this Filing")
-                    matching_nodes = []
-                    for i in range(tree_index.n_nodes):
-                        if tree_index.doc[i] == selected_file:
-                            matching_nodes.append((
-                                tree_index.ids[i],
-                                tree_index.label(i),
-                                tree_index.level[i],
-                                tree_index.is_leaf[i],
-                                tree_index.text(i)
-                            ))
-                    
-                    if matching_nodes:
-                        for nid, lbl, lvl, is_leaf, txt in matching_nodes:
-                            tag_tier = "Leaf Passage" if is_leaf else f"Tier-{lvl} Abstract"
-                            st.markdown(f"**Node `{nid}`** | Label: `{lbl}` | Level: `{lvl}` | *{tag_tier}*")
-                            st.caption(txt)
-                    else:
-                        st.write("No nodes mapped directly to this document.")
+    c1, c2 = st.columns([1, 2])
+    with c1:
+        needle = st.text_input("Filter documents", key=f"doc_filter_{kb}", placeholder="title or publisher")
+        shown = [d for d in docs if not needle or needle.lower() in
+                 (meta.get(d, {}).get("title", "") + meta.get(d, {}).get("source", "") + d).lower()]
+        doc = st.selectbox(f"Document ({len(shown):,})", shown, key=f"doc_sel_{kb}",
+                           format_func=lambda d: meta.get(d, {}).get("title", d))
+    if not doc:
+        return
+    with c2:
+        m = meta.get(doc, {})
+        st.markdown(f"**{esc(m.get('title', doc))}**")
+        bits = [m.get("source"), m.get("month"), m.get("category")]
+        st.markdown(f'<div class="meta-line">{esc(" · ".join(b for b in bits if b))}</div>', unsafe_allow_html=True)
+        if m.get("url"):
+            st.caption(m["url"])
+        view = st.segmented_control("View", ["Passages in the tree", "Full text"], default="Passages in the tree",
+                                    key=f"doc_view_{kb}")
+        if view == "Full text":
+            st.text_area("Full text", get_doc_text(kb, doc), height=420, label_visibility="collapsed")
         else:
-            st.info(f"The Scaled Benchmark corpus contains {tree_index.n_leaves} passages across 128 dossiers.")
-            
-            # Show tree level distribution
-            levels_count = {}
-            for lvl in tree_index.level:
-                levels_count[int(lvl)] = levels_count.get(int(lvl), 0) + 1
-            
-            col_l1, col_l2 = st.columns([1, 2])
-            with col_l1:
-                st.markdown("#### Hierarchy Distribution")
-                for lvl in sorted(levels_count.keys()):
-                    role = "Leaf Passages (Raw Chunks)" if lvl == 0 else (f"Level {lvl} Abstracts" if lvl < max(levels_count.keys()) else "ROOT Global Abstract")
-                    st.write(f"- Tier {lvl} ({role}): `{levels_count[lvl]} nodes`")
-            
-            with col_l2:
-                st.markdown("#### Sample Synthesized Abstract Nodes")
-                abstract_indices = [i for i in range(tree_index.n_nodes) if not tree_index.is_leaf[i]][:6]
-                for idx in abstract_indices:
-                    nid = tree_index.ids[idx]
-                    lvl = tree_index.level[idx]
-                    txt = tree_index.text(idx)
-                    st.markdown(f"**Node `{nid}` (Tier {lvl} Summary)**")
-                    st.caption(txt)
+            rows = sorted((index.nodes[i].metadata.get("chunk_index", 0), i)
+                          for i in range(index.n_nodes) if index.doc[i] == doc)
+            for ci, i in rows[:60]:
+                parent = index.parent[i]
+                ptxt = f" · parent {index.ids[parent]}" if parent >= 0 else ""
+                st.markdown(f'<div class="src"><div class="h"><span class="n">#{ci}</span>'
+                            f'<span class="sc">{len(index.alpha[i])} alpha links{ptxt}</span></div>'
+                            f'<div class="b">{esc(strip_header(kb, index.text(i)))}</div></div>', unsafe_allow_html=True)
+            if len(rows) > 60:
+                st.caption(f"Showing the first 60 of {len(rows)} passages.")
 
-    # -------------------------------------------------------------------------
-    # TAB 4: Indexing & Pipeline Runner
-    # -------------------------------------------------------------------------
-    with tab_pipeline:
-        st.subheader("Offline Tree Construction Pipeline")
-        st.caption("Re-run Algorithm 1 (Document Chunking) and Algorithm 3 (Spherical k-Means Tree Construction).")
 
-        p_col1, p_col2 = st.columns(2)
-        with p_col1:
-            summarizer_choice = st.selectbox(
-                "Summarizer Mode:",
-                ["Extractive Summarizer (Fast CPU)", "LLM Summarizer (BART/Transformer)"]
-            )
-        with p_col2:
-            alpha_threshold = st.slider("Alpha Lateral Link Threshold:", min_value=0.4, max_value=0.9, value=0.65, step=0.05)
-
-        st.markdown("""
-        **Pipeline Execution Stages:**
-        1. **Algorithm 1 (algo1_document_chunking.py)**: Sentence boundary sliding window, overlap detection, SHA-256 chunk fingerprinting.
-        2. **Dense Representation**: Embeds chunks using sentence-transformers/all-MiniLM-L6-v2 into 384-dimensional unit hypersphere vectors.
-        3. **Algorithm 3 (algo3_hierarchical_abstract_tree.py)**: Spherical k-Means clustering, abstract summarization, and explicit lateral alpha-edges.
-        """)
-
-        c_build1, c_build2 = st.columns(2)
-        with c_build1:
-            if st.button("Rebuild SEC 10-K Tree (32 nodes)", type="primary", use_container_width=True):
-                st.info("Rebuilding SEC 10-K Knowledge Tree...")
+def tab_build():
+    st.markdown('<div class="section-lead">Offline half of HAT-RAG: Algorithm 1 chunks each document, the encoder '
+                'embeds the chunks, Algorithm 3 clusters them level by level with spherical k-means, writes an '
+                'abstract per cluster and links related nodes across branches (alpha edges).</div>',
+                unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1, st.container(border=True):
+        st.markdown("**SEC 10-K tree** · 32 nodes")
+        st.caption("Abstractive summaries with BART (downloads ~1.6 GB on first use).")
+        summ = st.selectbox("Summarizer", ["extractive", "llm"], key="b_sum")
+        alpha = st.slider("Alpha link threshold", 0.4, 0.9, 0.65, 0.05, key="b_alpha")
+        if st.button("Rebuild 10-K tree", width="stretch"):
+            from algorithms.run_finance_rag import run_finance_pipeline
+            args = type("A", (), dict(summarizer=summ, alpha=alpha, device="auto", chunk_size=60,
+                                      chunk_overlap=15, branching=4))()
+            with st.status("Building ...") as s:
                 t0 = time.perf_counter()
-                try:
-                    from algorithms.run_finance_rag import run_finance_pipeline
-                    class Args:
-                        pass
-                    args = Args()
-                    args.summarizer = "extractive" if "extractive" in summarizer_choice.lower() else "llm"
-                    args.alpha = alpha_threshold
-                    args.device = "auto"
-                    args.chunk_size = 60
-                    args.chunk_overlap = 15
-                    args.branching = 4
-
-                    with st.spinner("Building SEC 10-K Tree..."):
-                        run_finance_pipeline(args)
-
-                    elapsed = time.perf_counter() - t0
-                    st.success(f"SEC 10-K Tree rebuilt in {elapsed:.2f}s!")
-                    st.cache_resource.clear()
-                except Exception as e:
-                    st.error(f"Error rebuilding tree: {e}")
-                    import traceback
-                    st.code(traceback.format_exc())
-
-        with c_build2:
-            if st.button("Rebuild Scaled Benchmark Tree (1,809 nodes)", use_container_width=True):
-                st.info("Building 128-document Scaled Benchmark Tree...")
+                run_finance_pipeline(args)
+                s.update(label=f"Rebuilt in {time.perf_counter() - t0:.1f}s", state="complete")
+            st.cache_resource.clear()
+    with c2, st.container(border=True):
+        st.markdown("**Synthetic tree** · 128 dossiers, ~1.8k nodes")
+        st.caption("Extractive abstracts, about a minute on CPU.")
+        if st.button("Rebuild synthetic tree", width="stretch"):
+            from synthetic_corpus import build_corpus
+            from algo1_document_chunking import DocumentChunker
+            from algo3_hierarchical_abstract_tree import HierarchicalAbstractTreeBuilder
+            with st.status("Building ...") as s:
                 t0 = time.perf_counter()
-                try:
-                    from synthetic_corpus import build_corpus
-                    from algorithms.algo1_document_chunking import DocumentChunker
-                    from algorithms.algo3_hierarchical_abstract_tree import DenseEmbeddingModel, HierarchicalAbstractTreeBuilder
-
-                    with st.spinner("Generating corpus and clustering..."):
-                        documents, queries, _ = build_corpus(n_docs=128, seed=17)
-                        chunker = DocumentChunker(chunk_size=60, chunk_overlap=10)
-                        chunks = chunker.process_corpus(documents)
-                        embedder = DenseEmbeddingModel(model_name="sentence-transformers/all-MiniLM-L6-v2", device="auto", verbose=False)
-                        builder = HierarchicalAbstractTreeBuilder(
-                            embedder=embedder, max_levels=6, target_children=8, alpha="auto",
-                            summarizer_mode="extractive", device="auto", verbose=False
-                        )
-                        builder.build_tree(chunks)
-                        builder.save_tree_json(str(ROOT_DIR / "algorithms" / "hat_enterprise_tree_structure.json"))
-
-                    elapsed = time.perf_counter() - t0
-                    st.success(f"Scaled Benchmark Tree rebuilt in {elapsed:.2f}s ({len(builder.nodes)} nodes)!")
-                    st.cache_resource.clear()
-                except Exception as e:
-                    st.error(f"Error rebuilding tree: {e}")
-                    import traceback
-                    st.code(traceback.format_exc())
+                documents, _, _ = build_corpus(n_docs=128, seed=17)
+                chunks = DocumentChunker(chunk_size=60, chunk_overlap=10).process_corpus(documents)
+                b = HierarchicalAbstractTreeBuilder(embedder=get_embedder(), max_levels=6, target_children=8,
+                                                    alpha="auto", summarizer_mode="extractive", device="cpu",
+                                                    verbose=False)
+                b.build_tree(chunks)
+                b.save_tree_json(str(KBS["enterprise"]["tree"]))
+                s.update(label=f"{len(b.nodes)} nodes in {time.perf_counter() - t0:.1f}s", state="complete")
+            st.cache_resource.clear()
+    with c3, st.container(border=True):
+        st.markdown("**MultiHop-RAG tree** · 609 articles, ~26k nodes")
+        st.caption("Downloads the dataset (~12 MB) and builds on CPU in roughly 25 minutes; run it from a terminal:")
+        st.code("python algorithms/compare-algos/run_multihop.py --build-only", language="bash")
+        st.caption("Status: " + ("built" if MULTIHOP_TREE.exists() else "not built"))
 
 
-if __name__ == "__main__":
-    main()
+# ============================================================================
+def main():
+    cfg = sidebar()
+    kb = cfg["kb"]
+    if kb is None:
+        st.error("No knowledge tree found. Build one from the Build tab.")
+        tab_build()
+        return
+    tree = str(KBS[kb]["tree"])
+    index = get_index(tree)
+    meta = get_doc_meta(kb)
+    n_docs = len({d for d in index.doc if d})
+
+    st.markdown(hero(
+        "HAT<span>-RAG</span>",
+        "Hierarchical Abstract Tree retrieval: a beam search down a tree of cluster abstracts, so each question "
+        "touches a small part of the index while the corpus grows.",
+        [(f"<b>{esc(KBS[kb]['short'])}</b>", KBS[kb]["color"]),
+         (f"<b>{n_docs:,}</b> documents", "#c3c2b7"),
+         (f"<b>{index.n_leaves:,}</b> passages", "#c3c2b7"),
+         (f"<b>{index.n_nodes:,}</b> tree nodes", "#c3c2b7")]), unsafe_allow_html=True)
+
+    retrievers = get_retrievers(tree, cfg["beam"], cfg["lam"], cfg["damping"], cfg["n_seeds"], cfg["max_link"])
+    t_ask, t_cmp, t_bench, t_corpus, t_build = st.tabs(
+        ["Ask", "Compare retrievers", "Benchmarks", "Corpus & tree", "Build"])
+    with t_ask:
+        tab_ask(cfg, index, retrievers, meta)
+    with t_cmp:
+        tab_compare(cfg, index, retrievers, meta)
+    with t_bench:
+        tab_benchmarks()
+    with t_corpus:
+        tab_corpus(cfg, index, meta)
+    with t_build:
+        tab_build()
+
+
+main()
