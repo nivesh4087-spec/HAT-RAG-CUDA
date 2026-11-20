@@ -15,6 +15,7 @@ from retrieval1_hat_beam_traversal import (
     RetrievalResult,
     TreeIndex,
     print_result,
+    top_k,
 )
 
 
@@ -37,16 +38,16 @@ class FlatDenseRetriever:
         self.min_score = min_score
 
         self.candidate_indices = index.leaf_idx
-        self.leaf_embeddings = index.E[self.candidate_indices]
+        self.leaf_embeddings = np.ascontiguousarray(index.E[self.candidate_indices])
+        self.leaf_norms = np.linalg.norm(self.leaf_embeddings, axis=1)    # once, not per query
         self.total_candidates = len(self.candidate_indices)
         self.leaf_texts = [index.text(i) for i in self.candidate_indices]
         self.leaf_sources = [index.doc[i] for i in self.candidate_indices]
 
     def compute_dense_similarities(self, query_vector: np.ndarray) -> np.ndarray:
         dot_products = np.dot(self.leaf_embeddings, query_vector)
-        embedding_norms = np.linalg.norm(self.leaf_embeddings, axis=1)
         query_norm = np.linalg.norm(query_vector)
-        return dot_products / (embedding_norms * query_norm + 1e-9)
+        return dot_products / (self.leaf_norms * query_norm + 1e-9)
 
     def compute_keyword_overlaps(self, query_text: str) -> np.ndarray:
         cleaned_query = query_text.lower()
@@ -131,8 +132,7 @@ class FlatDenseRetriever:
                 final_scores, top_k=k, lambda_param=diversity_lambda
             )
         else:
-            sorted_order = np.argsort(-final_scores)
-            ranked_local_indices = [int(i) for i in sorted_order[:k]]
+            ranked_local_indices = [int(i) for i in top_k(final_scores, k)]
             ranked_scores = [float(final_scores[i]) for i in ranked_local_indices]
 
         if self.min_score > 0.0:

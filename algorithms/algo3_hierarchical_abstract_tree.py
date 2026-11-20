@@ -313,6 +313,27 @@ class DenseEmbeddingModel:
 
         return out[0] if single else out
 
+    # -- persistent cache (large corpora are rebuilt at several sizes) ---------
+    def save_cache(self, path: Union[str, Path]) -> int:
+        if not self._cache:
+            return 0
+        keys = list(self._cache)
+        np.savez(path, keys=np.array(keys), vecs=np.stack([self._cache[k] for k in keys]),
+                 model=np.array(self.stats.backend))
+        return len(keys)
+
+    def load_cache(self, path: Union[str, Path]) -> int:
+        """Only loads vectors written by the same encoder backend."""
+        path = Path(path)
+        if not path.exists():
+            return 0
+        data = np.load(path, allow_pickle=False)
+        if str(data["model"]) != self.stats.backend:
+            return 0
+        for k, v in zip(data["keys"].tolist(), data["vecs"]):
+            self._cache.setdefault(k, v)
+        return len(data["keys"])
+
     def encode_chunks(self, chunks: Sequence[Dict[str, Any]], show_progress: bool = True) -> np.ndarray:
         """Encode Algorithm-1 chunk dicts (uses 'section' as a light context prefix)."""
         texts = [
@@ -440,14 +461,17 @@ class SphericalKMeans:
     def _kmeanspp_np(self, x: np.ndarray, k: int, rng: np.random.RandomState) -> np.ndarray:
         n = x.shape[0]
         centers = [int(rng.randint(n))]
+        # running max similarity to the chosen centres, updated with the newest
+        # centre only: same seeds as recomputing x @ x[centers].T, but O(n k d)
+        best = x @ x[centers[0]]
         for _ in range(1, k):
-            sims = x @ x[centers].T                 # (n, |centers|)
-            d2 = np.clip(1.0 - sims.max(axis=1), 0.0, None) ** 2
+            d2 = np.clip(1.0 - best, 0.0, None) ** 2
             if d2.sum() <= 1e-12:
                 remaining = [i for i in range(n) if i not in centers]
                 centers.append(int(rng.choice(remaining)) if remaining else centers[-1])
             else:
                 centers.append(int(rng.choice(n, p=d2 / d2.sum())))
+            np.maximum(best, x @ x[centers[-1]], out=best)
         return x[centers].copy()
 
     def fit(self, embeddings: np.ndarray) -> ClusterResult:
@@ -953,6 +977,52 @@ class HierarchicalAbstractTreeBuilder:
         self.resolved_alpha[level] = round(thr, 4)
         return thr
 
+    # Levels with more nodes than this never materialise the full n x n
+    # similarity matrix (21k leaves would need ~1.8 GB); see _blockwise_neighbours.
+    DENSE_LINK_LIMIT = 4096
+    LINK_CANDIDATES = 64
+
+    def _blockwise_neighbours(self, matrix: np.ndarray, level: int, block: int = 2048):
+        """Same alpha rule as the dense path, in row blocks: the mean + std of
+        all off-diagonal similarities is accumulated exactly, and each node keeps
+        its LINK_CANDIDATES most similar peers (more than enough to find
+        max_cross_links peers that sit under a different parent)."""
+        n = matrix.shape[0]
+        m = min(n - 1, self.LINK_CANDIDATES)
+        top_idx = np.empty((n, m), dtype=np.int64)
+        top_val = np.empty((n, m), dtype=np.float32)
+        total = total_sq = 0.0
+        count = 0
+        for start in range(0, n, block):
+            stop = min(n, start + block)
+            sim = matrix[start:stop] @ matrix.T
+            rows = np.arange(stop - start)
+            sim[rows, start + rows] = -1.0
+            off = sim[sim > -1.0].astype(np.float64)
+            total += off.sum()
+            total_sq += (off * off).sum()
+            count += off.size
+            part = np.argpartition(-sim, m - 1, axis=1)[:, :m]
+            vals = np.take_along_axis(sim, part, axis=1)
+            order = np.argsort(-vals, axis=1)
+            top_idx[start:stop] = np.take_along_axis(part, order, axis=1)
+            top_val[start:stop] = np.take_along_axis(vals, order, axis=1)
+
+        if isinstance(self.alpha, str):
+            mean = total / max(1, count)
+            std = float(np.sqrt(max(0.0, total_sq / max(1, count) - mean * mean)))
+            threshold = float(min(0.90, max(0.35, mean + std))) if count else 0.6
+            self.resolved_alpha[level] = round(threshold, 4)
+        else:
+            threshold = float(self.alpha)
+            self.resolved_alpha[level] = threshold
+
+        def ranked():
+            for i in range(n):
+                row = dict(zip(top_idx[i].tolist(), top_val[i].tolist()))
+                yield top_idx[i], row
+        return threshold, ranked()
+
     # -- explicit alpha cross-child relationships ----------------------------
     def build_cross_links(self, nodes_by_level: Dict[int, List[TreeNode]]):
         """
@@ -969,15 +1039,18 @@ class HierarchicalAbstractTreeBuilder:
             if len(nodes) < 2:
                 continue
             matrix = np.stack([n.embedding for n in nodes])
-            sim = self.embedder.similarity(matrix)
-            np.fill_diagonal(sim, -1.0)
-            threshold = self._resolve_alpha(sim, level)
+            if len(nodes) <= self.DENSE_LINK_LIMIT:
+                sim = self.embedder.similarity(matrix)
+                np.fill_diagonal(sim, -1.0)
+                threshold = self._resolve_alpha(sim, level)
+                ranked = ((np.argsort(-sim[i]), sim[i]) for i in range(len(nodes)))
+            else:
+                threshold, ranked = self._blockwise_neighbours(matrix, level)
 
-            for i, node in enumerate(nodes):
-                order = np.argsort(-sim[i])
+            for i, (node, (order, row)) in enumerate(zip(nodes, ranked)):
                 kept = 0
                 for j in order:
-                    score = float(sim[i][j])
+                    score = float(row[j])
                     if score < threshold or kept >= self.max_cross_links:
                         break
                     peer = nodes[int(j)]
@@ -1054,7 +1127,17 @@ class HierarchicalAbstractTreeBuilder:
                     link["target_id"] = new_id
 
     # -- persistence ---------------------------------------------------------
-    def save_tree_json(self, filepath: str, include_embeddings: bool = True):
+    def save_tree_json(self, filepath: str, include_embeddings: bool = True, sidecar: bool = False):
+        """Persist H. sidecar=True writes the embeddings to <file>.emb.npy
+        (float32, one row per node) and keeps the JSON compact -- the format
+        used for the large corpora, where inline floats would run to ~200 MB."""
+        sidecar_info = None
+        if sidecar and include_embeddings:
+            order = list(self.nodes)
+            emb_path = Path(filepath).with_suffix(".emb.npy")
+            np.save(emb_path, np.stack([self.nodes[n].embedding for n in order]).astype(np.float32))
+            sidecar_info = {"file": emb_path.name, "order": order}
+            include_embeddings = False
         data = {
             "schema": "HAT-v2",
             "config": {
@@ -1077,12 +1160,19 @@ class HierarchicalAbstractTreeBuilder:
             "root_ids": [r.node_id for r in self.root_nodes],
             "nodes": {nid: n.to_dict(include_embeddings) for nid, n in self.nodes.items()},
         }
+        if sidecar_info:
+            data["embedding_sidecar"] = sidecar_info
         with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=None if sidecar_info else 2)
 
     def load_tree_json(self, filepath: str):
         with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
+        sidecar = data.get("embedding_sidecar")
+        if sidecar:
+            mat = np.load(Path(filepath).parent / sidecar["file"])
+            for nid, row in zip(sidecar["order"], mat):
+                data["nodes"][nid]["embedding"] = row
 
         self.nodes = {}
         for nid, d in data["nodes"].items():
@@ -1091,7 +1181,7 @@ class HierarchicalAbstractTreeBuilder:
                 node_id=d["node_id"],
                 level=d["level"],
                 text=d["text"],
-                embedding=np.asarray(emb, dtype=np.float32) if emb else None,
+                embedding=np.asarray(emb, dtype=np.float32) if emb is not None and len(emb) else None,
                 doc_id=d.get("doc_id"),
                 metadata=d.get("metadata", {}),
             )

@@ -26,6 +26,7 @@ from retrieval1_hat_beam_traversal import (
     RetrievalResult,
     TreeIndex,
     print_result,
+    top_k,
 )
 
 
@@ -41,14 +42,18 @@ class CollapsedTreeRetriever:
         if not include_root:
             keep[index.root_idx] = False
         self.candidates = np.flatnonzero(keep)
+        self.matrix = np.ascontiguousarray(index.E[self.candidates])     # gathered once, not per query
 
     def retrieve(self, query: str, k: int = 5) -> RetrievalResult:
         return self.search(self.index.encode_query(query), k=k, query=query)
 
     def search(self, q: np.ndarray, k: int = 5, query: str = "") -> RetrievalResult:
         t0 = time.perf_counter()
-        sims = self.index.score(q, self.candidates)
-        order = np.argsort(-sims)[:k]
+        if self.index.device.startswith("cuda"):
+            sims = self.index.score(q, self.candidates)
+        else:
+            sims = self.matrix @ q
+        order = top_k(sims, k)
         elapsed = time.perf_counter() - t0
         chosen = [self.candidates[i] for i in order]
         n_abs = sum(1 for i in chosen if not self.index.is_leaf[i])

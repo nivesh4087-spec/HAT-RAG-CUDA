@@ -142,7 +142,9 @@ class EntityIndex:
         return ents
 
     def pair_weights(self) -> Dict[Tuple[int, int], float]:
-        """IDF-weighted shared-entity weight for every pair of leaves that share one."""
+        """IDF-weighted shared-entity weight for every pair of leaves that share one.
+        Quadratic in posting length: only for small corpora / tests; the
+        retrievers use incidence() instead."""
         pairs: Dict[Tuple[int, int], float] = {}
         for e, post in self.postings.items():
             for x in range(len(post)):
@@ -150,6 +152,27 @@ class EntityIndex:
                     key = (min(post[x], post[y]), max(post[x], post[y]))
                     pairs[key] = pairs.get(key, 0.0) + self.idf[e]
         return pairs
+
+    def incidence(self, n_rows: int) -> Tuple[sparse.csr_matrix, np.ndarray]:
+        """(B, idf): B[i, e] = 1 when leaf i names entity e. The shared-entity
+        weight matrix is then W = B diag(idf) B^T with the diagonal removed --
+        the same numbers pair_weights() produces, without enumerating pairs."""
+        names = sorted(self.postings)
+        rows, cols = [], []
+        for c, e in enumerate(names):
+            rows += self.postings[e]
+            cols += [c] * len(self.postings[e])
+        B = sparse.csr_matrix((np.ones(len(rows)), (rows, cols)), shape=(n_rows, len(names)), dtype=np.float64)
+        return B, np.array([self.idf[e] for e in names], dtype=np.float64)
+
+
+def entity_weights(B: sparse.csr_matrix, idf: np.ndarray, rows=None) -> sparse.csr_matrix:
+    """Shared-entity weights among `rows` (all rows if None), self-pairs removed."""
+    sub = B if rows is None else B[rows]
+    W = (sub.multiply(idf) @ sub.T).tocsr()
+    W.setdiag(0.0)
+    W.eliminate_zeros()
+    return W
 
 
 def symmetric_matrix(pairs: Dict[Tuple[int, int], float], n: int) -> sparse.csr_matrix:
@@ -203,7 +226,22 @@ class TreeIndex:
                 if j is not None:
                     self.alpha_pairs[(min(i, j), max(i, j))] = float(l["score"])
         self.doc: List[Optional[str]] = [n.doc_id for n in self.nodes]
-        self.docs: List[List[str]] = [n.source_docs for n in self.nodes]
+        # documents under each node, bottom-up (same order as TreeNode.source_docs,
+        # without re-walking every subtree)
+        self.docs: List[List[str]] = [[] for _ in self.nodes]
+        for i in np.argsort(self.level, kind="stable"):
+            node = self.nodes[i]
+            if node.doc_id:
+                self.docs[i] = [node.doc_id]
+                continue
+            merged: List[str] = []
+            seen: Set[str] = set()
+            for c in self.children[i]:
+                for d in self.docs[c]:
+                    if d not in seen:
+                        seen.add(d)
+                        merged.append(d)
+            self.docs[i] = merged
 
         # reading-order neighbours: chunk i-1 and i+1 of the same document,
         # recovered from the provenance every leaf already carries
@@ -218,6 +256,7 @@ class TreeIndex:
                 if j is not None:
                     self.sequence[i].append(j)
         self._entities: Optional[EntityIndex] = None
+        self._incidence: Optional[Tuple[sparse.csr_matrix, np.ndarray]] = None
         self._edges: Optional[Dict[str, sparse.csr_matrix]] = None
         self.edge_build_seconds = 0.0
 
@@ -253,19 +292,32 @@ class TreeIndex:
             self._entities = EntityIndex({int(i): self.nodes[i].text for i in self.leaf_idx})
         return self._entities
 
+    # above this many nodes the shared-entity matrix is never materialised
+    # whole; retrievers compute it on the candidate rows they need
+    DENSE_GRAPH_LIMIT = 4096
+
+    @property
+    def entity_incidence(self) -> Tuple[sparse.csr_matrix, np.ndarray]:
+        if self._incidence is None:
+            self._incidence = self.entities.incidence(self.n_nodes)
+        return self._incidence
+
     @property
     def edges(self) -> Dict[str, sparse.csr_matrix]:
         """H's explicit edges as symmetric node x node matrices, built once:
         'alpha' (cross-child links, weight = cosine), 'sequence' (reading order,
-        weight 1) and 'entity' (shared entities, IDF-weighted)."""
+        weight 1) and, for corpora up to DENSE_GRAPH_LIMIT nodes, 'entity'
+        (shared entities, IDF-weighted)."""
         if self._edges is None:
             t0 = time.perf_counter()
             seq = {(min(i, j), max(i, j)): 1.0 for i in self.leaf_idx for j in self.sequence[int(i)]}
             self._edges = {
                 "alpha": symmetric_matrix(self.alpha_pairs, self.n_nodes),
                 "sequence": symmetric_matrix(seq, self.n_nodes),
-                "entity": symmetric_matrix(self.entities.pair_weights(), self.n_nodes),
             }
+            B, idf = self.entity_incidence
+            if self.n_nodes <= self.DENSE_GRAPH_LIMIT:
+                self._edges["entity"] = entity_weights(B, idf)
             self.edge_build_seconds = time.perf_counter() - t0
         return self._edges
 
@@ -303,6 +355,16 @@ class TreeIndex:
 # ----------------------------------------------------------------------------
 # Ranking helpers
 # ----------------------------------------------------------------------------
+def top_k(scores: np.ndarray, k: int) -> np.ndarray:
+    """Indices of the k largest scores, best first: argpartition + a sort of
+    k items instead of sorting all N (same order as argsort for distinct scores)."""
+    k = min(k, scores.shape[0])
+    if k <= 0:
+        return np.zeros(0, dtype=np.int64)
+    part = np.argpartition(-scores, k - 1)[:k]
+    return part[np.argsort(-scores[part], kind="stable")]
+
+
 def diversity_rank(pool: Sequence[int], sims: Dict[int, float], doc_of: Sequence[Optional[str]],
                    k: int, lam: float, doc_weight: Optional[Dict[Optional[str], float]] = None) -> List[int]:
     """Greedy R <- R + argmax s(v) + lam * w(doc(v)) * [doc(v) not in docs(R)].
@@ -330,15 +392,24 @@ def diversity_rank(pool: Sequence[int], sims: Dict[int, float], doc_of: Sequence
 def personalized_pagerank(W: np.ndarray, personal: np.ndarray, damping: float = 0.5,
                           tol: float = 1e-9, max_iter: int = 100) -> np.ndarray:
     """Fixed point of r = (1 - d) p + d P^T r over a symmetric weight matrix W,
-    iterated until the L1 change drops below tol (the error shrinks by d per step)."""
-    out = W.sum(axis=1, keepdims=True)
-    out[out == 0.0] = 1.0
-    PT = (W / out).T
+    iterated until the L1 change drops below tol (the error shrinks by d per step).
+    W may be dense or scipy-sparse; for sparse W, P^T r = W (r / out) is applied
+    without forming P (same numbers, cost proportional to the edges)."""
     p = personal / personal.sum()
     restart = (1.0 - damping) * p
+    if sparse.issparse(W):
+        out = np.asarray(W.sum(axis=1)).ravel()
+        out[out == 0.0] = 1.0
+        inv = 1.0 / out
+        step = lambda r: W @ (r * inv)              # noqa: E731 - W symmetric
+    else:
+        out = W.sum(axis=1, keepdims=True)
+        out[out == 0.0] = 1.0
+        PT = (W / out).T
+        step = lambda r: PT @ r                     # noqa: E731
     r = p
     for _ in range(max_iter):
-        nxt = restart + damping * (PT @ r)
+        nxt = restart + damping * step(r)
         if np.abs(nxt - r).sum() < tol:
             return nxt
         r = nxt
@@ -392,6 +463,8 @@ class HATBeamRetriever:
     gate_diversity  : scale the lambda bonus by the filing's relevance.
     damping         : PageRank continuation probability.
     n_seeds         : top-cosine leaves that personalise the walk.
+    max_link        : entities named in more passages than this do not expand the
+                      pool (None = no cap, the original behaviour).
     """
 
     name = "HAT-RAG (beam traversal + graph propagation)"
@@ -400,8 +473,10 @@ class HATBeamRetriever:
     def __init__(self, index: TreeIndex, beam_width: int = 3, diversity: float = 0.15,
                  follow_alpha: bool = True, follow_sequence: bool = True,
                  entity_seeding: bool = True, ranking: str = "ppr", gate_diversity: bool = True,
-                 damping: float = 0.5, n_seeds: int = 3, w_sequence: float = 0.5):
+                 damping: float = 0.5, n_seeds: int = 3, w_sequence: float = 0.5,
+                 max_link: Optional[int] = None):
         self.index = index
+        self.max_link = max_link
         self.beam_width = max(1, int(beam_width))
         self.diversity = float(diversity)
         self.follow_alpha = follow_alpha
@@ -415,15 +490,22 @@ class HATBeamRetriever:
         self._graph = None
         if entity_seeding:
             _ = index.entities                       # build the inverted index up front
+        self._entity_rows = None
         if ranking == "ppr":                         # H's edges as one weighted matrix, built once
             edges = index.edges
-            graph = edges["entity"].copy()
+            graph = sparse.csr_matrix((index.n_nodes, index.n_nodes), dtype=np.float64)
             if follow_alpha:
                 graph = graph + edges["alpha"]
             if follow_sequence:
                 graph = graph + w_sequence * edges["sequence"]
-            # dense slicing is far cheaper per query while the matrix fits comfortably
-            self._graph = graph.toarray() if graph.shape[0] <= 4096 else graph.tocsr()
+            if "entity" in edges:
+                # dense slicing is far cheaper per query while the matrix fits comfortably
+                self._graph = (graph + edges["entity"]).toarray()
+            else:
+                # large corpus: static edges stay sparse, shared-entity weights are
+                # computed on the candidate rows only (exactly the same values)
+                self._graph = graph.tocsr()
+                self._entity_rows = index.entity_incidence
 
     def retrieve(self, query: str, k: int = 5) -> RetrievalResult:
         return self.search(self.index.encode_query(query), k=k, query=query)
@@ -435,7 +517,9 @@ class HATBeamRetriever:
         if isinstance(self._graph, np.ndarray):
             W = self._graph[np.ix_(pool, pool)]
         else:
-            W = self._graph[pool][:, pool].toarray()
+            W = self._graph[pool][:, pool].tocsr()
+            if self._entity_rows is not None:
+                W = (W + entity_weights(*self._entity_rows, rows=pool)).tocsr()
 
         personal = np.zeros(m, dtype=np.float64)
         for i in sorted(pool, key=lambda i: -sims[i])[: self.n_seeds]:
@@ -509,14 +593,23 @@ class HATBeamRetriever:
         if self.entity_seeding and query:
             ents = idx.entities
             named = sorted(e for e in ents.extract(query) if e in ents.postings)
-            for e in named:
+            # an entity named in hundreds of passages (a publisher, a company
+            # in every one of its filings) cannot narrow anything down: with
+            # max_link set it only marks pool leaves that carry it, it does not
+            # pull its whole posting list into the pool
+            narrow = [e for e in named if self.max_link is None or len(ents.postings[e]) <= self.max_link]
+            broad = set(named) - set(narrow)
+            for e in narrow:
                 linked.update(ents.postings[e])
             new = [j for j in linked if j not in visited]
             visited.update(new)
             score(new)
             leaf_pool.extend(new)
+            if broad:
+                linked.update(j for j in leaf_pool if ents.of.get(j, set()) & broad)
             if named:
-                trace.append(f"link: query names {named} -> {len(linked)} leaves ({len(new)} new)")
+                trace.append(f"link: query names {named} -> {len(linked)} leaves ({len(new)} new)"
+                             + (f"; broad, marking only: {sorted(broad)}" if broad else ""))
 
         # -- step 3: expansion along H's leaf edges ----------------------------
         if (self.follow_alpha or self.follow_sequence) and leaf_pool:
