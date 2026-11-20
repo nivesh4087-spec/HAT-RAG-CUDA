@@ -20,7 +20,7 @@
     "alpha_edges": 16,
     "entities": 49,
     "graph_edges": 79,
-    "graph_build_seconds": 0.0019578999999794178,
+    "graph_build_seconds": 0.0056110000000444415,
     "encoder": "sentence-transformers::sentence-transformers/all-MiniLM-L6-v2"
   },
   "summary": {
@@ -32,7 +32,7 @@
       "doc_coverage": 0.9676282051282052,
       "precision": 0.676923076923077,
       "nodes_scored": 23.884615384615383,
-      "latency_ms": 0.2953115384710915,
+      "latency_ms": 0.7901076923312408,
       "context_words": 249.59615384615384,
       "n_queries": 52,
       "by_type": {
@@ -44,7 +44,7 @@
           "doc_coverage": 1.0,
           "precision": 0.5741935483870969,
           "nodes_scored": 23.741935483870968,
-          "latency_ms": 0.2810935483496231,
+          "latency_ms": 0.7847548387373183,
           "context_words": 248.6451612903226,
           "n_queries": 31
         },
@@ -56,7 +56,7 @@
           "doc_coverage": 1.0,
           "precision": 0.8500000000000001,
           "nodes_scored": 23.583333333333332,
-          "latency_ms": 0.3285583334218245,
+          "latency_ms": 0.7472083332989617,
           "context_words": 251.66666666666666,
           "n_queries": 12
         },
@@ -68,7 +68,7 @@
           "doc_coverage": 0.8129629629629629,
           "precision": 0.8,
           "nodes_scored": 24.77777777777778,
-          "latency_ms": 0.29995555562183857,
+          "latency_ms": 0.8657444445311234,
           "context_words": 250.11111111111111,
           "n_queries": 9
         }
@@ -82,7 +82,7 @@
       "doc_coverage": 0.9810897435897435,
       "precision": 0.6230769230769231,
       "nodes_scored": 24.0,
-      "latency_ms": 0.08533653828215812,
+      "latency_ms": 0.19416153847592235,
       "context_words": 249.23076923076923,
       "n_queries": 52,
       "by_type": {
@@ -94,7 +94,7 @@
           "doc_coverage": 1.0,
           "precision": 0.5225806451612903,
           "nodes_scored": 24.0,
-          "latency_ms": 0.08763548366034464,
+          "latency_ms": 0.19660967741548385,
           "context_words": 251.03225806451613,
           "n_queries": 31
         },
@@ -106,7 +106,7 @@
           "doc_coverage": 1.0,
           "precision": 0.7666666666666667,
           "nodes_scored": 24.0,
-          "latency_ms": 0.0858499999291477,
+          "latency_ms": 0.179550000098061,
           "context_words": 251.58333333333334,
           "n_queries": 12
         },
@@ -118,7 +118,7 @@
           "doc_coverage": 0.8907407407407408,
           "precision": 0.7777777777777778,
           "nodes_scored": 24.0,
-          "latency_ms": 0.07673333311686292,
+          "latency_ms": 0.2052111110768035,
           "context_words": 239.88888888888889,
           "n_queries": 9
         }
@@ -132,7 +132,7 @@
       "doc_coverage": 0.9772435897435898,
       "precision": 0.8038461538461537,
       "nodes_scored": 32.0,
-      "latency_ms": 0.08588653842987416,
+      "latency_ms": 0.1971692307296717,
       "context_words": 209.96153846153845,
       "n_queries": 52,
       "by_type": {
@@ -144,7 +144,7 @@
           "doc_coverage": 1.0,
           "precision": 0.7419354838709679,
           "nodes_scored": 32.0,
-          "latency_ms": 0.09266451607184154,
+          "latency_ms": 0.19935806446277815,
           "context_words": 208.25806451612902,
           "n_queries": 31
         },
@@ -156,7 +156,7 @@
           "doc_coverage": 1.0,
           "precision": 0.9666666666666668,
           "nodes_scored": 32.0,
-          "latency_ms": 0.08578333328538672,
+          "latency_ms": 0.20690000000437672,
           "context_words": 198.83333333333334,
           "n_queries": 12
         },
@@ -168,7 +168,7 @@
           "doc_coverage": 0.8685185185185185,
           "precision": 0.8,
           "nodes_scored": 32.0,
-          "latency_ms": 0.06267777785574759,
+          "latency_ms": 0.1766555555049207,
           "context_words": 230.66666666666666,
           "n_queries": 9
         }
@@ -182,7 +182,7 @@
       "doc_coverage": 0.9708333333333333,
       "precision": 0.6461538461538462,
       "nodes_scored": 24.0,
-      "latency_ms": 0.20380192303001912,
+      "latency_ms": 1.4544615384535904,
       "context_words": 251.6346153846154,
       "n_queries": 52,
       "by_type": {
@@ -194,7 +194,7 @@
           "doc_coverage": 1.0,
           "precision": 0.5161290322580645,
           "nodes_scored": 24.0,
-          "latency_ms": 0.21023548387963656,
+          "latency_ms": 1.4588451613088826,
           "context_words": 253.58064516129033,
           "n_queries": 31
         },
@@ -206,7 +206,7 @@
           "doc_coverage": 1.0,
           "precision": 0.7833333333333333,
           "nodes_scored": 24.0,
-          "latency_ms": 0.19544999986464973,
+          "latency_ms": 1.4173166665993147,
           "context_words": 254.5,
           "n_queries": 12
         },
@@ -218,7 +218,7 @@
           "doc_coverage": 0.8314814814814815,
           "precision": 0.911111111111111,
           "nodes_scored": 24.0,
-          "latency_ms": 0.19277777765738494,
+          "latency_ms": 1.4888888888688396,
           "context_words": 241.11111111111111,
           "n_queries": 9
         }
@@ -232,7 +232,7 @@
       "doc_coverage": 1.0,
       "precision": 0.396153846153846,
       "nodes_scored": 23.28846153846154,
-      "latency_ms": 0.04725576928439505,
+      "latency_ms": 0.2039500000224647,
       "context_words": 256.5576923076923,
       "n_queries": 52,
       "by_type": {
@@ -244,7 +244,7 @@
           "doc_coverage": 1.0,
           "precision": 0.29677419354838713,
           "nodes_scored": 23.06451612903226,
-          "latency_ms": 0.04664193555424478,
+          "latency_ms": 0.18828064516597923,
           "context_words": 254.74193548387098,
           "n_queries": 31
         },
@@ -256,7 +256,7 @@
           "doc_coverage": 1.0,
           "precision": 0.46666666666666673,
           "nodes_scored": 23.0,
-          "latency_ms": 0.04783333338309603,
+          "latency_ms": 0.23774166671349425,
           "context_words": 259.9166666666667,
           "n_queries": 12
         },
@@ -268,7 +268,7 @@
           "doc_coverage": 1.0,
           "precision": 0.6444444444444445,
           "nodes_scored": 24.444444444444443,
-          "latency_ms": 0.04860000000108913,
+          "latency_ms": 0.21286666671787519,
           "context_words": 258.3333333333333,
           "n_queries": 9
         }
@@ -318,7 +318,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.532799999746203,
+      "latency_ms": 0.9236000000782951,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -347,7 +347,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.5148999998709769,
+      "latency_ms": 0.883800000337942,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -376,7 +376,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.4681000000346103,
+      "latency_ms": 0.794300000052317,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -405,7 +405,7 @@
         "AAPL#c4"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.21569999989878852,
+      "latency_ms": 0.8838999997351493,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -434,7 +434,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.1990000000660075,
+      "latency_ms": 0.7838000001356704,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -463,7 +463,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19609999981184956,
+      "latency_ms": 0.6969999999455467,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -492,7 +492,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.27580000005400507,
+      "latency_ms": 0.7977000000209955,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -521,7 +521,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.2922999992733821,
+      "latency_ms": 0.9482000000389235,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -550,7 +550,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.28480000037234277,
+      "latency_ms": 0.7742000002508576,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -579,7 +579,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.2808999997796491,
+      "latency_ms": 0.7854000000406813,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -608,7 +608,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.2729999996518018,
+      "latency_ms": 0.7629000001543318,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -637,7 +637,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2716999997574021,
+      "latency_ms": 0.7455999998455809,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -666,7 +666,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.2874000001611421,
+      "latency_ms": 0.8434999999735737,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -695,7 +695,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.25940000068658264,
+      "latency_ms": 0.7239000001391105,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -724,7 +724,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.26530000013735844,
+      "latency_ms": 0.7631000003129884,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -753,7 +753,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.27460000001156004,
+      "latency_ms": 0.8361000000149943,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -782,7 +782,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.3017999997609877,
+      "latency_ms": 0.8610999998381885,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -811,7 +811,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2826999998433166,
+      "latency_ms": 0.7575999998152838,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -840,7 +840,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.3040000001419685,
+      "latency_ms": 0.8163000002241461,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -869,7 +869,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.23080000028130598,
+      "latency_ms": 0.8139999999912106,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -898,7 +898,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.21040000046923524,
+      "latency_ms": 0.8056000001488428,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -927,7 +927,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.21379999998316634,
+      "latency_ms": 0.7666999999855761,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -956,7 +956,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.26049999996757833,
+      "latency_ms": 0.7829999999557913,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -985,7 +985,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.21949999973003287,
+      "latency_ms": 0.7731999999123218,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1014,7 +1014,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.2235000001746812,
+      "latency_ms": 0.9015000000545115,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1043,7 +1043,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.1959000001079403,
+      "latency_ms": 0.6922999996277213,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1072,7 +1072,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.2119999999194988,
+      "latency_ms": 0.6978000001254259,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1101,7 +1101,7 @@
         "AAPL#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.3040000001419685,
+      "latency_ms": 0.6834999999227875,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1130,7 +1130,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.28079999992769444,
+      "latency_ms": 0.691000000188069,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1159,7 +1159,7 @@
         "AAPL#c4"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.28589999965333845,
+      "latency_ms": 0.686899999891466,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1188,7 +1188,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.2964999994219397,
+      "latency_ms": 0.6499000000985689,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1217,7 +1217,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.315000000227883,
+      "latency_ms": 0.7043999999041262,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1246,7 +1246,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.3051000003324589,
+      "latency_ms": 0.6834000000708329,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1275,7 +1275,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.31070000022737077,
+      "latency_ms": 0.7771000000502681,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1304,7 +1304,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.31239999952958897,
+      "latency_ms": 0.6536000000778586,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1333,7 +1333,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.3422999998292653,
+      "latency_ms": 0.8327999998982705,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1362,7 +1362,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.35370000023249304,
+      "latency_ms": 0.7444999996550905,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1391,7 +1391,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.3094000003329711,
+      "latency_ms": 0.6682000002911082,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1420,7 +1420,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.3393000006326474,
+      "latency_ms": 0.7222999997793522,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -1449,7 +1449,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.3542000004017609,
+      "latency_ms": 0.768699999753153,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1478,7 +1478,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.3507000001263805,
+      "latency_ms": 0.9113999999499356,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1507,7 +1507,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.3529999994498212,
+      "latency_ms": 0.7564000002275861,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1536,7 +1536,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.29689999973925296,
+      "latency_ms": 0.7436999999299587,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1565,7 +1565,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.31060000037541613,
+      "latency_ms": 0.8143000000018219,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1594,7 +1594,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.35570000000006985,
+      "latency_ms": 0.7303000002139015,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1623,7 +1623,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 27,
-      "latency_ms": 0.36240000008547213,
+      "latency_ms": 0.7657000001017877,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1652,7 +1652,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.3313999995953054,
+      "latency_ms": 0.6794000000809319,
       "recall": 0.75,
       "hit": 1.0,
       "complete": 0.0,
@@ -1681,7 +1681,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.33319999965897296,
+      "latency_ms": 0.8757000000514381,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -1710,7 +1710,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.24299999950017082,
+      "latency_ms": 1.1521999999786203,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -1739,7 +1739,7 @@
         "AAPL#c4"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.25400000049558,
+      "latency_ms": 0.9199000000990054,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1768,7 +1768,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.2536000001782668,
+      "latency_ms": 0.7801000001563807,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -1797,7 +1797,7 @@
         "NVDA#c0"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.25570000070729293,
+      "latency_ms": 1.074100000096223,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -1826,7 +1826,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09649999992689118,
+      "latency_ms": 0.21860000015294645,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1855,7 +1855,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08789999992586672,
+      "latency_ms": 0.34750000031635864,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1884,7 +1884,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08259999958681874,
+      "latency_ms": 0.1843999998527579,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1913,7 +1913,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09439999939786503,
+      "latency_ms": 0.16870000035851263,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -1942,7 +1942,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.10349999956815736,
+      "latency_ms": 0.19410000004427275,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -1971,7 +1971,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.10419999944133451,
+      "latency_ms": 0.25279999999838765,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2000,7 +2000,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08069999967119657,
+      "latency_ms": 0.1366999999845575,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2029,7 +2029,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.11129999984405003,
+      "latency_ms": 0.13980000039737206,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2058,7 +2058,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.10259999999107094,
+      "latency_ms": 0.24020000000746222,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2087,7 +2087,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.1019000001178938,
+      "latency_ms": 0.24949999988166383,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2116,7 +2116,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.10109999948326731,
+      "latency_ms": 0.17019999995682156,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2145,7 +2145,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09640000007493654,
+      "latency_ms": 0.1729999999042775,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2174,7 +2174,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09159999990515644,
+      "latency_ms": 0.2140999999937776,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2203,7 +2203,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07559999994555255,
+      "latency_ms": 0.1739999997880659,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2232,7 +2232,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07529999948019395,
+      "latency_ms": 0.14299999975264654,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2261,7 +2261,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08329999945999589,
+      "latency_ms": 0.16970000024230103,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2290,7 +2290,7 @@
         "NVDA#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.052800000048591755,
+      "latency_ms": 0.15589999975418323,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2319,7 +2319,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.051699999858101364,
+      "latency_ms": 0.29970000014145626,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2348,7 +2348,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07659999937459361,
+      "latency_ms": 0.17840000009528012,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2377,7 +2377,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07699999969190685,
+      "latency_ms": 0.18110000019078143,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2406,7 +2406,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08479999996779952,
+      "latency_ms": 0.16310000000885339,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2435,7 +2435,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08489999981975416,
+      "latency_ms": 0.24050000001807348,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2464,7 +2464,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.0683999996908824,
+      "latency_ms": 0.14270000019678264,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2493,7 +2493,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07540000024164328,
+      "latency_ms": 0.14919999966878095,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2522,7 +2522,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09359999967273325,
+      "latency_ms": 0.1963999998224608,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2551,7 +2551,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09299999965151073,
+      "latency_ms": 0.22360000002663583,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2580,7 +2580,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09440000030735973,
+      "latency_ms": 0.19109999993816018,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2609,7 +2609,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09609999960957794,
+      "latency_ms": 0.16479999976581894,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2638,7 +2638,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09169999975711107,
+      "latency_ms": 0.14719999990120414,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2667,7 +2667,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09389999922859715,
+      "latency_ms": 0.18679999993764795,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2696,7 +2696,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09350000073027331,
+      "latency_ms": 0.298099999781698,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2725,7 +2725,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08730000081413891,
+      "latency_ms": 0.17830000024332548,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -2754,7 +2754,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09080000018002465,
+      "latency_ms": 0.17650000017965795,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2783,7 +2783,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08369999977730913,
+      "latency_ms": 0.2013999996961502,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -2812,7 +2812,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08239999988290947,
+      "latency_ms": 0.19199999996999395,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -2841,7 +2841,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08499999967170879,
+      "latency_ms": 0.15870000015638652,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2870,7 +2870,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.0869999994392856,
+      "latency_ms": 0.1575000001139415,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -2899,7 +2899,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08579999939684058,
+      "latency_ms": 0.1526999999441614,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -2928,7 +2928,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09930000032909447,
+      "latency_ms": 0.24859999984983006,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -2957,7 +2957,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08710000020073494,
+      "latency_ms": 0.16730000015741098,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -2986,7 +2986,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08319999960804125,
+      "latency_ms": 0.16070000037871068,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3015,7 +3015,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.077699999565084,
+      "latency_ms": 0.12710000009974465,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -3044,7 +3044,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08090000028460054,
+      "latency_ms": 0.23380000038741855,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3073,7 +3073,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09109999973588856,
+      "latency_ms": 0.21440000000438886,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -3102,7 +3102,7 @@
         "TSLA#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.09209999916492961,
+      "latency_ms": 0.1557999999022286,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3131,7 +3131,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08539999998902204,
+      "latency_ms": 0.16140000025188783,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3160,7 +3160,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.08619999971415382,
+      "latency_ms": 0.23639999972147052,
       "recall": 0.75,
       "hit": 1.0,
       "complete": 0.0,
@@ -3189,7 +3189,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.07670000013604295,
+      "latency_ms": 0.23559999999633874,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3218,7 +3218,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.06740000026184134,
+      "latency_ms": 0.16039999991335208,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -3247,7 +3247,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.06179999945743475,
+      "latency_ms": 0.16959999993559904,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3276,7 +3276,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.06969999958528206,
+      "latency_ms": 0.20820000008825446,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -3305,7 +3305,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.060200000007171184,
+      "latency_ms": 0.3050999998777115,
       "recall": 0.8,
       "hit": 1.0,
       "complete": 0.0,
@@ -3334,7 +3334,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0824999997348641,
+      "latency_ms": 0.15359999997599516,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3363,7 +3363,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06190000021888409,
+      "latency_ms": 0.12859999969805358,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3392,7 +3392,7 @@
         "NVDA#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.07509999977628468,
+      "latency_ms": 0.26900000011664815,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -3421,7 +3421,7 @@
         "L1_A3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09049999971466605,
+      "latency_ms": 0.17209999987244373,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -3450,7 +3450,7 @@
         "L1_A5"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08710000020073494,
+      "latency_ms": 0.16330000016751,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3479,7 +3479,7 @@
         "AAPL#c4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09339999996882398,
+      "latency_ms": 0.16860000005181064,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3508,7 +3508,7 @@
         "NVDA#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09050000062416075,
+      "latency_ms": 0.2230000000054133,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3537,7 +3537,7 @@
         "L2_A0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08730000081413891,
+      "latency_ms": 0.1584999999977299,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3566,7 +3566,7 @@
         "L1_A0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08590000015828991,
+      "latency_ms": 0.17800000023271423,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3595,7 +3595,7 @@
         "L1_A5"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0901000003068475,
+      "latency_ms": 0.17429999979867716,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3624,7 +3624,7 @@
         "L1_A4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09109999973588856,
+      "latency_ms": 0.24450000000797445,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3653,7 +3653,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10040000051958486,
+      "latency_ms": 0.17389999993611127,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3682,7 +3682,7 @@
         "L2_A0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0990999997156905,
+      "latency_ms": 0.16899999991437653,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3711,7 +3711,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0928999997995561,
+      "latency_ms": 0.1864999999270367,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3740,7 +3740,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09499999941908754,
+      "latency_ms": 0.2636000003803929,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3769,7 +3769,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09799999952520011,
+      "latency_ms": 0.16219999997701962,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3798,7 +3798,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09969999973691301,
+      "latency_ms": 0.1916999999593827,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3827,7 +3827,7 @@
         "L1_A0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09219999992637895,
+      "latency_ms": 0.26070000012623495,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3856,7 +3856,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10470000052009709,
+      "latency_ms": 0.20700000004580943,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3885,7 +3885,7 @@
         "ROOT"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10259999999107094,
+      "latency_ms": 0.18580000005385955,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3914,7 +3914,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0928999997995561,
+      "latency_ms": 0.17479999996794504,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3943,7 +3943,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08789999992586672,
+      "latency_ms": 0.30479999986710027,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -3972,7 +3972,7 @@
         "L1_A4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08770000022195745,
+      "latency_ms": 0.16239999968092889,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4001,7 +4001,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08770000022195745,
+      "latency_ms": 0.17539999998916755,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4030,7 +4030,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08549999984097667,
+      "latency_ms": 0.24459999985992908,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4059,7 +4059,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.08999999954539817,
+      "latency_ms": 0.29109999968568445,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4088,7 +4088,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09749999935593223,
+      "latency_ms": 0.15229999962684815,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4117,7 +4117,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10149999980058055,
+      "latency_ms": 0.2604000001156237,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4146,7 +4146,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10729999939940171,
+      "latency_ms": 0.21399999968707561,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4175,7 +4175,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.11110000014014076,
+      "latency_ms": 0.1739999997880659,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4204,7 +4204,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10349999956815736,
+      "latency_ms": 0.19239999983255984,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4233,7 +4233,7 @@
         "ROOT"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.1067000002876739,
+      "latency_ms": 0.268199999936769,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4262,7 +4262,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10409999958937988,
+      "latency_ms": 0.2650999999787018,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4291,7 +4291,7 @@
         "L2_A1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.1036000003296067,
+      "latency_ms": 0.16830000004119938,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4320,7 +4320,7 @@
         "L1_A1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.11970000014116522,
+      "latency_ms": 0.21800000013172394,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4349,7 +4349,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.10159999965253519,
+      "latency_ms": 0.2272000001539709,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4378,7 +4378,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.09639999916544184,
+      "latency_ms": 0.1612000000932312,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4407,7 +4407,7 @@
         "ROOT"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.07400000049528899,
+      "latency_ms": 0.17529999968246557,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4436,7 +4436,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06850000045233173,
+      "latency_ms": 0.23449999980584835,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4465,7 +4465,7 @@
         "ROOT"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06659999962721486,
+      "latency_ms": 0.22220000028028153,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4494,7 +4494,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06539999958476983,
+      "latency_ms": 0.18449999970471254,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4523,7 +4523,7 @@
         "ROOT"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.0608000000283937,
+      "latency_ms": 0.16400000004068715,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4552,7 +4552,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06200000007083872,
+      "latency_ms": 0.19430000020292937,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4581,7 +4581,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.07069999992381781,
+      "latency_ms": 0.15959999973347294,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -4610,7 +4610,7 @@
         "L1_A0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06349999966914766,
+      "latency_ms": 0.16869999990376527,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4639,7 +4639,7 @@
         "L1_A5"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06179999945743475,
+      "latency_ms": 0.17590000015843543,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4668,7 +4668,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06399999983841553,
+      "latency_ms": 0.1926999998431711,
       "recall": 0.75,
       "hit": 1.0,
       "complete": 0.0,
@@ -4697,7 +4697,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06360000043059699,
+      "latency_ms": 0.1677999998719315,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4726,7 +4726,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06309999935183441,
+      "latency_ms": 0.16090000008261995,
       "recall": 0.8,
       "hit": 1.0,
       "complete": 0.0,
@@ -4755,7 +4755,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.06030000076862052,
+      "latency_ms": 0.14479999981631408,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4784,7 +4784,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.05850000070495298,
+      "latency_ms": 0.22429999989981297,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4813,7 +4813,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 32,
-      "latency_ms": 0.05860000055690762,
+      "latency_ms": 0.19520000023476314,
       "recall": 0.6,
       "hit": 1.0,
       "complete": 0.0,
@@ -4842,7 +4842,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2237999997305451,
+      "latency_ms": 1.500800000030722,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4871,7 +4871,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21469999956025276,
+      "latency_ms": 1.3754000001426903,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4900,7 +4900,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.204699999812874,
+      "latency_ms": 1.4034999999239517,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -4929,7 +4929,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20320000021456508,
+      "latency_ms": 1.3708999999835214,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4958,7 +4958,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20649999987654155,
+      "latency_ms": 1.5426999998453539,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -4987,7 +4987,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21109999943291768,
+      "latency_ms": 1.3853000000381144,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5016,7 +5016,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2040999997916515,
+      "latency_ms": 1.3854000003448164,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5045,7 +5045,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2181999998356332,
+      "latency_ms": 1.7057999998542073,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5074,7 +5074,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21809999998367857,
+      "latency_ms": 1.60169999981008,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5103,7 +5103,7 @@
         "AAPL#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20180000046821078,
+      "latency_ms": 1.439800000298419,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5132,7 +5132,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2113999998982763,
+      "latency_ms": 1.4805999999225605,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5161,7 +5161,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.23409999994328246,
+      "latency_ms": 1.5417999998135201,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5190,7 +5190,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21290000040607993,
+      "latency_ms": 1.4108000000305765,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5219,7 +5219,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.23859999964770395,
+      "latency_ms": 1.3897999997425359,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5248,7 +5248,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.22460000036517158,
+      "latency_ms": 1.613800000086485,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5277,7 +5277,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21240000023681205,
+      "latency_ms": 1.2885999999525666,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5306,7 +5306,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21920000017416896,
+      "latency_ms": 1.5280999996321043,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5335,7 +5335,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.22819999958301196,
+      "latency_ms": 1.4762000000700937,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5364,7 +5364,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20630000017263228,
+      "latency_ms": 1.664500000060798,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5393,7 +5393,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20260000019334257,
+      "latency_ms": 1.375100000132079,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5422,7 +5422,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20200000017212005,
+      "latency_ms": 1.3226999999460531,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5451,7 +5451,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2106000001731445,
+      "latency_ms": 1.3764999998784333,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5480,7 +5480,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20940000013069948,
+      "latency_ms": 1.7279000003327383,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5509,7 +5509,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2128000005541253,
+      "latency_ms": 1.583900000241556,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5538,7 +5538,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19530000008671777,
+      "latency_ms": 1.5999000002011599,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5567,7 +5567,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19189999966329196,
+      "latency_ms": 1.4219999998204003,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5596,7 +5596,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.22170000011101365,
+      "latency_ms": 1.3131000000612403,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5625,7 +5625,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19840000004478497,
+      "latency_ms": 1.406200000019453,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5654,7 +5654,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19729999985429458,
+      "latency_ms": 1.3538000002881745,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5683,7 +5683,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.193099999705737,
+      "latency_ms": 1.26719999980196,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5712,7 +5712,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.1883000004454516,
+      "latency_ms": 1.3704000002690009,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5741,7 +5741,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2054999995380058,
+      "latency_ms": 1.386599999932514,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5770,7 +5770,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19979999979113927,
+      "latency_ms": 1.3217999999142194,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5799,7 +5799,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18809999983204762,
+      "latency_ms": 1.3590999997177278,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -5828,7 +5828,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19109999993816018,
+      "latency_ms": 1.4026999997440726,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -5857,7 +5857,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19780000002356246,
+      "latency_ms": 1.6552999995838036,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5886,7 +5886,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.21359999936976237,
+      "latency_ms": 1.5726000001450302,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -5915,7 +5915,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.1889000004666741,
+      "latency_ms": 1.4739000002919056,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -5944,7 +5944,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18709999949351186,
+      "latency_ms": 1.3674000001628883,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -5973,7 +5973,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19049999991693767,
+      "latency_ms": 1.3481000000865606,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6002,7 +6002,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20010000025649788,
+      "latency_ms": 1.2581999999383697,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6031,7 +6031,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.1975999994101585,
+      "latency_ms": 1.4845999999124615,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -6060,7 +6060,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18530000033933902,
+      "latency_ms": 1.3774999997622217,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6089,7 +6089,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18629999976838008,
+      "latency_ms": 1.4429999996536935,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -6118,7 +6118,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.193099999705737,
+      "latency_ms": 1.6043999999055814,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6147,7 +6147,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19049999991693767,
+      "latency_ms": 1.396899999690504,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6176,7 +6176,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.20260000019334257,
+      "latency_ms": 1.363600000331644,
       "recall": 0.75,
       "hit": 1.0,
       "complete": 0.0,
@@ -6205,7 +6205,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19559999964258168,
+      "latency_ms": 1.473599999826547,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -6234,7 +6234,7 @@
         "AAPL#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.2044000002570101,
+      "latency_ms": 1.659300000028452,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -6263,7 +6263,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18730000010691583,
+      "latency_ms": 1.387100000101782,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6292,7 +6292,7 @@
         "AAPL#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.18309999995835824,
+      "latency_ms": 1.554400000259193,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6321,7 +6321,7 @@
         "NVDA#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.19209999936720124,
+      "latency_ms": 1.5177000000221597,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -6350,7 +6350,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.04270000044925837,
+      "latency_ms": 0.1646999999138643,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6379,7 +6379,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.04489999992074445,
+      "latency_ms": 0.25649999997767736,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6408,7 +6408,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.03819999983534217,
+      "latency_ms": 0.1428999999006919,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6437,7 +6437,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.05289999990054639,
+      "latency_ms": 0.11769999991884106,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6466,7 +6466,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.045700000555370934,
+      "latency_ms": 0.16760000016802223,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6495,7 +6495,7 @@
         "MSFT#c4"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.04389999958220869,
+      "latency_ms": 0.18419999969410128,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6524,7 +6524,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.04360000002634479,
+      "latency_ms": 0.2434000002722314,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6553,7 +6553,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.04450000051292591,
+      "latency_ms": 0.1511999998911051,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6582,7 +6582,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.0455999997939216,
+      "latency_ms": 0.16340000001946464,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6611,7 +6611,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.04450000051292591,
+      "latency_ms": 0.2264999998260464,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6640,7 +6640,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.041199999941454735,
+      "latency_ms": 0.2117000003636349,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6669,7 +6669,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.041199999941454735,
+      "latency_ms": 0.1388000000588363,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6698,7 +6698,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.051500000154192094,
+      "latency_ms": 0.16439999990325305,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6727,7 +6727,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.0442000000475673,
+      "latency_ms": 0.2112999995915743,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6756,7 +6756,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.050600000577105675,
+      "latency_ms": 0.1575000001139415,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6785,7 +6785,7 @@
         "AMZN#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.04979999994247919,
+      "latency_ms": 0.15029999985927134,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6814,7 +6814,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.0503999999637017,
+      "latency_ms": 0.14910000027157366,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6843,7 +6843,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.04640000042854808,
+      "latency_ms": 0.146500000028027,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6872,7 +6872,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.052099999265919905,
+      "latency_ms": 0.2584000003480469,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6901,7 +6901,7 @@
         "TSLA#c0"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.047900000026857015,
+      "latency_ms": 0.16700000014679972,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6930,7 +6930,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.0503999999637017,
+      "latency_ms": 0.26650000017980346,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -6959,7 +6959,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.05419999979494605,
+      "latency_ms": 0.35890000026483904,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -6988,7 +6988,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.05580000015470432,
+      "latency_ms": 0.16809999988254276,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7017,7 +7017,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.051500000154192094,
+      "latency_ms": 0.14479999981631408,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7046,7 +7046,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.044999999772699084,
+      "latency_ms": 0.13799999987895717,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7075,7 +7075,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.04639999951905338,
+      "latency_ms": 0.2365000000281725,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7104,7 +7104,7 @@
         "AAPL#c0"
       ],
       "nodes_scored": 18,
-      "latency_ms": 0.037599999814119656,
+      "latency_ms": 0.1801999997042003,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7133,7 +7133,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.045200000386103056,
+      "latency_ms": 0.15840000014577527,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7162,7 +7162,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.0487000006614835,
+      "latency_ms": 0.1519000002190296,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7191,7 +7191,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.04440000066097127,
+      "latency_ms": 0.1704999999674328,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7220,7 +7220,7 @@
         "TSLA#c0"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.04489999992074445,
+      "latency_ms": 0.2897999997912848,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7249,7 +7249,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 21,
-      "latency_ms": 0.044499999603431206,
+      "latency_ms": 0.18020000015894766,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7278,7 +7278,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.046099999963189475,
+      "latency_ms": 0.16050000022005406,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7307,7 +7307,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 22,
-      "latency_ms": 0.04780000017490238,
+      "latency_ms": 0.28219999967404874,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7336,7 +7336,7 @@
         "MSFT#c0"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.043199999709031545,
+      "latency_ms": 0.1366999999845575,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7365,7 +7365,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.04340000032243552,
+      "latency_ms": 0.43679999998857966,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7394,7 +7394,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.06639999992330559,
+      "latency_ms": 0.25660000028437935,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7423,7 +7423,7 @@
         "TSLA#c0"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.0456000007034163,
+      "latency_ms": 0.14379999993252568,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7452,7 +7452,7 @@
         "AMZN#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.04510000053414842,
+      "latency_ms": 0.1577999996698054,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7481,7 +7481,7 @@
         "MSFT#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.051199999688833486,
+      "latency_ms": 0.30220000007830095,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7510,7 +7510,7 @@
         "MSFT#c3"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.045900000259280205,
+      "latency_ms": 0.1347000002169807,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7539,7 +7539,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.048099999730766285,
+      "latency_ms": 0.39000000015221303,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7568,7 +7568,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 23,
-      "latency_ms": 0.04669999998441199,
+      "latency_ms": 0.2714000002015382,
       "recall": 0.0,
       "hit": 0.0,
       "complete": 0.0,
@@ -7597,7 +7597,7 @@
         "AMZN#c1"
       ],
       "nodes_scored": 24,
-      "latency_ms": 0.046799999836366624,
+      "latency_ms": 0.16610000011496595,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -7626,7 +7626,7 @@
         "MSFT#c2"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.049500000386615284,
+      "latency_ms": 0.3160000001116714,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7655,7 +7655,7 @@
         "NVDA#c3"
       ],
       "nodes_scored": 27,
-      "latency_ms": 0.05000000055588316,
+      "latency_ms": 0.1978999998755171,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7684,7 +7684,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.043000000005122274,
+      "latency_ms": 0.17109999998865533,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -7713,7 +7713,7 @@
         "AMZN#c0"
       ],
       "nodes_scored": 20,
-      "latency_ms": 0.04199999966658652,
+      "latency_ms": 0.32349999992220546,
       "recall": 0.6666666666666666,
       "hit": 1.0,
       "complete": 0.0,
@@ -7742,7 +7742,7 @@
         "TSLA#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.05030000011174707,
+      "latency_ms": 0.1640999998926418,
       "recall": 0.4,
       "hit": 1.0,
       "complete": 0.0,
@@ -7771,7 +7771,7 @@
         "TSLA#c2"
       ],
       "nodes_scored": 25,
-      "latency_ms": 0.047900000026857015,
+      "latency_ms": 0.16910000022107852,
       "recall": 1.0,
       "hit": 1.0,
       "complete": 1.0,
@@ -7800,7 +7800,7 @@
         "TSLA#c3"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.05069999951956561,
+      "latency_ms": 0.22110000008979114,
       "recall": 0.5,
       "hit": 1.0,
       "complete": 0.0,
@@ -7829,7 +7829,7 @@
         "NVDA#c1"
       ],
       "nodes_scored": 26,
-      "latency_ms": 0.05719999990105862,
+      "latency_ms": 0.18690000024434994,
       "recall": 0.8,
       "hit": 1.0,
       "complete": 0.0,
@@ -7850,7 +7850,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.676923076923077,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.22465576921604224,
+        "latency_ms": 0.9799961537999899,
         "context_words": 249.59615384615384,
         "by_type": {
           "single": {
@@ -7861,7 +7861,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5741935483870969,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.20492580639960756,
+            "latency_ms": 1.0485774192866595,
             "context_words": 248.6451612903226,
             "n_queries": 31
           },
@@ -7873,7 +7873,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.25295833347627195,
+            "latency_ms": 0.8509000000079444,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -7885,7 +7885,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.25487777768123326,
+            "latency_ms": 0.915899999957522,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -7902,7 +7902,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6538461538461539,
         "nodes_scored": 23.826923076923077,
-        "latency_ms": 0.21217692301434,
+        "latency_ms": 0.7781423077211422,
         "context_words": 249.75,
         "by_type": {
           "single": {
@@ -7913,7 +7913,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5483870967741935,
             "nodes_scored": 23.70967741935484,
-            "latency_ms": 0.2121354838539358,
+            "latency_ms": 0.795367741962001,
             "context_words": 249.93548387096774,
             "n_queries": 31
           },
@@ -7925,7 +7925,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8166666666666665,
             "nodes_scored": 23.5,
-            "latency_ms": 0.21779166657627988,
+            "latency_ms": 0.7406166666517796,
             "context_words": 249.0,
             "n_queries": 12
           },
@@ -7937,7 +7937,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.666666666666668,
-            "latency_ms": 0.20483333315092345,
+            "latency_ms": 0.7688444445395564,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -7954,7 +7954,7 @@
         "doc_coverage": 0.9935897435897437,
         "precision": 0.49230769230769234,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.07635576922928941,
+        "latency_ms": 0.2947788461299821,
         "context_words": 254.82692307692307,
         "by_type": {
           "single": {
@@ -7965,7 +7965,7 @@
             "doc_coverage": 1.0,
             "precision": 0.40645161290322585,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.07612580638153539,
+            "latency_ms": 0.3227516129065348,
             "context_words": 255.5483870967742,
             "n_queries": 31
           },
@@ -7977,7 +7977,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5499999999999999,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.07520000000719544,
+            "latency_ms": 0.2482916665940138,
             "context_words": 255.58333333333334,
             "n_queries": 12
           },
@@ -7989,7 +7989,7 @@
             "doc_coverage": 0.9629629629629629,
             "precision": 0.711111111111111,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.07868888911212303,
+            "latency_ms": 0.26041111105870285,
             "context_words": 251.33333333333334,
             "n_queries": 9
           }
@@ -8006,7 +8006,7 @@
         "doc_coverage": 0.9628205128205128,
         "precision": 0.6076923076923078,
         "nodes_scored": 23.326923076923077,
-        "latency_ms": 0.24022115382229878,
+        "latency_ms": 0.8400076922568517,
         "context_words": 246.51923076923077,
         "by_type": {
           "single": {
@@ -8017,7 +8017,7 @@
             "doc_coverage": 1.0,
             "precision": 0.4967741935483871,
             "nodes_scored": 23.096774193548388,
-            "latency_ms": 0.24248064513695652,
+            "latency_ms": 0.8413225806150642,
             "context_words": 246.5483870967742,
             "n_queries": 31
           },
@@ -8029,7 +8029,7 @@
             "doc_coverage": 1.0,
             "precision": 0.75,
             "nodes_scored": 23.083333333333332,
-            "latency_ms": 0.2437750000202262,
+            "latency_ms": 0.8827166665999661,
             "context_words": 244.58333333333334,
             "n_queries": 12
           },
@@ -8041,7 +8041,7 @@
             "doc_coverage": 0.7851851851851852,
             "precision": 0.8,
             "nodes_scored": 24.444444444444443,
-            "latency_ms": 0.2276999999190189,
+            "latency_ms": 0.7785333332321898,
             "context_words": 249.0,
             "n_queries": 9
           }
@@ -8058,7 +8058,7 @@
         "doc_coverage": 0.9612179487179487,
         "precision": 0.676923076923077,
         "nodes_scored": 22.634615384615383,
-        "latency_ms": 0.2233442307547543,
+        "latency_ms": 0.9576115384369097,
         "context_words": 246.48076923076923,
         "by_type": {
           "single": {
@@ -8069,7 +8069,7 @@
             "doc_coverage": 1.0,
             "precision": 0.567741935483871,
             "nodes_scored": 22.483870967741936,
-            "latency_ms": 0.22472903222684004,
+            "latency_ms": 0.8573290322220278,
             "context_words": 245.67741935483872,
             "n_queries": 31
           },
@@ -8081,7 +8081,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8333333333333334,
             "nodes_scored": 21.916666666666668,
-            "latency_ms": 0.2178833334104032,
+            "latency_ms": 1.1252333332928781,
             "context_words": 249.75,
             "n_queries": 12
           },
@@ -8093,7 +8093,7 @@
             "doc_coverage": 0.7759259259259259,
             "precision": 0.8444444444444444,
             "nodes_scored": 24.11111111111111,
-            "latency_ms": 0.22585555547670488,
+            "latency_ms": 1.0795333333691006,
             "context_words": 244.88888888888889,
             "n_queries": 9
           }
@@ -8110,7 +8110,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6807692307692309,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.2205269230356722,
+        "latency_ms": 0.9366384615444846,
         "context_words": 249.32692307692307,
         "by_type": {
           "single": {
@@ -8121,7 +8121,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.2145967741413305,
+            "latency_ms": 0.9511967741819981,
             "context_words": 248.3548387096774,
             "n_queries": 31
           },
@@ -8133,7 +8133,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.2439583333095167,
+            "latency_ms": 0.932725000022098,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8145,7 +8145,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.20971111108438992,
+            "latency_ms": 0.8917111111562311,
             "context_words": 249.55555555555554,
             "n_queries": 9
           }
@@ -8162,7 +8162,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6230769230769232,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.20286346158662547,
+        "latency_ms": 0.7840673076421248,
         "context_words": 250.65384615384616,
         "by_type": {
           "single": {
@@ -8173,7 +8173,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5161290322580645,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.20558387105636705,
+            "latency_ms": 0.7734161289913426,
             "context_words": 249.29032258064515,
             "n_queries": 31
           },
@@ -8185,7 +8185,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8166666666666668,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.19709166667780664,
+            "latency_ms": 0.8059249999329646,
             "context_words": 254.16666666666666,
             "n_queries": 12
           },
@@ -8197,7 +8197,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.7333333333333333,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.2011888888470518,
+            "latency_ms": 0.7916111110514774,
             "context_words": 250.66666666666666,
             "n_queries": 9
           }
@@ -8217,7 +8217,7 @@
         "doc_coverage": 1.0,
         "precision": 0.396153846153846,
         "nodes_scored": 23.28846153846154,
-        "latency_ms": 0.05692884617649095,
+        "latency_ms": 0.19390961539591864,
         "context_words": 256.5576923076923,
         "by_type": {
           "single": {
@@ -8228,7 +8228,7 @@
             "doc_coverage": 1.0,
             "precision": 0.29677419354838713,
             "nodes_scored": 23.06451612903226,
-            "latency_ms": 0.055777419396279934,
+            "latency_ms": 0.195870967746164,
             "context_words": 254.74193548387098,
             "n_queries": 31
           },
@@ -8240,7 +8240,7 @@
             "doc_coverage": 1.0,
             "precision": 0.46666666666666673,
             "nodes_scored": 23.0,
-            "latency_ms": 0.060224999818577395,
+            "latency_ms": 0.18324166664266764,
             "context_words": 259.9166666666667,
             "n_queries": 12
           },
@@ -8252,7 +8252,7 @@
             "doc_coverage": 1.0,
             "precision": 0.6444444444444445,
             "nodes_scored": 24.444444444444443,
-            "latency_ms": 0.0565000002299914,
+            "latency_ms": 0.20137777786051933,
             "context_words": 258.3333333333333,
             "n_queries": 9
           }
@@ -8271,7 +8271,7 @@
         "doc_coverage": 0.9227564102564103,
         "precision": 0.6346153846153846,
         "nodes_scored": 18.096153846153847,
-        "latency_ms": 0.20009807685010644,
+        "latency_ms": 0.7583557692914138,
         "context_words": 253.73076923076923,
         "by_type": {
           "single": {
@@ -8282,7 +8282,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5483870967741935,
             "nodes_scored": 17.612903225806452,
-            "latency_ms": 0.21497096769317361,
+            "latency_ms": 0.7526000000589486,
             "context_words": 254.16129032258064,
             "n_queries": 31
           },
@@ -8294,7 +8294,7 @@
             "doc_coverage": 0.875,
             "precision": 0.7666666666666667,
             "nodes_scored": 18.166666666666668,
-            "latency_ms": 0.18849166652519975,
+            "latency_ms": 0.7866666666889918,
             "context_words": 253.33333333333334,
             "n_queries": 12
           },
@@ -8306,7 +8306,7 @@
             "doc_coverage": 0.7203703703703703,
             "precision": 0.7555555555555556,
             "nodes_scored": 19.666666666666668,
-            "latency_ms": 0.16434444437941742,
+            "latency_ms": 0.7404333334509121,
             "context_words": 252.77777777777777,
             "n_queries": 9
           }
@@ -8323,7 +8323,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6807692307692309,
         "nodes_scored": 21.173076923076923,
-        "latency_ms": 0.18782307693772265,
+        "latency_ms": 0.9528269230696214,
         "context_words": 248.3653846153846,
         "by_type": {
           "single": {
@@ -8334,7 +8334,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5741935483870968,
             "nodes_scored": 21.161290322580644,
-            "latency_ms": 0.18119354835136853,
+            "latency_ms": 0.9760612902907944,
             "context_words": 248.41935483870967,
             "n_queries": 31
           },
@@ -8346,7 +8346,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 20.583333333333332,
-            "latency_ms": 0.1997166669601332,
+            "latency_ms": 0.9403583333475277,
             "context_words": 249.33333333333334,
             "n_queries": 12
           },
@@ -8358,7 +8358,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8222222222222223,
             "nodes_scored": 22.0,
-            "latency_ms": 0.19479999981639493,
+            "latency_ms": 0.8894222222705948,
             "context_words": 246.88888888888889,
             "n_queries": 9
           }
@@ -8375,7 +8375,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.676923076923077,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.20494615385429754,
+        "latency_ms": 0.8145499999815141,
         "context_words": 249.59615384615384,
         "by_type": {
           "single": {
@@ -8386,7 +8386,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5741935483870969,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.20307741936947774,
+            "latency_ms": 0.8359354838214659,
             "context_words": 248.6451612903226,
             "n_queries": 31
           },
@@ -8398,7 +8398,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.20734166658561057,
+            "latency_ms": 0.8356583333958648,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8410,7 +8410,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.20818888899359284,
+            "latency_ms": 0.7127444444247684,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8427,7 +8427,7 @@
         "doc_coverage": 0.9612179487179487,
         "precision": 0.6884615384615386,
         "nodes_scored": 26.51923076923077,
-        "latency_ms": 0.21070000013004084,
+        "latency_ms": 0.7939615384552431,
         "context_words": 249.78846153846155,
         "by_type": {
           "single": {
@@ -8438,7 +8438,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 26.419354838709676,
-            "latency_ms": 0.22050967759095064,
+            "latency_ms": 0.8167290322577877,
             "context_words": 249.0,
             "n_queries": 31
           },
@@ -8450,7 +8450,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8666666666666668,
             "nodes_scored": 26.333333333333332,
-            "latency_ms": 0.19592500007092895,
+            "latency_ms": 0.7973000000447428,
             "context_words": 251.83333333333334,
             "n_queries": 12
           },
@@ -8462,7 +8462,7 @@
             "doc_coverage": 0.7759259259259259,
             "precision": 0.8222222222222223,
             "nodes_scored": 27.11111111111111,
-            "latency_ms": 0.19661111117683402,
+            "latency_ms": 0.7110888887938118,
             "context_words": 249.77777777777777,
             "n_queries": 9
           }
@@ -8479,7 +8479,7 @@
         "doc_coverage": 0.9708333333333333,
         "precision": 0.7,
         "nodes_scored": 24.0,
-        "latency_ms": 0.2079480769820153,
+        "latency_ms": 0.800317307642637,
         "context_words": 249.76923076923077,
         "by_type": {
           "single": {
@@ -8490,7 +8490,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 24.0,
-            "latency_ms": 0.20526129036067775,
+            "latency_ms": 0.7947870967655035,
             "context_words": 249.7741935483871,
             "n_queries": 31
           },
@@ -8502,7 +8502,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8833333333333334,
             "nodes_scored": 24.0,
-            "latency_ms": 0.21013333343944396,
+            "latency_ms": 0.7827749999099373,
             "context_words": 253.0,
             "n_queries": 12
           },
@@ -8514,7 +8514,7 @@
             "doc_coverage": 0.8314814814814815,
             "precision": 0.8666666666666667,
             "nodes_scored": 24.0,
-            "latency_ms": 0.21428888895671763,
+            "latency_ms": 0.8427555554185852,
             "context_words": 245.44444444444446,
             "n_queries": 9
           }
@@ -8531,7 +8531,7 @@
         "doc_coverage": 0.9708333333333333,
         "precision": 0.7,
         "nodes_scored": 24.0,
-        "latency_ms": 0.2089769230469056,
+        "latency_ms": 0.8086461538141521,
         "context_words": 249.76923076923077,
         "by_type": {
           "single": {
@@ -8542,7 +8542,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 24.0,
-            "latency_ms": 0.20685806453735905,
+            "latency_ms": 0.8380709677288495,
             "context_words": 249.7741935483871,
             "n_queries": 31
           },
@@ -8554,7 +8554,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8833333333333334,
             "nodes_scored": 24.0,
-            "latency_ms": 0.22218333318354175,
+            "latency_ms": 0.803983333260779,
             "context_words": 253.0,
             "n_queries": 12
           },
@@ -8566,7 +8566,7 @@
             "doc_coverage": 0.8314814814814815,
             "precision": 0.8666666666666667,
             "nodes_scored": 24.0,
-            "latency_ms": 0.1986666666198289,
+            "latency_ms": 0.7135111110680251,
             "context_words": 245.44444444444446,
             "n_queries": 9
           }
@@ -8585,7 +8585,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6807692307692309,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.20415576916723063,
+        "latency_ms": 0.7876788461614453,
         "context_words": 249.32692307692307,
         "by_type": {
           "single": {
@@ -8596,7 +8596,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.20275806435811025,
+            "latency_ms": 0.7825032258375769,
             "context_words": 248.3548387096774,
             "n_queries": 31
           },
@@ -8608,7 +8608,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.1839083334592336,
+            "latency_ms": 0.8056166666392528,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8620,7 +8620,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.2359666666759747,
+            "latency_ms": 0.781588888862138,
             "context_words": 249.55555555555554,
             "n_queries": 9
           }
@@ -8637,7 +8637,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6807692307692309,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.20550000001024343,
+        "latency_ms": 0.8316576923229709,
         "context_words": 249.42307692307693,
         "by_type": {
           "single": {
@@ -8648,7 +8648,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.20690322581949952,
+            "latency_ms": 0.7994774193702464,
             "context_words": 248.3548387096774,
             "n_queries": 31
           },
@@ -8660,7 +8660,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.20579999992757317,
+            "latency_ms": 0.8570166667141166,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8672,7 +8672,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.20026666677747723,
+            "latency_ms": 0.9086888888608277,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8689,7 +8689,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6807692307692309,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.19937692305715105,
+        "latency_ms": 0.8243384614843308,
         "context_words": 249.46153846153845,
         "by_type": {
           "single": {
@@ -8700,7 +8700,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5806451612903227,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.19487419359070518,
+            "latency_ms": 0.8301677418580032,
             "context_words": 248.41935483870967,
             "n_queries": 31
           },
@@ -8712,7 +8712,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.19180833320812476,
+            "latency_ms": 0.8368083332849588,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8724,7 +8724,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.22497777768472182,
+            "latency_ms": 0.7876333333519546,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8741,7 +8741,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.676923076923077,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.19496538465528618,
+        "latency_ms": 0.9419999999566314,
         "context_words": 249.59615384615384,
         "by_type": {
           "single": {
@@ -8752,7 +8752,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5741935483870969,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.19478064516607124,
+            "latency_ms": 0.8504741935094869,
             "context_words": 248.6451612903226,
             "n_queries": 31
           },
@@ -8764,7 +8764,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.20411666681260007,
+            "latency_ms": 1.0638666666030379,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8776,7 +8776,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.18340000001949697,
+            "latency_ms": 1.0947666666349203,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8793,7 +8793,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.676923076923077,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.20922307700087772,
+        "latency_ms": 0.7862365384531026,
         "context_words": 249.59615384615384,
         "by_type": {
           "single": {
@@ -8804,7 +8804,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5741935483870969,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.2016322581062747,
+            "latency_ms": 0.7953999999934298,
             "context_words": 248.6451612903226,
             "n_queries": 31
           },
@@ -8816,7 +8816,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.207408333380954,
+            "latency_ms": 0.7556749999745686,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8828,7 +8828,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.23778888913107543,
+            "latency_ms": 0.7954222222300208,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8845,7 +8845,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6730769230769231,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.23335769226552935,
+        "latency_ms": 0.819390384628185,
         "context_words": 249.07692307692307,
         "by_type": {
           "single": {
@@ -8856,7 +8856,7 @@
             "doc_coverage": 1.0,
             "precision": 0.567741935483871,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.2354612902455565,
+            "latency_ms": 0.7985838709857724,
             "context_words": 247.7741935483871,
             "n_queries": 31
           },
@@ -8868,7 +8868,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8500000000000001,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.23307500002071416,
+            "latency_ms": 0.7756166667149955,
             "context_words": 251.66666666666666,
             "n_queries": 12
           },
@@ -8880,7 +8880,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.22648888888296723,
+            "latency_ms": 0.9494222221696368,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8897,7 +8897,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6653846153846155,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.24386923076655456,
+        "latency_ms": 0.9020807692387769,
         "context_words": 250.3653846153846,
         "by_type": {
           "single": {
@@ -8908,7 +8908,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5612903225806452,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.25966451613062563,
+            "latency_ms": 0.8688193548668125,
             "context_words": 249.7741935483871,
             "n_queries": 31
           },
@@ -8920,7 +8920,7 @@
             "doc_coverage": 1.0,
             "precision": 0.8333333333333334,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.2278750000641594,
+            "latency_ms": 0.8735666666931744,
             "context_words": 252.08333333333334,
             "n_queries": 12
           },
@@ -8932,7 +8932,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.8,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.21078888878239216,
+            "latency_ms": 1.054666666580791,
             "context_words": 250.11111111111111,
             "n_queries": 9
           }
@@ -8949,7 +8949,7 @@
         "doc_coverage": 0.9676282051282052,
         "precision": 0.6423076923076922,
         "nodes_scored": 23.884615384615383,
-        "latency_ms": 0.2257211538982609,
+        "latency_ms": 0.9099807692092117,
         "context_words": 249.8653846153846,
         "by_type": {
           "single": {
@@ -8960,7 +8960,7 @@
             "doc_coverage": 1.0,
             "precision": 0.5419354838709678,
             "nodes_scored": 23.741935483870968,
-            "latency_ms": 0.22552580653169688,
+            "latency_ms": 0.9706322580167316,
             "context_words": 248.80645161290323,
             "n_queries": 31
           },
@@ -8972,7 +8972,7 @@
             "doc_coverage": 1.0,
             "precision": 0.7999999999999999,
             "nodes_scored": 23.583333333333332,
-            "latency_ms": 0.221200000017537,
+            "latency_ms": 0.8644250000315878,
             "context_words": 252.75,
             "n_queries": 12
           },
@@ -8984,7 +8984,7 @@
             "doc_coverage": 0.8129629629629629,
             "precision": 0.7777777777777778,
             "nodes_scored": 24.77777777777778,
-            "latency_ms": 0.2324222222240577,
+            "latency_ms": 0.7618111111090305,
             "context_words": 249.66666666666666,
             "n_queries": 9
           }

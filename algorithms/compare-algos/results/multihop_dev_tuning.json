@@ -1,0 +1,311 @@
+{
+  "split": "dev",
+  "questions": 466,
+  "rule": "(fixed before running): highest dev recall@5; within 0.5 points, fewer\nnodes scored wins.",
+  "grid": {
+    "beam_width": [
+      "3",
+      "5",
+      "8",
+      "12"
+    ],
+    "max_link": [
+      "None",
+      "50",
+      "200"
+    ],
+    "n_seeds": [
+      "3",
+      "6"
+    ]
+  },
+  "rows": [
+    {
+      "variant": "Flat dense",
+      "recall": 0.194206008583691,
+      "nodes_scored": 22838.0,
+      "latency_ms": 3.1992036480618316
+    },
+    {
+      "variant": "Graph PPR",
+      "recall": 0.21369814020028613,
+      "nodes_scored": 22838.0,
+      "latency_ms": 82.33559935622023
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=None n_seeds=3",
+      "config": {
+        "beam_width": 3,
+        "max_link": null,
+        "n_seeds": 3
+      },
+      "recall": 0.19724606580829754,
+      "nodes_scored": 896.0772532188842,
+      "latency_ms": 98.02287918454404
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=None n_seeds=6",
+      "config": {
+        "beam_width": 3,
+        "max_link": null,
+        "n_seeds": 6
+      },
+      "recall": 0.19760371959942774,
+      "nodes_scored": 896.0772532188842,
+      "latency_ms": 107.23046287553443
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=50 n_seeds=3",
+      "config": {
+        "beam_width": 3,
+        "max_link": 50,
+        "n_seeds": 3
+      },
+      "recall": 0.17471387696709587,
+      "nodes_scored": 213.21888412017168,
+      "latency_ms": 7.481688412014763
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=50 n_seeds=6",
+      "config": {
+        "beam_width": 3,
+        "max_link": 50,
+        "n_seeds": 6
+      },
+      "recall": 0.1655937052932761,
+      "nodes_scored": 213.21888412017168,
+      "latency_ms": 7.276613519315781
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=200 n_seeds=3",
+      "config": {
+        "beam_width": 3,
+        "max_link": 200,
+        "n_seeds": 3
+      },
+      "recall": 0.20010729613733905,
+      "nodes_scored": 262.26609442060084,
+      "latency_ms": 8.477927896991154
+    },
+    {
+      "variant": "HAT-RAG beam_width=3 max_link=200 n_seeds=6",
+      "config": {
+        "beam_width": 3,
+        "max_link": 200,
+        "n_seeds": 6
+      },
+      "recall": 0.18705293276108725,
+      "nodes_scored": 262.26609442060084,
+      "latency_ms": 8.531610515019135
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=None n_seeds=3",
+      "config": {
+        "beam_width": 5,
+        "max_link": null,
+        "n_seeds": 3
+      },
+      "recall": 0.2015379113018598,
+      "nodes_scored": 974.4334763948498,
+      "latency_ms": 94.2228744635156
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=None n_seeds=6",
+      "config": {
+        "beam_width": 5,
+        "max_link": null,
+        "n_seeds": 6
+      },
+      "recall": 0.20350500715307585,
+      "nodes_scored": 974.4334763948498,
+      "latency_ms": 92.51290944205647
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=50 n_seeds=3",
+      "config": {
+        "beam_width": 5,
+        "max_link": 50,
+        "n_seeds": 3
+      },
+      "recall": 0.1779327610872675,
+      "nodes_scored": 299.36695278969955,
+      "latency_ms": 6.645362017164583
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=50 n_seeds=6",
+      "config": {
+        "beam_width": 5,
+        "max_link": 50,
+        "n_seeds": 6
+      },
+      "recall": 0.1704220314735336,
+      "nodes_scored": 299.36695278969955,
+      "latency_ms": 5.458301502149322
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=200 n_seeds=3",
+      "config": {
+        "beam_width": 5,
+        "max_link": 200,
+        "n_seeds": 3
+      },
+      "recall": 0.1997496423462089,
+      "nodes_scored": 345.6931330472103,
+      "latency_ms": 6.729417381978456
+    },
+    {
+      "variant": "HAT-RAG beam_width=5 max_link=200 n_seeds=6",
+      "config": {
+        "beam_width": 5,
+        "max_link": 200,
+        "n_seeds": 6
+      },
+      "recall": 0.1902718168812589,
+      "nodes_scored": 345.6931330472103,
+      "latency_ms": 8.35446866953351
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=None n_seeds=3",
+      "config": {
+        "beam_width": 8,
+        "max_link": null,
+        "n_seeds": 3
+      },
+      "recall": 0.20350500715307585,
+      "nodes_scored": 1069.980686695279,
+      "latency_ms": 89.8828592274677
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=None n_seeds=6",
+      "config": {
+        "beam_width": 8,
+        "max_link": null,
+        "n_seeds": 6
+      },
+      "recall": 0.20493562231759657,
+      "nodes_scored": 1069.980686695279,
+      "latency_ms": 68.78580386266994
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=50 n_seeds=3",
+      "config": {
+        "beam_width": 8,
+        "max_link": 50,
+        "n_seeds": 3
+      },
+      "recall": 0.18329756795422028,
+      "nodes_scored": 407.25321888412014,
+      "latency_ms": 6.761077467813305
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=50 n_seeds=6",
+      "config": {
+        "beam_width": 8,
+        "max_link": 50,
+        "n_seeds": 6
+      },
+      "recall": 0.1752503576537911,
+      "nodes_scored": 407.25321888412014,
+      "latency_ms": 7.692484549358085
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=200 n_seeds=3",
+      "config": {
+        "beam_width": 8,
+        "max_link": 200,
+        "n_seeds": 3
+      },
+      "recall": 0.20118025751072963,
+      "nodes_scored": 449.8991416309013,
+      "latency_ms": 8.18934721030522
+    },
+    {
+      "variant": "HAT-RAG beam_width=8 max_link=200 n_seeds=6",
+      "config": {
+        "beam_width": 8,
+        "max_link": 200,
+        "n_seeds": 6
+      },
+      "recall": 0.1915236051502146,
+      "nodes_scored": 449.8991416309013,
+      "latency_ms": 8.116730686696265
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=None n_seeds=3",
+      "config": {
+        "beam_width": 12,
+        "max_link": null,
+        "n_seeds": 3
+      },
+      "recall": 0.20386266094420602,
+      "nodes_scored": 1193.3497854077252,
+      "latency_ms": 80.42406480686122
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=None n_seeds=6",
+      "config": {
+        "beam_width": 12,
+        "max_link": null,
+        "n_seeds": 6
+      },
+      "recall": 0.20690271816881256,
+      "nodes_scored": 1193.3497854077252,
+      "latency_ms": 84.94095665235632
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=50 n_seeds=3",
+      "config": {
+        "beam_width": 12,
+        "max_link": 50,
+        "n_seeds": 3
+      },
+      "recall": 0.19241773962804007,
+      "nodes_scored": 544.9828326180258,
+      "latency_ms": 7.925458154507536
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=50 n_seeds=6",
+      "config": {
+        "beam_width": 12,
+        "max_link": 50,
+        "n_seeds": 6
+      },
+      "recall": 0.18669527896995708,
+      "nodes_scored": 544.9828326180258,
+      "latency_ms": 8.037643776829158
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=200 n_seeds=3",
+      "config": {
+        "beam_width": 12,
+        "max_link": 200,
+        "n_seeds": 3
+      },
+      "recall": 0.20189556509299,
+      "nodes_scored": 583.7725321888412,
+      "latency_ms": 9.291806866951267
+    },
+    {
+      "variant": "HAT-RAG beam_width=12 max_link=200 n_seeds=6",
+      "config": {
+        "beam_width": 12,
+        "max_link": 200,
+        "n_seeds": 6
+      },
+      "recall": 0.196173104434907,
+      "nodes_scored": 583.7725321888412,
+      "latency_ms": 9.291084120173538
+    }
+  ],
+  "pick": {
+    "variant": "HAT-RAG beam_width=5 max_link=None n_seeds=6",
+    "config": {
+      "beam_width": 5,
+      "max_link": null,
+      "n_seeds": 6
+    },
+    "recall": 0.20350500715307585,
+    "nodes_scored": 974.4334763948498,
+    "latency_ms": 92.51290944205647
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "provider": "groq",
+  "k": 5,
+  "questions": 45,
+  "partial": false,
+  "metric": "gold answer contained in the normalised response (MultiHop-RAG)",
+  "summary": {
+    "HAT-RAG": {
+      "accuracy": 0.35555555555555557,
+      "n": 45,
+      "by_type": {
+        "inference": 0.7333333333333333,
+        "comparison": 0.06666666666666667,
+        "temporal": 0.26666666666666666
+      }
+    },
+    "Flat dense": {
+      "accuracy": 0.4444444444444444,
+      "n": 45,
+      "by_type": {
+        "inference": 0.8,
+        "comparison": 0.26666666666666666,
+        "temporal": 0.26666666666666666
+      }
+    },
+    "RAPTOR collapsed": {
+      "accuracy": 0.35555555555555557,
+      "n": 45,
+      "by_type": {
+        "inference": 0.7333333333333333,
+        "comparison": 0.2,
+        "temporal": 0.13333333333333333
+      }
+    },
+    "Graph PPR": {
+      "accuracy": 0.4666666666666667,
+      "n": 45,
+      "by_type": {
+        "inference": 0.8666666666666667,
+        "comparison": 0.3333333333333333,
+        "temporal": 0.2
+      }
+    }
+  }
+}
