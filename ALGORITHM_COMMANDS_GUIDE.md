@@ -219,3 +219,30 @@ Running these commands creates and updates two JSON artifacts in [`algorithms/`]
    - Contains the 9-node tree for the engineering research corpus.
 
 These JSON structures are directly consumable by the online retrieval engine and REST API.
+
+---
+
+## 6. Retrieval, benchmarks, generation and the app
+
+```bash
+# retrieval from a built tree (default: the 10-K tree)
+python algorithms/retrieval1_hat_beam_traversal.py --query "How does Tesla set its warranty reserves?"
+python algorithms/retrieval1_hat_beam_traversal.py --paper-spec          # the original Algorithm 4
+python algorithms/retrieval2_flat_dense.py | retrieval3_raptor_collapsed_tree.py | retrieval4_graph_ppr.py
+
+# retrieval + cited LLM answer (GROQ_API_KEY or GEMINI_API_KEY in .env)
+python algorithms/llm_answer.py --query "Compare the R&D spending of Apple and NVIDIA."
+
+# benchmarks
+python algorithms/compare-algos/run_comparison.py --sizes 8 16 32 64 128 256 512
+python algorithms/compare-algos/run_multihop.py --build-only    # MultiHop-RAG tree, ~20 min CPU
+python algorithms/compare-algos/tune_multihop_dev.py            # large-corpus settings, dev split only
+python algorithms/compare-algos/run_multihop.py                 # test split, haystack, ablations
+python algorithms/compare-algos/run_answer_eval.py --per-type 15
+python algorithms/compare-algos/make_figures.py
+
+# the app
+streamlit run app.py
+```
+
+What each benchmark writes, and how to read it: [`algorithms/compare-algos/README.md`](algorithms/compare-algos/README.md).

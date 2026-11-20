@@ -113,3 +113,18 @@ produce the same tree topology.
 
 For what the algorithms actually do and why they are built the way they are, see
 [`ALGORITHMS.md`](./ALGORITHMS.md).
+
+---
+
+## 6. Since the milestone: retrieval, large-corpus benchmark, generation, app
+
+| File | Role |
+|---|---|
+| `algorithms/retrieval1_hat_beam_traversal.py` … `retrieval4_graph_ppr.py` | The four retrievers (HAT-RAG and three baselines) over one shared `TreeIndex`. |
+| `algorithms/llm_answer.py` | Cited answer generation through Groq (default) or Gemini; keys from `.env` (template: `.env.example`). |
+| `algorithms/compare-algos/` | Benchmarks: `run_comparison.py` (10-K + synthetic, 8 to 512 docs), `multihop_corpus.py` + `run_multihop.py` + `tune_multihop_dev.py` (MultiHop-RAG, 22,838 passages), `run_answer_eval.py` (end-to-end answers), `make_figures.py`, `results/`, `figures/`. |
+| `app.py`, `webapp/`, `.streamlit/config.toml` | The Streamlit app: Ask, Compare retrievers, Benchmarks, Corpus & tree, Build. |
+| `data/multihop_rag/` | Downloaded MultiHop-RAG data and the built 25,673-node tree (git-ignored; rebuilt by `run_multihop.py --build-only`). |
+| `tests/test_scale_and_llm.py` | Large-corpus code paths (incidence-matrix entity edges, blockwise alpha links, top-k), prompt/citation handling and answer scoring. |
+
+Results and their caveats: [`algorithms/compare-algos/README.md`](./algorithms/compare-algos/README.md).

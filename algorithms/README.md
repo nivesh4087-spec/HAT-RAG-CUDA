@@ -56,11 +56,16 @@ kernel-level tuning, not a rewrite. Until then `--device cpu` is the working def
 | [`run_demo.py`](./run_demo.py) | Full pipeline on a small engineering-research corpus. |
 | [`run_finance_rag.py`](./run_finance_rag.py) | Full pipeline on the SEC 10-K corpus in [`../finance_data/reports/`](../finance_data/reports/) (AAPL, MSFT, NVDA, AMZN, TSLA). |
 | `hat_tree_structure.json` / `hat_finance_tree_structure.json` | Serialized trees (nodes, embeddings, cross-links, build metrics). |
-| [`retrieval1_hat_beam_traversal.py`](./retrieval1_hat_beam_traversal.py) | **Retrieval 1 / Algorithm 4 (ours, best of the four).** Beam descent of `H`, entity linking, expansion along alpha and reading-order edges, personalised PageRank over the candidate subgraph, relevance-gated diversity. Also holds the shared `TreeIndex`. |
+| [`retrieval1_hat_beam_traversal.py`](./retrieval1_hat_beam_traversal.py) | **Retrieval 1 / Algorithm 4 (ours).** Beam descent of `H`, entity linking, expansion along alpha and reading-order edges, personalised PageRank over the candidate subgraph, relevance-gated diversity. Also holds the shared `TreeIndex`. |
 | [`retrieval2_flat_dense.py`](./retrieval2_flat_dense.py) | **Retrieval 2.** Flat dense baseline: cosine against every leaf. |
 | [`retrieval3_raptor_collapsed_tree.py`](./retrieval3_raptor_collapsed_tree.py) | **Retrieval 3.** RAPTOR-style collapsed tree: every level pooled, cosine top-k. |
 | [`retrieval4_graph_ppr.py`](./retrieval4_graph_ppr.py) | **Retrieval 4.** Entity-graph baseline: personalised PageRank over a whole-corpus passage graph. |
+| [`llm_answer.py`](./llm_answer.py) | **Generation.** Numbers the retrieved evidence, prompts Groq (default) or Gemini over their OpenAI-compatible REST APIs, streams a cited answer. Keys come from `.env`. |
 | [`compare-algos/`](./compare-algos/) | Benchmark queries, evaluation harness, results, figures and the comparison report. |
+| [`compare-algos/multihop_corpus.py`](./compare-algos/multihop_corpus.py) | Downloads and prepares **MultiHop-RAG** (609 real news articles, 22,838 passages, 2,255 multi-document questions). |
+| [`compare-algos/run_multihop.py`](./compare-algos/run_multihop.py) | The large-corpus benchmark: full corpus, growing haystack, ablations, beam sweep. Builds and caches the 25,673-node tree. |
+| [`compare-algos/tune_multihop_dev.py`](./compare-algos/tune_multihop_dev.py) | Picks HAT-RAG's large-corpus setting on the dev split only. |
+| [`compare-algos/run_answer_eval.py`](./compare-algos/run_answer_eval.py) | End-to-end answer accuracy (retrieval + LLM) on held-out MultiHop-RAG questions. |
 
 ---
 
@@ -78,6 +83,10 @@ python algorithms/retrieval1_hat_beam_traversal.py --query "How does Tesla set i
 python algorithms/retrieval2_flat_dense.py                     # each baseline the same way
 python algorithms/compare-algos/run_comparison.py              # full comparison -> results/
 python algorithms/compare-algos/make_figures.py                # -> figures/, results/tables.md
+
+python algorithms/compare-algos/run_multihop.py --build-only   # MultiHop-RAG tree, ~20 min on CPU
+python algorithms/compare-algos/run_multihop.py                # large-corpus benchmark -> results/multihop.json
+python algorithms/llm_answer.py --query "..."                  # retrieve + answer (needs GROQ_API_KEY in .env)
 ```
 
 Useful flags (both runners): `--levels`, `--children`, `--alpha`, `--max-cross-links`,
@@ -127,17 +136,33 @@ embed 0.33s | cluster 0.06s | summarize 43.8s (LLM) | crosslink 0.01s | total 44
 
 ## Retrieval — four algorithms compared
 
-| Rank | Retriever | Finance recall@5 | Synthetic recall@5 (8–128 docs) | Share of corpus scored |
-|---:|---|---:|---:|---:|
-| 1 | HAT-RAG (retrieval 1) | 85.0% | 96.7% | 39% |
-| 2 | Graph PPR (retrieval 4) | 83.4% | 93.8% | 100% |
-| 3 | Flat dense (retrieval 2) | 83.9% | 88.6% | 100% |
-| 4 | RAPTOR collapsed (retrieval 3) | 74.6% | 85.1% | 118% |
+| Retriever | 10-K recall@5 | Synthetic recall@5 (mean, 8–512 docs) | Synthetic, 512 docs | MultiHop-RAG recall@5 (22,838 passages) | Share of the 25,673 tree nodes scored (MultiHop-RAG) |
+|---|---:|---:|---:|---:|---:|
+| HAT-RAG (retrieval 1) | **85.0%** | **96.7%** | **97.6%** | 20.5% | **3.6%** |
+| Graph PPR (retrieval 4) | 83.4% | 92.4% | 88.3% | **23.7%** | 89% |
+| Flat dense (retrieval 2) | 83.9% | 79.5% | 50.8% | 20.9% | 89% |
+| RAPTOR collapsed (retrieval 3) | 74.6% | 76.2% | 49.7% | 19.9% | 100% |
 
-Method, figures, ablations and limitations: [`compare-algos/README.md`](./compare-algos/README.md).
+HAT-RAG ranks first on the 10-K and synthetic benchmarks, under the ranking rule fixed
+before the runs. On the real MultiHop-RAG archive it ties flat dense and RAPTOR, at
+3.6% of the index, and Graph PPR leads. Method, figures, ablations and limitations:
+[`compare-algos/README.md`](./compare-algos/README.md).
 
 ## Scope
 
-Implemented: corpus → chunks → embeddings → hierarchical abstract tree, persisted to JSON;
-query → evidence set with provenance (`assemble_context` builds the generator context).
-Not implemented yet: answer generation from the retrieved context.
+Implemented end to end: corpus → chunks → embeddings → hierarchical abstract tree
+(JSON, with a `.emb.npy` sidecar for large trees); query → evidence set with provenance →
+cited answer from an LLM (`llm_answer.py`), served by the Streamlit app (`../app.py`).
+
+### Large corpora
+
+Three steps used to materialise an N×N matrix or enumerate pairs in Python, which
+breaks down past a few thousand passages. All three now scale to the 22,838-passage
+MultiHop-RAG tree and produce the same output as before (checked on the 10-K and
+128-document trees, and in `tests/test_scale_and_llm.py`):
+
+| Step | Before | Now |
+|---|---|---|
+| k-means++ seeding | recomputed similarity to every chosen centre, O(n·k²·d) | running max, updated with the newest centre only, O(n·k·d); identical seeds |
+| Alpha cross-links | full n×n similarity matrix (1.8 GB at 21k leaves) | row blocks of 2,048 with exact mean/std for `alpha="auto"` and top-64 candidates per node (0.15% of links differ, from ties; no retrieval changes) |
+| Shared-entity edges | Python loop over every pair of passages sharing an entity | sparse incidence B: W = B·diag(idf)·Bᵀ, computed only for the rows a query needs (HAT-RAG) or applied matrix-free (Graph PPR) |
