@@ -41,4 +41,10 @@ hit_sound.wav
 
 # Streamlit agent skills (environment-specific symlinks)
 .agents/
-.claude/
+.claude/
+# API keys
+.env
+
+# MultiHop-RAG download and built trees (rebuild with algorithms/compare-algos/run_multihop.py)
+data/multihop_rag/raw/
+data/multihop_rag/trees/
