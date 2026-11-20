@@ -26,8 +26,10 @@ time only. Results go to results/*.json; make_figures.py draws them.
 """
 
 import argparse
+import functools
 import json
 import math
+import re
 import statistics
 import sys
 import time
@@ -82,12 +84,27 @@ def doc_match(node_doc: str, gold_doc: str) -> bool:
     return node_doc == gold_doc or node_doc.startswith(gold_doc + "_")
 
 
+FACT_FRACTION = 0.5
+
+
+@functools.lru_cache(maxsize=None)
+def shingles(text: str) -> frozenset:
+    """Word 3-grams (unigrams for very short text), lower-cased, punctuation dropped."""
+    w = re.findall(r"[a-z0-9]+", text.lower())
+    return frozenset(zip(w, w[1:], w[2:])) if len(w) >= 3 else frozenset((x,) for x in w)
+
+
 def covers(index: TreeIndex, i: int, item: Dict[str, Any]) -> bool:
-    """Node i belongs to the gold filing and its own text holds >=60% of the key terms."""
+    """Node i belongs to the gold filing and its own text holds >=60% of the key
+    terms -- or, for a labelled evidence sentence ("fact"), >=50% of its word
+    3-grams. Abstracts only get credit for what their own text contains."""
     node = index.nodes[i]
-    docs = [node.doc_id or ""] if node.level == 0 else node.source_docs
+    docs = [node.doc_id or ""] if node.level == 0 else index.docs[i]
     if not any(doc_match(d, item["doc"]) for d in docs):
         return False
+    if "fact" in item:
+        fact, text = shingles(item["fact"]), shingles(node.text)
+        return len(fact & text) >= FACT_FRACTION * max(1, len(fact))
     low = node.text.lower()
     need = math.ceil(MATCH_FRACTION * len(item["terms"]))
     return sum(t.lower() in low for t in item["terms"]) >= need
@@ -98,7 +115,7 @@ def represents(index: TreeIndex, i: int, doc: str, aliases: Dict[str, List[str]]
     node = index.nodes[i]
     if node.level == 0:
         return doc_match(node.doc_id or "", doc)
-    if not any(doc_match(d, doc) for d in node.source_docs):
+    if not any(doc_match(d, doc) for d in index.docs[i]):
         return False
     low = node.text.lower()
     return any(a.lower() in low for a in aliases.get(doc, []))
@@ -134,9 +151,10 @@ def score_query(index: TreeIndex, node_ids: Sequence[str], gold: Sequence[Dict[s
 # ----------------------------------------------------------------------------
 # Running
 # ----------------------------------------------------------------------------
-def make_retrievers(index: TreeIndex, reference: bool = True) -> Dict[str, Any]:
+def make_retrievers(index: TreeIndex, reference: bool = True,
+                    hat: Dict[str, Any] = None) -> Dict[str, Any]:
     retrievers = {
-        "HAT-RAG": HATBeamRetriever(index, **HAT_CONFIG),
+        "HAT-RAG": HATBeamRetriever(index, **{**HAT_CONFIG, **(hat or {})}),
         "Flat dense": FlatDenseRetriever(index),
         "RAPTOR collapsed": CollapsedTreeRetriever(index),
         "Graph PPR": GraphPPRRetriever(index),
@@ -146,21 +164,22 @@ def make_retrievers(index: TreeIndex, reference: bool = True) -> Dict[str, Any]:
     return retrievers
 
 
-def timed_search(retriever, q: np.ndarray, query: str, repeats: int = REPEATS):
-    result = retriever.search(q, k=K, query=query)
+def timed_search(retriever, q: np.ndarray, query: str, repeats: int = REPEATS, k: int = K):
+    result = retriever.search(q, k=k, query=query)
     times = [result.seconds]
     for _ in range(repeats - 1):
-        times.append(retriever.search(q, k=K, query=query).seconds)
+        times.append(retriever.search(q, k=k, query=query).seconds)
     return result, statistics.median(times) * 1000.0
 
 
 def evaluate(index: TreeIndex, retrievers: Dict[str, Any], queries: Sequence[Dict[str, Any]],
-             qvecs: np.ndarray, aliases: Dict[str, List[str]], repeats: int = REPEATS) -> List[Dict[str, Any]]:
+             qvecs: np.ndarray, aliases: Dict[str, List[str]], repeats: int = REPEATS,
+             k: int = K) -> List[Dict[str, Any]]:
     records = []
     for name, retriever in retrievers.items():
-        retriever.search(qvecs[0], k=K, query=queries[0]["query"])          # warm-up
+        retriever.search(qvecs[0], k=k, query=queries[0]["query"])          # warm-up
         for q, vec in zip(queries, qvecs):
-            res, latency = timed_search(retriever, vec, q["query"], repeats)
+            res, latency = timed_search(retriever, vec, q["query"], repeats, k)
             rec = {"method": name, "id": q["id"], "type": q["type"], "query": q["query"],
                    "node_ids": res.node_ids,
                    "retrieved": [index.label(index.pos[n]) for n in res.node_ids],
