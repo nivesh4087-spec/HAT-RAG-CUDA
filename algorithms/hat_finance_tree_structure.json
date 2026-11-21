@@ -20,9 +20,9 @@
     "texts_encoded": 32,
     "cache_hits": 24,
     "batches": 9,
-    "encode_seconds": 0.339,
-    "model_load_seconds": 7.5836,
-    "throughput_texts_per_sec": 94.39
+    "encode_seconds": 1.2498,
+    "model_load_seconds": 37.5974,
+    "throughput_texts_per_sec": 25.6
   },
   "summarizer": {
     "mode": "llm",
@@ -30,11 +30,11 @@
     "llm_calls": 8
   },
   "metrics": {
-    "embed_seconds": 0.11,
-    "cluster_seconds": 0.01,
-    "summarize_seconds": 23.596,
+    "embed_seconds": 0.125,
+    "cluster_seconds": 0.033,
+    "summarize_seconds": 29.9,
     "crosslink_seconds": 0.006,
-    "total_seconds": 23.725,
+    "total_seconds": 30.069,
     "cross_links": 29,
     "cross_doc_links": 17,
     "levels": [
